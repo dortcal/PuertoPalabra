@@ -106,7 +106,11 @@ No se piden nombres. El alumnado puede escribir un **código anónimo** (por eje
 
 ## Limitaciones conocidas
 
-- **Criterios sin evidencias automáticas:** la producción oral (3.1) y compartir la experiencia lectora (7.2) no se pueden evaluar sin escucha o lectura docente, por lo que el juego no los trabaja y el informe los marca como «No trabajado en esta sesión». La producción escrita (5.1) solo se observa a través de la ordenación de una noticia, y la creación literaria (8.2) a través del reconocimiento de rimas.
+- **Criterios fuera del juego:** la producción oral (3.1) y compartir la experiencia lectora (7.2) no se pueden evaluar automáticamente, por lo que no aparecen en el juego ni en el informe y deben valorarse en el aula. La producción escrita (5.1) solo se observa a través de la ordenación de una noticia, y la creación literaria (8.2) a través del reconocimiento de rimas.
 - La interacción oral (3.2), la identidad lectora (7.1) y la gestión real de conflictos (10.1) solo se observan parcialmente en un juego. El informe lo indica y propone extensiones de aula.
 - La calidad de la voz depende del sistema operativo. En Windows y Android suele haber voces en español; en algunos Linux, no.
 - Los niveles del informe son orientativos y no sustituyen las rúbricas oficiales de evaluación de Canarias.
+
+## Variedad de actividades
+
+Cada curso tiene bancos de actividades ampliados (`js/data/banco.js`) que se mezclan con el contenido base. En cada misión el juego elige un subconjunto distinto de preguntas, textos y perfiles y no repite lo ya visto hasta agotar el banco (memoria en el navegador, clave `puertoPalabra.vistos`). Los textos de lectura de las misiones (boletín de radio, cartel, leyenda, noticia) son fijos; varían las preguntas sobre ellos.

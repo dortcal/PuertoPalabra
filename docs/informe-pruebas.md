@@ -76,7 +76,8 @@ Comprobado en Chrome automatizado:
 - Gran Reto y Repaso por temáticas (bloque III) jugados hasta la pantalla final en 4.º.
 - Informe, CSV de resumen y de registro, JSON y recarga con persistencia.
 - Pruebas de límites (salir de misión, doble clic, modo tranquilo, pausa).
-- Los criterios 3.1 y 7.2 aparecen como «No trabajado en esta sesión» y en el repaso por criterios figuran sin retos.
+- Los criterios 3.1 y 7.2 ya no figuran en el juego, el informe, el CSV ni el JSON (13 criterios).
+- Variedad de actividades: los bancos de cada curso se mezclan al cargar y cada misión elige un subconjunto distinto sin repetir lo ya visto hasta agotar el banco. Verificado en Chrome: 6 cursos × 18 misiones, Gran Reto, Repaso y pruebas de límites sin errores de consola. En una ejecución puntual del Gran Reto el guion de prueba agotó su tiempo límite; repetido, llegó a la pantalla final (3 de 4 repeticiones completadas dentro del tiempo).
 
 ## Pendiente de comprobar en el aula
 

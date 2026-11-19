@@ -11,14 +11,12 @@ window.PP = window.PP || {};
   const REC = {
     "1.1": { bajo: "Comparar en clase cómo se nombran objetos cotidianos en Canarias, la Península y América (guagua, autobús, camión…), y conversar sobre por qué ninguna variedad es «mejor» que otra.", alto: "Proponer una pequeña investigación sobre palabras de origen guanche, portugués o americano presentes en el español de Canarias." },
     "2.1": { bajo: "Practicar la escucha activa con audios breves: antes de escuchar, anticipar el tema; durante, anotar quién, qué, dónde y cuándo; después, contrastar con un compañero.", alto: "Escuchar noticias o pódcast infantiles reales y debatir si la información es completa, qué falta y qué opina cada interlocutor." },
-    "3.1": { bajo: "Preparar exposiciones orales muy breves con guion visual (inicio, dos ideas, cierre) y ensayarlas en pareja.", alto: "Grabar una crónica o noticia radiofónica en grupo, cuidando entonación, pausas y vocabulario." },
     "3.2": { bajo: "Trabajar fórmulas de cortesía y turnos de palabra con juegos de rol (pedir información, entrevistar, agradecer).", alto: "Organizar entrevistas reales a personas del centro o del barrio, preparando preguntas abiertas y repreguntas." },
     "4.1": { bajo: "Releer buscando datos concretos (subrayar quién, dónde, cuándo) y comprobar las respuestas volviendo al texto.", alto: "Plantear preguntas inferenciales (¿por qué crees que…?, ¿qué pasará si…?) justificando con pistas del texto." },
     "4.2": { bajo: "Analizar carteles, horarios y avisos reales: qué información dan, para quién, y cómo se organiza (títulos, tablas, iconos).", alto: "Comparar dos textos sobre un mismo tema y valorar cuál es más claro, fiable o adecuado para un propósito." },
     "5.1": { bajo: "Escribir textos breves con modelo y lista de revisión (mayúscula inicial, punto final, orden de las ideas).", alto: "Planificar, redactar y revisar noticias completas (titular, entradilla y cuerpo) para un periódico escolar." },
     "6.1": { bajo: "Distinguir en clase hechos y opiniones con ejemplos cercanos y preguntar siempre «¿quién lo dice y cómo lo sabe?».", alto: "Contrastar una misma noticia en varias fuentes, comprobar la fecha y la autoría, y elaborar una guía antibulos para el centro." },
     "7.1": { bajo: "Visitar la biblioteca con pautas para elegir (portada, contracubierta, primeras líneas, género) y llevar un registro de gustos.", alto: "Crear itinerarios lectores personales y recomendar lecturas a otros cursos." },
-    "7.2": { bajo: "Compartir lecturas con apoyos: «me gustó porque…», «el personaje que más…», «se lo recomiendo a…».", alto: "Organizar un club de lectura o reseñas en la radio o el blog escolar." },
     "8.1": { bajo: "Leer en voz alta leyendas y cuentos canarios, identificando personajes, lugar y orden de los hechos con apoyo visual.", alto: "Relacionar la leyenda con otras obras (canciones, pinturas, películas) y comparar versiones de una misma historia." },
     "8.2": { bajo: "Crear pareados y adivinanzas a partir de modelos, jugando con rimas y sonidos.", alto: "Escribir poemas o microrrelatos propios recreando un modelo y acompañarlos de ilustración o música." },
     "9.1": { bajo: "Manipular palabras (cambiar género y número, añadir prefijos o sufijos) y formular en voz alta la «regla» descubierta.", alto: "Buscar contraejemplos a las reglas y elaborar un fichero propio de generalizaciones ortográficas y gramaticales." },
@@ -27,10 +25,8 @@ window.PP = window.PP || {};
   };
   // Criterios que necesitan observación en el aula para valorarse de forma completa
   const EXTENSION = {
-    "3.1": "El juego no puede evaluar automáticamente la producción oral. Este criterio debe valorarse en el aula (exposiciones, crónicas, entrevistas) con una rúbrica.",
     "3.2": "El juego simula la interacción eligiendo intervenciones; la interacción oral real debe observarse en el aula.",
     "7.1": "La identidad lectora se construye con lecturas completas a lo largo del tiempo; el juego solo observa estrategias de selección.",
-    "7.2": "El juego no puede evaluar automáticamente el compartir la experiencia lectora. Requiere actividades presenciales (club de lectura, reseñas, recomendaciones orales o escritas).",
     "10.1": "El juego observa la elección de respuestas respetuosas; la gestión real de conflictos debe observarse en situaciones de aula.",
     "8.2": "El juego solo comprueba el reconocimiento de rimas y recursos; la creación literaria propia (versos, poemas) debe trabajarse y valorarse en el aula.",
     "5.1": "El juego solo observa la estructura de la noticia (ordenar sus partes); la redacción de textos propios no se evalúa automáticamente y debe valorarse en el aula."

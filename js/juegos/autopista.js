@@ -11,7 +11,7 @@ window.PP = window.PP || {};
   function jugar(itemsTodos, ctx) {
     return new Promise((resolver) => {
       const ciclo = PP.juego.ciclo || 2;
-      const items = U.shuffle(itemsTodos).slice(0, ciclo === 1 ? 6 : 8);
+      const items = U.muestra(itemsTodos, ciclo === 1 ? 6 : 8, "auto:" + ctx.id + ":" + (PP.juego.curso || 0));
       const tranquilo = !!PP.ajustes.sinTiempo;
       const raiz = el("div", { class: "autopista", role: "application", "aria-label": "Autopista del Borrón" });
       const cv = el("canvas", { class: "ap-canvas" });

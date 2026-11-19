@@ -54,13 +54,13 @@ Se recomienda repartir las misiones en 3 o 4 sesiones, una por barrio, alternand
 
 ## 4. Extensiones presenciales (imprescindibles para algunos criterios)
 
+Los criterios 3.1 (producción oral) y 7.2 (compartir la experiencia lectora) no aparecen en el juego ni en el informe: deben valorarse íntegramente en el aula.
+
 | Criterio | Qué observa el juego | Qué hay que completar en el aula |
 |---|---|---|
-| 3.1 | Nada: el programa no puede evaluar la producción oral | Exposición o crónica oral real, valorada con rúbrica |
 | 3.2 | Elección de intervenciones en una entrevista simulada | Entrevista real a alguien del centro o del barrio |
 | 5.1 | Solo el orden de las partes de una noticia (estructura) | Redacción de titulares y noticias propias, planificadas, revisadas y editadas |
 | 7.1 | Estrategias de selección de lecturas (recomendar según gustos) | Club de lectura, préstamo bibliotecario |
-| 7.2 | Nada: el programa no puede evaluar el compartir lecturas | Recomendaciones y reseñas orales o escritas, radio escolar |
 | 8.2 | Reconocimiento de rimas y recursos | Creación de poemas propios, recital o antología de aula con ilustración o música |
 | 10.1 | Respuestas ante conflictos simulados | Asambleas y mediación en situaciones reales |
 

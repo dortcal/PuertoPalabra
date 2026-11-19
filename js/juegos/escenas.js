@@ -113,7 +113,7 @@ window.PP = window.PP || {};
   S.parejas = function (d, ctx) {
     return promesa((res) => {
       const m = marco({ tema: ctx.tema, mision: ctx.titulo, titulo: d.titulo || "Une las parejas", consigna: d.consigna, icono: "map", alSalir: () => { m.cerrar(); res({ abandonada: true }); } });
-      const pares = d.pares.slice(0, ciclo() === 1 ? 4 : 6);
+      const pares = U.muestra(d.pares, ciclo() === 1 ? 4 : 6, "par:" + ctx.id + ":" + (PP.juego.curso || 0));
       const wrap = el("div", { class: "parejas" });
       const colA = el("div", { class: "col" }, [el("h3", { text: d.izq || "Palabra" })]), colB = el("div", { class: "col" }, [el("h3", { text: d.der || "Equivale a" })]);
       wrap.append(colA, colB); m.cuerpo.appendChild(wrap);
@@ -143,9 +143,9 @@ window.PP = window.PP || {};
   S.caza = function (d, ctx) {
     return promesa((res) => {
       const m = marco({ tema: ctx.tema, mision: ctx.titulo, titulo: "¡A la caza!", consigna: U.esc(d.instruccion) + (d.explica ? " <small>" + U.esc(d.explica) + "</small>" : ""), icono: "gps", alSalir: () => { m.cerrar(); res({ abandonada: true }); } });
-      const buenas = U.shuffle(d.buenas), malas = U.shuffle(d.malas).map((x) => { const [t, por] = x.split("|"); return { t, por }; });
-      const objetivo = Math.min(d.objetivo || 5, buenas.length);
-      const items = U.shuffle(buenas.slice(0, objetivo + 2).map((t) => ({ t, ok: true })).concat(malas.slice(0, objetivo + 2).map((x) => ({ t: x.t, por: x.por, ok: false }))));
+      const objetivo = Math.min(d.objetivo || 5, d.buenas.length), kz = "caza:" + ctx.id + ":" + d.instruccion.slice(0, 14) + ":" + (PP.juego.curso || 0);
+      const buenas = U.muestra(d.buenas, objetivo + 2, kz + "b"), malas = U.muestra(d.malas, objetivo + 2, kz + "m").map((x) => { const [t, por] = x.split("|"); return { t, por }; });
+      const items = U.shuffle(buenas.map((t) => ({ t, ok: true })).concat(malas.map((x) => ({ t: x.t, por: x.por, ok: false }))));
       const marcador = el("p", { class: "caza-marcador", "aria-live": "polite" });
       const arena = el("div", { class: "caza-arena", role: "group", "aria-label": "Palabras: toca las que cumplen la condición" });
       m.cuerpo.append(marcador, arena);
@@ -228,7 +228,7 @@ window.PP = window.PP || {};
   S.preguntas = function (lista, ctx) {
     return promesa((res) => {
       const m = marco({ tema: ctx.tema, mision: ctx.titulo, titulo: "Libreta de reportero", consigna: "Responde a las preguntas. Puedes pedir una pista si la necesitas.", icono: "doc", alSalir: () => { m.cerrar(); res({ abandonada: true }); } });
-      const qs = lista.slice(0, ciclo() === 1 ? 3 : 4);
+      const qs = U.muestra(lista, ciclo() === 1 ? 3 : 4, "q:" + ctx.id + ":" + (ctx.mecanica || "") + ":" + (PP.juego.curso || 0));
       let i = 0;
       const libreta = el("div", { class: "libreta" }); m.cuerpo.appendChild(libreta);
       const mostrar = () => {
@@ -285,7 +285,9 @@ window.PP = window.PP || {};
   S.chismografo = function (d, ctx) {
     return promesa((res) => {
       const m = marco({ tema: "onda", mision: ctx.titulo, titulo: "Chismógrafo", consigna: d.consigna || "Lee cada mensaje y decide: ¿es un dato fiable, un bulo o una opinión?", icono: "phone", clase: "esc-movil", alSalir: () => { m.cerrar(); res({ abandonada: true }); } });
-      const posts = d.posts;
+      // Mezcla equilibrada de mensajes: fiables, bulos y opiniones, distintos en cada partida
+      const cuota = ciclo() === 1 ? { fiable: 2, bulo: 2, opinion: 1 } : { fiable: 2, bulo: 2, opinion: 2 };
+      const posts = U.shuffle([].concat(...Object.keys(cuota).map((t) => U.muestra(d.posts.filter((x) => x.tipo === t), cuota[t], "chis:" + ctx.id + ":" + t + ":" + (PP.juego.curso || 0)))));
       const tel = el("div", { class: "telefono" }); m.cuerpo.appendChild(tel);
       const etiquetas = ciclo() === 1 ? { fiable: "Es verdad (lo dice quien lo sabe)", bulo: "Es un bulo (inventado)", opinion: "Es lo que alguien piensa" } : { fiable: "Dato fiable", bulo: "Bulo", opinion: "Opinión" };
       let i = 0;
@@ -471,7 +473,7 @@ window.PP = window.PP || {};
   S.taller = function (d, ctx) {
     return promesa((res) => {
       const m = marco({ tema: "taller", mision: ctx.titulo, titulo: "Taller de tuneo", consigna: d.consigna || "Monta la palabra que corresponde a la definición tocando las piezas en orden.", icono: "gear", alSalir: () => { m.cerrar(); res({ abandonada: true }); } });
-      const items = d.items.slice(0, ciclo() === 1 ? 5 : 6);
+      const items = U.muestra(d.items, ciclo() === 1 ? 5 : 6, "taller:" + ctx.id + ":" + (PP.juego.curso || 0));
       let i = 0;
       const zona = el("div", { class: "taller" }); m.cuerpo.appendChild(zona);
       const mostrar = () => {
@@ -513,7 +515,7 @@ window.PP = window.PP || {};
   S.rimas = function (d, ctx) {
     return promesa((res) => {
       const m = marco({ tema: "literario", mision: ctx.titulo, titulo: "Rimas perdidas", consigna: d.consigna || "Completa cada verso con la palabra que rima y tiene sentido.", icono: "book", alSalir: () => { m.cerrar(); res({ abandonada: true }); } });
-      const items = d.items.slice(0, ciclo() === 1 ? 3 : 4);
+      const items = U.muestra(d.items, ciclo() === 1 ? 3 : 4, "rimas:" + ctx.id + ":" + (PP.juego.curso || 0));
       let i = 0;
       const pergamino = el("div", { class: "pergamino" });
       m.cuerpo.append(el("div", { class: "poeta", html: PP.retrato(d.poeta || { nombre: "Poeta", piel: "clara", pelo: "#7a7a7a", peinado: "mono", ropa: "#5b3a7a", fondo: "#efe0ff", gafas: true, edad: "mayor" }, "feliz") + "<span>" + U.esc((d.poeta && d.poeta.nombre) || "La poeta") + "</span>" }), pergamino);
@@ -546,6 +548,7 @@ window.PP = window.PP || {};
       const m = marco({ tema: "literario", mision: ctx.titulo, titulo: "Club de lectura", consigna: d.consigna || "Toca un libro para leer su contracubierta y recomiéndalo a quien encaje mejor.", icono: "book", alSalir: () => { m.cerrar(); res({ abandonada: true }); } });
       const estante = el("div", { class: "estante" }), ficha = el("div", { class: "contracubierta", hidden: true }), lector = el("div", { class: "lector" });
       m.cuerpo.append(lector, estante, ficha);
+      const perfiles = U.muestra(d.perfiles, 3, "perf:" + ctx.id + ":" + (PP.juego.curso || 0));
       let i = 0, libroSel = null;
       d.libros.forEach((l, k) => {
         const b = el("button", { class: "lomo", type: "button", style: { background: l.color || U.pick(["#e76f51", "#2a9d8f", "#e9c46a", "#264653", "#8338ec", "#ef476f"]), height: (120 + (k * 37) % 50) + "px" }, "aria-label": "Libro: " + l.titulo, html: "<span>" + U.esc(l.titulo) + "</span>" });
@@ -553,7 +556,7 @@ window.PP = window.PP || {};
           PP.Audio.sfx("pagina"); libroSel = k; estante.querySelectorAll(".lomo").forEach((x) => x.classList.remove("sel")); b.classList.add("sel");
           ficha.hidden = false; ficha.innerHTML = "<h3>" + U.esc(l.titulo) + "</h3><p class='autor'>" + U.esc(l.autor) + " · <em>" + U.esc(l.genero) + "</em></p><p>" + U.esc(l.sinopsis) + "</p>";
           m.leerTexto = l.titulo + ". " + l.genero + ". " + l.sinopsis; hablar(m.leerTexto);
-          const p = d.perfiles[i];
+          const p = perfiles[i];
           ficha.appendChild(m.boton("Recomendar a " + U.esc(p.nombre) + " " + U.icon("play"), () => recomendar(k)));
         });
         estante.appendChild(b);
@@ -561,14 +564,14 @@ window.PP = window.PP || {};
       let reg = false;
       const pintarLector = () => {
         m.limpiarFb(); ficha.hidden = true; reg = false;
-        const p = d.perfiles[i];
+        const p = perfiles[i];
         lector.innerHTML = PP.retrato(p.retrato || {}, "normal") + '<div class="lector-txt"><strong>' + U.esc(p.nombre) + "</strong><p>«" + U.esc(p.pide) + "»</p></div>";
         m.leerTexto = p.nombre + " dice: " + p.pide; hablar(m.leerTexto);
       };
       const recomendar = (k) => {
-        const p = d.perfiles[i]; const ok = p.ok.includes(k);
+        const p = perfiles[i]; const ok = p.ok.includes(k);
         if (!reg) { reg = true; PP.Eval.registrar({ crit: ctx.crit, ok, mecanica: "biblioteca", mision: ctx.id, item: "perfil-" + i, respuesta: d.libros[k].titulo, correcta: d.libros[p.ok[0]].titulo, detalle: ok ? "" : "Recomendó «" + d.libros[k].titulo + "» a quien buscaba: " + p.pide }); }
-        if (ok) { lector.innerHTML = PP.retrato(p.retrato || {}, "feliz") + '<div class="lector-txt"><strong>' + U.esc(p.nombre) + "</strong><p>«¡Gracias! Tiene muy buena pinta.»</p></div>"; m.fb(p.fb || "¡Buena recomendación! Has leído la contracubierta y has pensado en sus gustos.", "bien"); PP.juego.sumar(20); ficha.hidden = true; m.pie.innerHTML = ""; const ultimo = i + 1 >= d.perfiles.length; m.pie.appendChild(m.boton((ultimo ? "Terminar" : "Siguiente lector") + " " + U.icon("play"), () => { m.pie.innerHTML = ""; i++; if (ultimo) { m.cerrar(); res({ hecho: true }); } else pintarLector(); })); }
+        if (ok) { lector.innerHTML = PP.retrato(p.retrato || {}, "feliz") + '<div class="lector-txt"><strong>' + U.esc(p.nombre) + "</strong><p>«¡Gracias! Tiene muy buena pinta.»</p></div>"; m.fb(p.fb || "¡Buena recomendación! Has leído la contracubierta y has pensado en sus gustos.", "bien"); PP.juego.sumar(20); ficha.hidden = true; m.pie.innerHTML = ""; const ultimo = i + 1 >= perfiles.length; m.pie.appendChild(m.boton((ultimo ? "Terminar" : "Siguiente lector") + " " + U.icon("play"), () => { m.pie.innerHTML = ""; i++; if (ultimo) { m.cerrar(); res({ hecho: true }); } else pintarLector(); })); }
         else m.fb("Mmm… " + (p.fbMal || "ese libro no encaja con lo que busca. Lee bien la contracubierta y fíjate en el género.") , "mal");
       };
       pintarLector();

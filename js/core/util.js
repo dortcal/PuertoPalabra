@@ -12,6 +12,21 @@ window.PP = window.PP || {};
   U.randi = (a, b) => Math.floor(U.rand(a, b + 1));
   U.pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
   U.shuffle = (arr) => { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  /* Muestra rotatoria: elige n elementos de la lista sin repetir los vistos hasta agotar el banco.
+     La memoria vive en localStorage (con try/catch) y, si no está disponible, en la pestaña. */
+  const _vistos = {};
+  const _leerVistos = (k) => { try { const d = JSON.parse(localStorage.getItem("puertoPalabra.vistos") || "{}"); return d[k] || _vistos[k] || []; } catch (e) { return _vistos[k] || []; } };
+  const _guardarVistos = (k, v) => { _vistos[k] = v; try { const d = JSON.parse(localStorage.getItem("puertoPalabra.vistos") || "{}"); d[k] = v; const ks = Object.keys(d); if (ks.length > 150) delete d[ks[0]]; localStorage.setItem("puertoPalabra.vistos", JSON.stringify(d)); } catch (e) { /* sin almacenamiento */ } };
+  U.muestra = (lista, n, clave) => {
+    lista = lista || []; if (lista.length <= n) return U.shuffle(lista);
+    const k = (clave || "x") + "#" + lista.length, idx = lista.map((_, i) => i);
+    let vistos = _leerVistos(k).filter((i) => i < lista.length);
+    let libres = idx.filter((i) => !vistos.includes(i)), elegidos;
+    if (libres.length >= n) { elegidos = U.shuffle(libres).slice(0, n); vistos = vistos.concat(elegidos); }
+    else { elegidos = libres.slice(); const resto = U.shuffle(idx.filter((i) => !elegidos.includes(i))).slice(0, n - elegidos.length); vistos = resto.slice(); elegidos = elegidos.concat(resto); }
+    _guardarVistos(k, vistos);
+    return U.shuffle(elegidos).map((i) => lista[i]);
+  };
   U.now = () => performance.now();
 
   // Generador pseudoaleatorio con semilla (ciudad idéntica en todas las partidas)

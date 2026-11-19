@@ -39,8 +39,8 @@ window.PP = window.PP || {};
         consigna: silabas ? "El Borrón ha desordenado las sílabas. Cuenta las palmadas de cada palabra y vuelve a montarla." : "El Borrón ha borrado las tildes. Encuentra la sílaba que suena más fuerte, clasifica la palabra y decide si lleva tilde.",
         alSalir: () => { fin = true; m.cerrar(); res({ abandonada: true }); } });
       let fin = false;
-      const lista = U.shuffle(d.items.map((x, i) => Object.assign({ i }, x))).slice(0, silabas ? 6 : 8);
-      const diac = c === 3 && d.diacriticas ? U.shuffle(d.diacriticas.map((x, i) => Object.assign({ i }, x))).slice(0, 3) : [];
+      const lista = U.muestra(d.items.map((x, i) => Object.assign({ i }, x)), silabas ? 6 : 8, "til:" + ctx.id + ":" + (d.modo || "") + ":" + (PP.juego.curso || 0));
+      const diac = c === 3 && d.diacriticas ? U.muestra(d.diacriticas.map((x, i) => Object.assign({ i }, x)), 3, "dia:" + ctx.id + ":" + (PP.juego.curso || 0)) : [];
       const total = lista.length + diac.length;
       const hud = cabecera("");
       const zona = el("div", { class: "tl-zona" });
@@ -175,7 +175,7 @@ window.PP = window.PP || {};
         consigna: "Llegan cajas con palabras. Lee la frase y lanza cada caja al contenedor de su clase de palabra" + (tranquilo ? "." : " antes de que se escape.") + " Puedes usar los números del teclado.",
         alSalir: () => { fin = true; m.cerrar(); res({ abandonada: true }); } });
       let fin = false;
-      const lista = U.shuffle(d.items.map((x, i) => Object.assign({ i }, x))).slice(0, c === 1 ? 8 : 10);
+      const lista = U.muestra(d.items.map((x, i) => Object.assign({ i }, x)), c === 1 ? 8 : 10, "cin:" + ctx.id + ":" + (PP.juego.curso || 0));
       const cola = lista.slice(), vistos = new Set();
       const hud = cabecera("");
       const pantalla = el("p", { class: "cn-frase", "aria-live": "polite" });
@@ -277,7 +277,7 @@ window.PP = window.PP || {};
   S.guion = function (d, ctx) {
     return promesa((res) => {
       const c = S.ciclo();
-      const qs = d.preguntas.slice(0, c === 1 ? 4 : c === 2 ? 5 : 6);
+      const qs = U.muestra(d.preguntas, c === 1 ? 4 : c === 2 ? 5 : 6, "gui:" + ctx.id + ":" + (PP.juego.curso || 0));
       const textoPlano = [d.titulo, d.entradilla].concat(d.parrafos).filter(Boolean).join(". ");
       const m = S.marco({ tema: "onda", mision: ctx.titulo, titulo: "El guion secreto", icono: "lock", clase: "esc-guion", leer: textoPlano,
         consigna: "El Borrón ha encerrado el guion de la película en una caja fuerte. Lee el texto: cada respuesta correcta te da una cifra de la combinación.",

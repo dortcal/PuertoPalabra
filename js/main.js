@@ -416,9 +416,9 @@ window.PP = window.PP || {};
       const r0 = await Esc.aviso({ titulo: "¡A la caza!", texto: d.instruccion, lista: [d.explica, "Pasa con la moto por encima de las palabras correctas. Si te equivocas, no pasa nada: aprenderás por qué."].filter(Boolean), icono: "gps", boton: "Salir a cazar" }, ctx);
       if (r0.abandonada) return res({ abandonada: true });
       volverAConducir();
-      const buenas = U.shuffle(d.buenas), malas = U.shuffle(d.malas).map((m) => { const [t, por] = m.split("|"); return { t, por }; });
-      const objetivo = Math.min(d.objetivo || 5, buenas.length);
-      const items = buenas.slice(0, objetivo + 2).map((t) => ({ t, ok: true, color: PP.BARRIOS[ctx.tema].color })).concat(malas.slice(0, objetivo + 2).map((m) => ({ t: m.t, por: m.por, ok: false, color: PP.BARRIOS[ctx.tema].color })));
+      const objetivo = Math.min(d.objetivo || 5, d.buenas.length), kz = "caza:" + ctx.id + ":" + d.instruccion.slice(0, 14) + ":" + (J.curso || 0);
+      const buenas = U.muestra(d.buenas, objetivo + 2, kz + "b"), malas = U.muestra(d.malas, objetivo + 2, kz + "m").map((m) => { const [t, por] = m.split("|"); return { t, por }; });
+      const items = buenas.map((t) => ({ t, ok: true, color: PP.BARRIOS[ctx.tema].color })).concat(malas.map((m) => ({ t: m.t, por: m.por, ok: false, color: PP.BARRIOS[ctx.tema].color })));
       let cogidas = 0;
       const prog = () => "Recogidas: " + cogidas + " / " + objetivo;
       UI.objetivo({ titulo: ctx.titulo, icono: "star", texto: U.esc(d.instruccion), progreso: prog(), botones: [
