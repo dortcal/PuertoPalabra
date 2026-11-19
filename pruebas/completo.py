@@ -30,7 +30,7 @@ async def main():
                     await pg.screenshot(path=str(SALIDA) + f"/c{curso}_{mid}.png")
             print(f"=== CURSO {curso} ===")
             print("\n".join(res))
-            info = await pg.evaluate("(()=>{const i=PP.Eval.informe();return {n:i.itemsPrimerIntento,pct:i.pctAciertos,mis:i.nMisiones,crit:i.criterios.map(c=>c.code+':'+c.n+':'+(c.nivel||'-')+':'+c.estado),prod:i.producciones.length, rest:PP.Mundo.restauracion, logros:PP.Store.progreso().logros}})()")
+            info = await pg.evaluate("(()=>{const i=PP.Eval.informe();return {n:i.itemsPrimerIntento,pct:i.pctAciertos,mis:i.nMisiones,crit:i.criterios.map(c=>c.code+':'+c.n+':'+(c.nivel||'-')+':'+c.estado), rest:PP.Mundo.restauracion, logros:PP.Store.progreso().logros}})()")
             print(json.dumps(info, ensure_ascii=False, indent=0)[:2500])
             await pg.evaluate("PP.UI.informe()"); await pg.wait_for_timeout(400)
             if SHOTS: await pg.screenshot(path=str(SALIDA) + f"/c{curso}_informe.png", full_page=False)

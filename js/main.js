@@ -354,9 +354,7 @@ window.PP = window.PP || {};
         case "corrector": r = await Esc.corrector(datos, ctx); break;
         case "taller": r = await Esc.taller(datos, ctx); break;
         case "rimas": r = await Esc.rimas(datos, ctx); break;
-        case "escritura": r = await Esc.escritura(datos, ctx); break;
         case "biblioteca": r = await Esc.biblioteca(datos, ctx); break;
-        case "grabacion": r = await Esc.grabacion(datos, ctx); break;
         case "tildes": r = await Esc.tildes(datos, ctx); break;
         case "clasificador": r = await Esc.clasificador(datos, ctx); if (r && r.mejorRacha >= 8) J.logro("cinta"); break;
         case "guion": r = await Esc.guion(datos, ctx); if (r && r.sinFallos) J.logro("guionista"); break;
@@ -507,7 +505,7 @@ window.PP = window.PP || {};
       el("div", { class: "res-estrellas", "aria-label": estrellas + " de 3 estrellas", html: [1, 2, 3].map((k) => '<span class="est' + (k <= estrellas ? " on" : "") + '" style="animation-delay:' + (k * 0.25) + 's">★</span>').join("") }),
       el("p", { class: "res-txt", text: v.n ? "Acertaste a la primera " + Math.round(v.pct * 100) + " % de los retos (" + v.n + " retos)." : "¡Misión completada!" }),
       el("p", { class: "res-txt", html: "+" + bonus + " puntos de prestigio" + (barrioCompleto ? "<br><b>¡El " + U.esc(PP.BARRIOS[mis.barrio].nombre) + " ha recuperado todos sus colores!</b>" : "") }),
-      mis.final ? el("div", { class: "portada", html: '<div class="per-cab"><b>EL ECO</b><span>Edición especial</span></div><h3>' + U.esc((E.sesion.producciones.filter((p) => p.mision === "F").pop() || {}).texto || "¡Capturada la Banda del Borrón!") + '</h3><div class="foto-borron">' + PP.retrato(PP.BORRON, "sorpresa") + '</div><p>Por ' + U.esc(J.alias) + ', reportero/a de Puerto Palabra</p>' }) : null,
+      mis.final ? el("div", { class: "portada", html: '<div class="per-cab"><b>EL ECO</b><span>Edición especial</span></div><h3>' + "¡Capturada la Banda del Borrón!" + '</h3><div class="foto-borron">' + PP.retrato(PP.BORRON, "sorpresa") + '</div><p>Por ' + U.esc(J.alias) + ', reportero/a de Puerto Palabra</p>' }) : null,
       el("div", { class: "fila-centro" }, [
         el("button", { class: "btn btn-primario", type: "button", html: "Seguir explorando " + U.icon("play"), onclick: () => { r.hidden = true; volverAConducir(); objetivoLibre(); musicaBarrio(true); if (estrellas < 3) UI.toast("Puedes repetir la misión para conseguir más estrellas.", "info"); } }),
         el("button", { class: "btn btn-sec", type: "button", html: U.icon("doc") + " Ver informe", onclick: () => { r.hidden = true; J.modo = "mundo"; UI.informe(); } })

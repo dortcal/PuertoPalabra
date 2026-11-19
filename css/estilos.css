@@ -340,19 +340,6 @@ body.tactil .joystick { display: grid; }
 .hueco { display: inline-block; min-width: 4em; border-bottom: 3px solid #8a6a2a; text-align: center; font-weight: 800; font-style: normal; }
 .pergamino .btn-opcion { width: auto; }
 
-/* Escritura */
-.modelo { background: #eef6ff; border-left: 6px solid #3a86ff; padding: 8px 12px; border-radius: 8px; margin-bottom: 10px; }
-.maquina { width: 100%; font: inherit; font-size: 1.25em; line-height: 1.5; padding: 12px 14px; border: 3px solid var(--noche); border-radius: 14px; background: #fffef8; resize: vertical; }
-.banco { margin: 8px 0; }
-.checklist { list-style: none; padding: 0; display: grid; gap: 4px; }
-.checklist li { padding: 4px 8px; border-radius: 8px; background: #f1f1f1; }
-.checklist li.ok { background: #d3f9d8; font-weight: 700; }
-.pend { display: inline-block; width: 1em; margin-right: .35em; color: #999; }
-.publicado { text-align: center; }
-.sello { display: inline-block; font-family: var(--f-titulo); color: var(--mal); border: 5px solid var(--mal); border-radius: 10px; padding: 4px 14px; transform: rotate(-8deg); font-size: 1.6em; animation: sello .4s cubic-bezier(.2, 1.6, .4, 1); }
-@keyframes sello { from { transform: rotate(-8deg) scale(2.4); opacity: 0; } }
-.texto-publicado { font-family: Georgia, serif; font-size: 1.3em; font-weight: 700; }
-
 /* Biblioteca */
 .lector { display: flex; gap: 12px; align-items: center; margin-bottom: 12px; }
 .lector svg { width: 90px; height: auto; flex: none; }
@@ -366,7 +353,6 @@ body.tactil .joystick { display: grid; }
 
 /* Grabación */
 .guion { line-height: 1.6; }
-.grab-estado { font-weight: 800; }
 
 /* Resultado de misión */
 .resultado { position: fixed; inset: 0; z-index: 40; display: grid; place-items: center; background: rgba(10, 14, 30, .6); padding: 12px; }
@@ -473,10 +459,6 @@ body.tactil .joystick { display: grid; }
 .pips { display: inline-flex; gap: 3px; margin-bottom: 2px; }
 .pips i { width: 14px; height: 14px; border-radius: 3px; border: 2px solid var(--noche); background: #fff; }
 .nivel.n1 .pips i.on { background: #ff8787; } .nivel.n2 .pips i.on { background: #ffd43b; } .nivel.n3 .pips i.on { background: #69db7c; } .nivel.n4 .pips i.on { background: #38d9a9; }
-.inf-prod .prod { border: 2px solid #ddd6c4; border-radius: 12px; padding: 8px 12px; margin-bottom: 8px; }
-.prod-cab { margin: 0; } .prod-consigna { color: #666; font-size: .9em; margin: .2em 0; }
-.prod blockquote { margin: .4em 0; padding: 8px 12px; background: #fffef3; border-left: 5px solid var(--oro); font-family: Georgia, serif; font-size: 1.05em; white-space: pre-wrap; }
-.prod-checks { font-size: .85em; color: #555; margin: 0; }
 .inf-fuente { font-size: .8em; color: #666; margin-top: 16px; }
 details summary { cursor: pointer; font-weight: 700; color: var(--noche2); }
 

@@ -540,44 +540,6 @@ window.PP = window.PP || {};
     });
   };
 
-  // ======================= ESCRITURA =======================
-  S.escritura = function (d, ctx) {
-    return promesa((res) => {
-      const m = marco({ tema: ctx.tema, mision: ctx.titulo, titulo: d.titulo || "Escribe", consigna: d.consigna, icono: "doc", alSalir: () => { m.cerrar(); res({ abandonada: true }); } });
-      if (d.modelo) m.cuerpo.appendChild(el("div", { class: "modelo", html: "<b>Ejemplo:</b> " + U.esc(d.modelo) }));
-      const ta = el("textarea", { class: "maquina", rows: d.filas || 3, "aria-label": d.consigna, maxlength: d.max || 400, placeholder: d.placeholder || "Escribe aquí…", spellcheck: "false" });
-      m.cuerpo.appendChild(ta);
-      if (d.banco && d.banco.length) {
-        const banco = el("div", { class: "chips banco", "aria-label": "Banco de palabras" });
-        d.banco.forEach((w) => banco.appendChild(el("button", { class: "btn chip", type: "button", text: w, onclick: () => { ta.value = (ta.value + (ta.value && !/\s$/.test(ta.value) ? " " : "") + w).slice(0, d.max || 400); ta.dispatchEvent(new Event("input")); PP.Audio.sfx("tecla"); } })));
-        m.cuerpo.appendChild(banco);
-      }
-      const checks = [];
-      const min = d.min || 3;
-      checks.push({ id: "min", txt: "Al menos " + min + " palabras", f: (t) => U.contarPalabras(t) >= min });
-      if (d.mayuscula !== false) checks.push({ id: "may", txt: "Empieza con mayúscula", f: (t) => /^[\s¡¿«"]*[A-ZÁÉÍÓÚÜÑ]/.test(t) });
-      if (d.punto) checks.push({ id: "punto", txt: "Termina con punto (o signo de cierre)", f: (t) => /[.!?»…]\s*$/.test(t.trim()) });
-      if (d.incluir) d.incluir.forEach((w) => checks.push({ id: "inc-" + w, txt: "Incluye «" + w + "»", f: (t) => U.norm(t).includes(U.norm(w)) }));
-      if (d.max && d.maxPalabras) checks.push({ id: "max", txt: "No más de " + d.maxPalabras + " palabras", f: (t) => U.contarPalabras(t) <= d.maxPalabras });
-      const lista = el("ul", { class: "checklist", "aria-live": "polite" }); m.cuerpo.appendChild(lista);
-      const pintar = () => { const t = ta.value; lista.innerHTML = ""; checks.forEach((c) => { const ok = c.f(t); lista.appendChild(el("li", { class: ok ? "ok" : "", html: (ok ? U.icon("check", "mini") : '<span class="pend">○</span>') + U.esc(c.txt) })); }); enviar.disabled = !checks[0].f(t); };
-      ta.addEventListener("input", () => { pintar(); if (Math.random() < 0.5) PP.Audio.sfx("tecla"); });
-      const escuchar = m.boton(U.icon("speaker") + " Escuchar mi texto", () => PP.Voz.decir(ta.value || "Todavía no has escrito nada.", { forzar: true }), "btn-sec");
-      const enviar = m.boton((d.boton || "Publicar") + " " + U.icon("play"), () => {
-        const t = ta.value.trim(); const res_ = checks.map((c) => ({ txt: c.txt, ok: c.f(t) }));
-        const frac = res_.filter((r) => r.ok).length / res_.length;
-        PP.Eval.produccion({ crit: ctx.crit, mision: ctx.id, tipo: d.tipo || "texto", consigna: d.consigna, texto: t, comprobaciones: res_ });
-        if (d.evaluarFormato) PP.Eval.registrar({ crit: ctx.crit, ok: frac === 1 ? 1 : frac >= 0.6 ? 0.5 : 0, mecanica: "escritura-formato", mision: ctx.id, item: "escritura-" + (d.tipo || "texto"), respuesta: t, correcta: "lista de revisión completa", detalle: frac < 1 ? "Escritura: " + res_.filter((r) => !r.ok).map((r) => r.txt.toLowerCase()).join("; ") : "" });
-        PP.juego.sumar(Math.round(20 + 20 * frac));
-        m.cuerpo.innerHTML = ""; m.cuerpo.appendChild(el("div", { class: "publicado" }, [el("div", { class: "sello", text: d.sello || "¡PUBLICADO!" }), el("p", { class: "texto-publicado", text: t })]));
-        m.fb(frac === 1 ? "Tu texto cumple toda la lista de revisión. Se guarda para que lo lea tu docente." : "Texto guardado para tu docente. Revisa la próxima vez: " + res_.filter((r) => !r.ok).map((r) => r.txt.toLowerCase()).join(", ") + ".", frac === 1 ? "bien" : "info");
-        m.pie.innerHTML = ""; m.pie.appendChild(m.boton("Continuar " + U.icon("play"), () => { m.cerrar(); res({ hecho: true, texto: t }); }));
-      });
-      m.pie.append(escuchar, enviar); pintar();
-      setTimeout(() => ta.focus(), 100);
-    });
-  };
-
   // ======================= BIBLIOTECA / CLUB DE LECTURA =======================
   S.biblioteca = function (d, ctx) {
     return promesa((res) => {
@@ -592,8 +554,7 @@ window.PP = window.PP || {};
           ficha.hidden = false; ficha.innerHTML = "<h3>" + U.esc(l.titulo) + "</h3><p class='autor'>" + U.esc(l.autor) + " · <em>" + U.esc(l.genero) + "</em></p><p>" + U.esc(l.sinopsis) + "</p>";
           m.leerTexto = l.titulo + ". " + l.genero + ". " + l.sinopsis; hablar(m.leerTexto);
           const p = d.perfiles[i];
-          if (p) ficha.appendChild(m.boton("Recomendar a " + U.esc(p.nombre) + " " + U.icon("play"), () => recomendar(k)));
-          else ficha.appendChild(m.boton("Este lo elijo para mí " + U.icon("book"), () => elegirPropio(k)));
+          ficha.appendChild(m.boton("Recomendar a " + U.esc(p.nombre) + " " + U.icon("play"), () => recomendar(k)));
         });
         estante.appendChild(b);
       });
@@ -601,52 +562,16 @@ window.PP = window.PP || {};
       const pintarLector = () => {
         m.limpiarFb(); ficha.hidden = true; reg = false;
         const p = d.perfiles[i];
-        if (!p) { lector.innerHTML = '<div class="lector-txt"><strong>¡Ahora te toca a ti!</strong><p>Elige un libro que te gustaría leer a ti. No hay respuesta correcta: piensa en tus gustos.</p></div>'; m.leerTexto = "Elige un libro que te gustaría leer a ti."; hablar(m.leerTexto); return; }
         lector.innerHTML = PP.retrato(p.retrato || {}, "normal") + '<div class="lector-txt"><strong>' + U.esc(p.nombre) + "</strong><p>«" + U.esc(p.pide) + "»</p></div>";
         m.leerTexto = p.nombre + " dice: " + p.pide; hablar(m.leerTexto);
       };
       const recomendar = (k) => {
         const p = d.perfiles[i]; const ok = p.ok.includes(k);
         if (!reg) { reg = true; PP.Eval.registrar({ crit: ctx.crit, ok, mecanica: "biblioteca", mision: ctx.id, item: "perfil-" + i, respuesta: d.libros[k].titulo, correcta: d.libros[p.ok[0]].titulo, detalle: ok ? "" : "Recomendó «" + d.libros[k].titulo + "» a quien buscaba: " + p.pide }); }
-        if (ok) { lector.innerHTML = PP.retrato(p.retrato || {}, "feliz") + '<div class="lector-txt"><strong>' + U.esc(p.nombre) + "</strong><p>«¡Gracias! Tiene muy buena pinta.»</p></div>"; m.fb(p.fb || "¡Buena recomendación! Has leído la contracubierta y has pensado en sus gustos.", "bien"); PP.juego.sumar(20); ficha.hidden = true; m.pie.innerHTML = ""; m.pie.appendChild(m.boton("Siguiente lector " + U.icon("play"), () => { m.pie.innerHTML = ""; i++; pintarLector(); })); }
+        if (ok) { lector.innerHTML = PP.retrato(p.retrato || {}, "feliz") + '<div class="lector-txt"><strong>' + U.esc(p.nombre) + "</strong><p>«¡Gracias! Tiene muy buena pinta.»</p></div>"; m.fb(p.fb || "¡Buena recomendación! Has leído la contracubierta y has pensado en sus gustos.", "bien"); PP.juego.sumar(20); ficha.hidden = true; m.pie.innerHTML = ""; const ultimo = i + 1 >= d.perfiles.length; m.pie.appendChild(m.boton((ultimo ? "Terminar" : "Siguiente lector") + " " + U.icon("play"), () => { m.pie.innerHTML = ""; i++; if (ultimo) { m.cerrar(); res({ hecho: true }); } else pintarLector(); })); }
         else m.fb("Mmm… " + (p.fbMal || "ese libro no encaja con lo que busca. Lee bien la contracubierta y fíjate en el género.") , "mal");
       };
-      const elegirPropio = (k) => {
-        PP.Eval.produccion({ crit: "7.1", mision: ctx.id, tipo: "eleccion-lectura", consigna: "Elige un libro para ti", texto: d.libros[k].titulo + " (" + d.libros[k].genero + ")" });
-        ctx.estado.libroElegido = d.libros[k].titulo;
-        m.fb("Has elegido «" + U.esc(d.libros[k].titulo) + "». ¡Ahora cuéntale a otros por qué te apetece leerlo!", "bien");
-        m.pie.innerHTML = ""; m.pie.appendChild(m.boton("Escribir mi recomendación " + U.icon("play"), () => { m.cerrar(); res({ hecho: true }); }));
-      };
       pintarLector();
-    });
-  };
-
-  // ======================= GRABACIÓN (opcional) =======================
-  S.grabacion = function (d, ctx) {
-    return promesa((res) => {
-      const m = marco({ tema: "onda", mision: ctx.titulo, titulo: "Crónica en directo (opcional)", consigna: d.consigna, icono: "mic", alSalir: () => { m.cerrar(); res({ abandonada: true }); } });
-      if (d.guion) m.cuerpo.appendChild(el("ol", { class: "guion" }, d.guion.map((g) => el("li", { text: g }))));
-      const estado = el("p", { class: "grab-estado", "aria-live": "polite", text: "Pulsa «Grabar» cuando estés listo. Tienes " + (d.segundos || 30) + " segundos." });
-      const audio = el("audio", { controls: true, hidden: true });
-      m.cuerpo.append(estado, audio);
-      const soportado = navigator.mediaDevices && navigator.mediaDevices.getUserMedia && window.MediaRecorder;
-      let rec = null, trozos = [], url = null, t0 = 0, timer = null;
-      const bGrabar = m.boton(U.icon("mic") + " Grabar", async () => {
-        if (rec && rec.state === "recording") { rec.stop(); return; }
-        try {
-          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-          rec = new MediaRecorder(stream); trozos = [];
-          rec.ondataavailable = (e) => trozos.push(e.data);
-          rec.onstop = () => { stream.getTracks().forEach((tr) => tr.stop()); clearTimeout(timer); const blob = new Blob(trozos, { type: rec.mimeType || "audio/webm" }); url = URL.createObjectURL(blob); audio.src = url; audio.hidden = false; bGrabar.innerHTML = U.icon("redo") + " Repetir"; estado.textContent = "Grabación lista. Escúchala y, si te gusta, guárdala."; bGuardar.disabled = false; ctx.estado.dur = Math.round((Date.now() - t0) / 1000); };
-          rec.start(); t0 = Date.now(); bGrabar.innerHTML = U.icon("pause") + " Parar"; estado.textContent = "Grabando… ¡habla claro y sin prisa!";
-          timer = setTimeout(() => { if (rec.state === "recording") rec.stop(); }, (d.segundos || 30) * 1000);
-        } catch (e) { estado.textContent = "No se ha podido usar el micrófono. Puedes saltar este paso."; }
-      });
-      const bGuardar = m.boton("Guardar para mi docente " + U.icon("check"), () => { PP.Eval.audio({ crit: ctx.crit, mision: ctx.id, url, duracion: ctx.estado.dur || 0 }); PP.juego.sumar(30); m.cerrar(); res({ hecho: true }); });
-      bGuardar.disabled = true;
-      const bSaltar = m.boton("Saltar", () => { m.cerrar(); res({ hecho: true, saltado: true }); }, "btn-terc");
-      if (!soportado) { estado.textContent = "Este navegador no permite grabar audio. Puedes saltar este paso y hacer la crónica en clase."; m.pie.append(bSaltar); }
-      else m.pie.append(bSaltar, bGrabar, bGuardar);
     });
   };
 

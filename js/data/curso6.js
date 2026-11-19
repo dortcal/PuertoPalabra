@@ -116,13 +116,6 @@ PP.CONTENIDO[6] = {
         { t: "(Te vas sin despedirte.)", ok: false, fb: "Hay que despedirse." } ] }
     ]
   },
-  escritura: {
-    titular: { titulo: "Escribe el titular", tipo: "titular", consigna: "Escribe el titular de la entrevista. Debe informar de lo esencial con un máximo de 14 palabras.", modelo: "La alcaldesa defiende que el carril bici dará más seguridad al centro", min: 6, maxPalabras: 14, max: 140, incluir: ["carril"], punto: false, evaluarFormato: true, boton: "Publicar titular" },
-    verso: { titulo: "Tus propios versos", tipo: "verso", consigna: "Escribe una estrofa de cuatro versos con rima sobre tu isla. Incluye al menos una comparación o una metáfora.", modelo: "Mi isla es un barco de piedra / que navega en el mar azul; / la luna, su farol de plata, / y la espuma, su velo de tul.", min: 14, max: 400, filas: 5, sello: "¡QUÉ POEMA!", boton: "Guardar poema" },
-    recomendacion: { titulo: "Tu reseña", tipo: "recomendacion", consigna: "Escribe una breve reseña del libro que has elegido: qué esperas de él, por qué te atrae y a qué tipo de lector se lo recomendarías.", modelo: "Me atrae este libro porque… Espero que… Se lo recomendaría a quien…", min: 20, max: 600, filas: 5, punto: true, boton: "Publicar reseña" },
-    portada: { titulo: "La portada", tipo: "portada", consigna: "Escribe el gran titular de la portada sobre la captura del Borrón.", modelo: "Las fotos de El Eco permiten desarticular a la Banda del Borrón", min: 6, maxPalabras: 14, max: 140, incluir: ["Borrón"], punto: false, evaluarFormato: true, sello: "¡A IMPRENTA!", boton: "Enviar a imprenta" }
-  },
-  grabacion: { consigna: "Graba una crónica radiofónica (máximo 45 segundos) sobre la entrevista a la alcaldesa, incluyendo las dos opiniones.", guion: ["Presenta la noticia en una frase.", "Resume la postura de la alcaldesa.", "Cuenta la preocupación de los comerciantes.", "Cierra con la solución propuesta."], segundos: 45 },
   cartel: {
     formato: "cartel", etiqueta: "CONCURSO", titulo: "Concurso de microrrelatos «Islas de palabras»", subtitulo: "Bases",
     lineas: ["1. Participantes: alumnado de 5.º y 6.º de Primaria.", "2. Extensión máxima: 100 palabras.", "3. Tema: el mar o los volcanes de Canarias.", "4. Plazo: hasta el 15 de diciembre.", "5. Entrega: en el taller donde se imprimen los periódicos y los libros de la ciudad."],

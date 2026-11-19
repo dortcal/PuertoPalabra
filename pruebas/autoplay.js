@@ -89,7 +89,7 @@
       if (ops.length && !$(".post-ops .correcta")) { for (const b of ops) { b.click(); await sleep(30); if (b.classList.contains("correcta")) break; } }
       const chips = $$(".chips .chip:not([disabled])");
       if (chips.length && !$(".chips .correcta")) { for (const c of chips) { c.click(); await sleep(30); if (c.classList.contains("correcta")) break; } }
-      const sig = $$(".esc-pie .btn").find((b) => /Siguiente/.test(b.textContent)); if (sig) sig.click();
+      const sig = $$(".esc-pie .btn").find((b) => /Siguiente|Terminar/.test(b.textContent)); if (sig) sig.click();
       return true;
     }
     if ($(".ordenar")) {
@@ -124,33 +124,23 @@
     if ($(".taller")) {
       const it = window.__tallerRef.find((x) => $(".taller-def").textContent.includes(x.def));
       if (it && !$(".matricula.lista")) { for (const p of it.sol) { const b = $$(".taller-piezas button:not([disabled])").find((x) => x.textContent === p); b.click(); await sleep(10); } $$(".esc-pie .btn").find((b) => /Montar/.test(b.textContent)).click(); await sleep(40); }
-      const sig = $$(".esc-pie .btn").find((b) => /Siguiente/.test(b.textContent)); if (sig) sig.click();
+      const sig = $$(".esc-pie .btn").find((b) => /Siguiente|Terminar/.test(b.textContent)); if (sig) sig.click();
       return true;
     }
     if ($(".pergamino")) {
       const ops = $$(".pergamino .btn-opcion:not([disabled])");
       if (ops.length && !$(".verso.brilla")) for (const b of ops) { b.click(); await sleep(30); if ($(".verso.brilla")) break; }
-      const sig = $$(".esc-pie .btn").find((b) => /Siguiente/.test(b.textContent)); if (sig) sig.click();
+      const sig = $$(".esc-pie .btn").find((b) => /Siguiente|Terminar/.test(b.textContent)); if (sig) sig.click();
       return true;
     }
-    if ($(".maquina")) {
-      const ta = $(".maquina"); const modelo = ($(".modelo") || { textContent: "Ejemplo: Una frase de prueba para el Borrón." }).textContent.replace(/^Ejemplo:\s*/, "");
-      ta.value = (modelo + " Además, me parece una lectura muy interesante para toda la clase y para mi familia.").trim(); ta.dispatchEvent(new Event("input")); await sleep(20);
-      const pub = $$(".esc-pie .btn")[1]; pub.click(); await sleep(40);
-      const cont = $$(".esc-pie .btn").find((b) => /Continuar/.test(b.textContent)); if (cont) cont.click();
-      return true;
-    }
-    if ($(".publicado")) { const cont = $$(".esc-pie .btn").find((b) => /Continuar/.test(b.textContent)); if (cont) cont.click(); return true; }
     if ($(".estante")) {
       const perfiles = window.__biblioRef.perfiles;
       const nombre = ($(".lector-txt strong") || {}).textContent;
       const p = perfiles.find((x) => x.nombre === nombre);
       const lomos = $$(".lomo");
-      if (p) { lomos[p.ok[0]].click(); await sleep(20); const r = $$(".contracubierta .btn")[0]; if (r) r.click(); await sleep(30); const sig = $$(".esc-pie .btn").find((b) => /Siguiente/.test(b.textContent)); if (sig) sig.click(); }
-      else { lomos[1].click(); await sleep(20); $$(".contracubierta .btn")[0].click(); await sleep(20); const e = $$(".esc-pie .btn").find((b) => /recomendación/.test(b.textContent)); if (e) e.click(); }
+      if (p) { lomos[p.ok[0]].click(); await sleep(20); const r = $$(".contracubierta .btn")[0]; if (r) r.click(); await sleep(30); const sig = $$(".esc-pie .btn").find((b) => /Siguiente|Terminar/.test(b.textContent)); if (sig) sig.click(); }
       return true;
     }
-    if ($(".guion") || /Crónica/.test(titulo)) { $$(".esc-pie .btn").find((b) => /Saltar/.test(b.textContent)).click(); return true; }
     // aviso genérico
     const b = $(".esc-pie .btn"); if (b) { b.click(); return true; }
     return true;

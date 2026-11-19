@@ -73,13 +73,14 @@ Todas las rutas son relativas y no hay dependencias externas, así que funciona 
 - Cada respuesta se registra con su criterio de evaluación. Solo cuenta el primer intento, las pistas reducen el peso del acierto y los reintentos aparecen como aprendizaje.
 - El informe (desde el móvil del juego o la «Zona docente») muestra:
   - por cada criterio: evidencias, porcentaje, nivel observado, estado de la evidencia, errores detectados, recomendación y texto oficial;
-  - las producciones escritas y orales que debe valorar el docente.
+  - el desglose por tipo de reto y la limitación de cada criterio en el juego.
+- **Solo se incluyen actividades que el programa puede evaluar automáticamente.** El juego no contiene escritura libre (titulares, versos, recomendaciones) ni grabaciones de voz: esas producciones deben trabajarse y valorarse en el aula.
 - Exportaciones: impresión o PDF, CSV de resumen, CSV de registro detallado y JSON. La «Zona docente» guarda un historial local por código anónimo y compara cada sesión con la anterior.
 - Detalle completo en `docs/matriz-trazabilidad.md`.
 
 ## Privacidad
 
-No se piden nombres. El alumnado puede escribir un **código anónimo** (por ejemplo, 5B-07). Todo se guarda en el `localStorage` del navegador del dispositivo y no se envía nada a ningún servidor. Las grabaciones de voz opcionales solo existen mientras la pestaña está abierta. Si el navegador está en modo privado, el progreso no se conserva y el juego lo avisa.
+No se piden nombres. El alumnado puede escribir un **código anónimo** (por ejemplo, 5B-07). Todo se guarda en el `localStorage` del navegador del dispositivo y no se envía nada a ningún servidor. El juego no usa el micrófono ni pide permisos del navegador. Si el navegador está en modo privado, el progreso no se conserva y el juego lo avisa.
 
 ## Accesibilidad (DUA)
 
@@ -98,7 +99,6 @@ No se piden nombres. El alumnado puede escribir un **código anónimo** (por eje
 - Canvas 2D para la ciudad y la autopista.
 - Web Audio API: toda la música y los efectos se sintetizan en el navegador.
 - Web Speech API para la narración. Si el dispositivo no tiene voz en español, el texto siempre se muestra.
-- MediaRecorder para la grabación opcional.
 - Todos los gráficos (ciudad, vehículos, personajes en SVG), la música, los textos, los personajes y las historias son **originales** de este proyecto.
 - Las leyendas canarias son versiones adaptadas de la tradición oral.
 - Los títulos de libros reales que aparecen en el club de lectura se citan solo como referencia bibliográfica.
@@ -106,6 +106,7 @@ No se piden nombres. El alumnado puede escribir un **código anónimo** (por eje
 
 ## Limitaciones conocidas
 
-- La interacción y la producción oral (3.1 y 3.2), la identidad lectora (7.1 y 7.2) y la gestión real de conflictos (10.1) solo se observan parcialmente en un juego. El informe lo indica y propone extensiones de aula.
+- **Criterios sin evidencias automáticas:** la producción oral (3.1) y compartir la experiencia lectora (7.2) no se pueden evaluar sin escucha o lectura docente, por lo que el juego no los trabaja y el informe los marca como «No trabajado en esta sesión». La producción escrita (5.1) solo se observa a través de la ordenación de una noticia, y la creación literaria (8.2) a través del reconocimiento de rimas.
+- La interacción oral (3.2), la identidad lectora (7.1) y la gestión real de conflictos (10.1) solo se observan parcialmente en un juego. El informe lo indica y propone extensiones de aula.
 - La calidad de la voz depende del sistema operativo. En Windows y Android suele haber voces en español; en algunos Linux, no.
 - Los niveles del informe son orientativos y no sustituyen las rúbricas oficiales de evaluación de Canarias.

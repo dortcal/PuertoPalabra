@@ -1,5 +1,5 @@
 /* Puerto Palabra · Contenidos de 1.º de Primaria (primer ciclo).
-   Frases cortas, mucha narración en voz alta y banco de palabras para escribir. Textos originales. */
+   Frases cortas, mucha narración en voz alta y apoyos visuales. Textos originales. */
 window.PP = window.PP || {}; PP.CONTENIDO = PP.CONTENIDO || {};
 PP.CONTENIDO[1] = {
   turistas: {
@@ -111,13 +111,6 @@ PP.CONTENIDO[1] = {
         { t: "Adiós.", ok: 0.5, fb: "Te despides. ¡Puedes dar también las gracias!" } ] }
     ]
   },
-  escritura: {
-    titular: { titulo: "Escribe el título", tipo: "titular", consigna: "Escribe el título de la noticia. Puedes tocar las palabras de abajo.", modelo: "La panadera hace pan de millo", min: 3, maxPalabras: 10, max: 80, incluir: ["pan"], punto: false, evaluarFormato: true, banco: ["La", "panadera", "hace", "pan", "de", "millo", "muy", "temprano", "rico"], boton: "Publicar" },
-    verso: { titulo: "Tu poema", tipo: "verso", consigna: "Escribe una frase que rime con «mar». Puedes usar las palabras de abajo.", modelo: "Me gusta mucho nadar en el mar.", min: 3, max: 120, filas: 2, banco: ["Me", "gusta", "jugar", "nadar", "cantar", "saltar", "en", "el", "mar"], sello: "¡QUÉ POEMA!", boton: "Guardar" },
-    recomendacion: { titulo: "¿Por qué te gusta?", tipo: "recomendacion", consigna: "Escribe por qué te gusta el libro que has elegido.", modelo: "Me gusta porque tiene animales.", min: 4, max: 200, filas: 2, punto: true, banco: ["Me", "gusta", "porque", "tiene", "animales", "dibujos", "es", "muy", "divertido", "bonito", "."], boton: "Compartir" },
-    portada: { titulo: "El título de la portada", tipo: "portada", consigna: "Escribe el gran título de la noticia.", modelo: "Atrapamos al Borrón", min: 2, maxPalabras: 8, max: 80, incluir: ["Borrón"], punto: false, evaluarFormato: true, banco: ["Atrapamos", "al", "Borrón", "La", "foto", "del", "ciudad", "colores", "vuelve"], sello: "¡A IMPRENTA!", boton: "Enviar" }
-  },
-  grabacion: { consigna: "Graba un mensaje cortito para la radio. Tu maestra o maestro podrá escucharlo.", guion: ["Di: «Hola, soy…».", "Cuenta una cosa que te dijo Doña Rosa.", "Di: «¡Adiós!»."], segundos: 20 },
   cartel: {
     formato: "cartel", etiqueta: "INVITACIÓN", titulo: "¡Ven a ver los barcos!",
     lineas: ["Día: el sábado", "Hora: a las once", "Lugar: donde llegan los barcos grandes", "Trae: un dibujo de un barco"],

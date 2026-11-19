@@ -22,7 +22,6 @@ Fecha: 19/11/2026. Entorno: Google Chrome (sin interfaz gráfica) controlado con
 | Tamaño de texto y contraste | Ejecutado ✔ | Texto «muy grande» (22,4 px de base); alto contraste aplicado |
 | Rendimiento | Parcial | ~60 fps medidos en Chrome sin GPU. **No medido en tabletas ni pizarras reales** |
 | Audio y voz | No verificable aquí | El navegador de pruebas no reproduce sonido ni tiene voces en español. El juego detecta esa situación y muestra los textos (comprobado). Hay que escuchar la música, los efectos y la narración en un equipo real |
-| Grabación de voz (3.1) | No verificado | Requiere micrófono y permiso del usuario. El camino «Saltar» sí está probado |
 | Publicación en GitHub Pages | No verificado | Las rutas son relativas y el juego funciona abriendo el archivo directamente (probado con `file://`). No se ha publicado en un repositorio |
 | Validador estático de la skill | Ejecutado | 0 errores. Sus 4 avisos son falsos positivos porque el JS y el CSS están en archivos externos |
 
@@ -68,9 +67,19 @@ No verificado: rendimiento de la animación de la cinta en tabletas o pizarras d
 - El diálogo de «salir al menú» compartía nombre de clase CSS con las conversaciones de las misiones y las deformaba. Corregido (renombrado).
 - Los avisos flotantes podían quedar encima del informe. Ahora se limpian al abrirlo.
 
+## Retirada de actividades no evaluables (19/11/2026)
+
+Se eliminaron del juego la escritura libre (titular de O3, versos de L2, recomendación de L3, portada de F), la grabación de voz (O3), la elección libre de lectura sin respuesta correcta (L3) y el apartado «Producciones guardadas» del informe y del CSV.
+
+Comprobado en Chrome automatizado:
+- Las 18 misiones completadas en los cursos 1.º a 6.º, sin errores de consola.
+- Gran Reto y Repaso por temáticas (bloque III) jugados hasta la pantalla final en 4.º.
+- Informe, CSV de resumen y de registro, JSON y recarga con persistencia.
+- Pruebas de límites (salir de misión, doble clic, modo tranquilo, pausa).
+- Los criterios 3.1 y 7.2 aparecen como «No trabajado en esta sesión» y en el repaso por criterios figuran sin retos.
+
 ## Pendiente de comprobar en el aula
 
 - Sonido, música y narración en los equipos del centro (Windows, iPad, Android, pizarra).
 - Fluidez en tabletas de gama baja.
-- Grabación de voz con el micrófono de la tableta.
 - Prueba con alumnado real: tiempos, comprensión de las consignas en 1.º y dificultad de la conducción.

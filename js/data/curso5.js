@@ -117,13 +117,6 @@ PP.CONTENIDO[5] = {
         { t: "Vale, adiós.", ok: 0.5, fb: "Te despides, pero podrías agradecer su tiempo." } ] }
     ]
   },
-  escritura: {
-    titular: { titulo: "Escribe el titular", tipo: "titular", consigna: "Escribe el titular de la noticia de la entrevista. Debe ser breve, claro y decir qué ha pasado.", modelo: "Una socorrista descubre al Borrón borrando carteles en la playa", min: 5, maxPalabras: 14, max: 120, incluir: ["Borrón"], punto: false, evaluarFormato: true, boton: "Publicar titular" },
-    verso: { titulo: "Tus propios versos", tipo: "verso", consigna: "Escribe dos versos que rimen sobre el mar, el volcán o tu barrio (un pareado).", modelo: "En la orilla de la playa / una ola azul se desmaya.", min: 6, max: 240, filas: 3, sello: "¡QUÉ POEMA!", boton: "Guardar poema" },
-    recomendacion: { titulo: "Tu recomendación", tipo: "recomendacion", consigna: "Escribe una recomendación para el club de lectura: ¿por qué te apetece leer el libro que has elegido y a quién se lo recomendarías?", modelo: "Me apetece leer «La isla que se escondía» porque me encantan los misterios. Se lo recomendaría a quien disfrute con las aventuras en el mar.", min: 14, max: 500, filas: 4, punto: true, boton: "Compartir en el club" },
-    portada: { titulo: "La portada de la edición especial", tipo: "portada", consigna: "Escribe el gran titular de la portada sobre la captura del Borrón.", modelo: "Las fotos de El Eco permiten capturar a la Banda del Borrón", min: 5, maxPalabras: 14, max: 120, incluir: ["Borrón"], punto: false, evaluarFormato: true, sello: "¡A IMPRENTA!", boton: "Enviar a imprenta" }
-  },
-  grabacion: { consigna: "Graba una crónica de radio (máximo 40 segundos) contando lo que te explicó la socorrista. Tu docente podrá escucharla.", guion: ["Saluda y di quién eres.", "Cuenta qué pasó, dónde y cuándo.", "Termina con una frase de despedida."], segundos: 40 },
   cartel: {
     formato: "horario", etiqueta: "AVISO", titulo: "Línea 7 · Noche de las Letras", subtitulo: "Salidas desde la Estación de Guaguas",
     tabla: { cab: ["Salida", "Parada final", "Duración"], filas: [["18:00", "Mercado del Puerto", "10 min"], ["18:30", "Teatro de la Luna", "20 min"], ["19:15", "Mirador del Volcán", "35 min"], ["20:00", "Museo del Mar", "15 min"]] },

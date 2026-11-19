@@ -114,13 +114,6 @@ PP.CONTENIDO[2] = {
         { t: "Adiós.", ok: 0.5, fb: "¡Da también las gracias!" } ] }
     ]
   },
-  escritura: {
-    titular: { titulo: "Escribe el título", tipo: "titular", consigna: "Escribe el título de la noticia de la capitana del ferry.", modelo: "La capitana del ferry lleva a trescientas personas", min: 4, maxPalabras: 12, max: 100, incluir: ["capitana"], punto: false, evaluarFormato: true, banco: ["La", "capitana", "del", "ferry", "viaja", "a", "La Gomera", "lleva", "trescientas", "personas"], boton: "Publicar" },
-    verso: { titulo: "Tu poema", tipo: "verso", consigna: "Escribe dos frases que rimen, como en el ejemplo.", modelo: "Mi barco de papel / navega por el mantel.", min: 5, max: 160, filas: 3, sello: "¡QUÉ POEMA!", boton: "Guardar" },
-    recomendacion: { titulo: "¿Por qué lo has elegido?", tipo: "recomendacion", consigna: "Escribe por qué te apetece leer el libro que has elegido.", modelo: "Me apetece leerlo porque me gustan los piratas.", min: 6, max: 260, filas: 3, punto: true, banco: ["Me", "apetece", "leerlo", "porque", "me", "gustan", "los", "cuentos", "es", "divertido", "."], boton: "Compartir" },
-    portada: { titulo: "El título de la portada", tipo: "portada", consigna: "Escribe el gran título de la noticia sobre el Borrón.", modelo: "Una reportera atrapa al Borrón", min: 3, maxPalabras: 10, max: 90, incluir: ["Borrón"], punto: false, evaluarFormato: true, sello: "¡A IMPRENTA!", boton: "Enviar" }
-  },
-  grabacion: { consigna: "Graba un mensaje para la radio contando lo que te dijo la capitana. Tu docente podrá escucharlo.", guion: ["Saluda y di quién eres.", "Cuenta una cosa que te dijo la capitana.", "Despídete."], segundos: 25 },
   cartel: {
     formato: "nota", etiqueta: "JUEGO", titulo: "Búsqueda del tesoro",
     lineas: ["Pista 1: ve al sitio donde se guardan muchos libros.", "Allí te darán la pista 2.", "Hora: a las cinco y media.", "Equipo: tú y un amigo o amiga."],

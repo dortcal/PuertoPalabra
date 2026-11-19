@@ -27,13 +27,13 @@ window.PP = window.PP || {};
   };
   // Criterios que necesitan observación en el aula para valorarse de forma completa
   const EXTENSION = {
-    "3.1": "La producción oral solo se puede valorar escuchando al alumno o alumna. El juego permite grabar una crónica opcional para que el docente la escuche.",
+    "3.1": "El juego no puede evaluar automáticamente la producción oral. Este criterio debe valorarse en el aula (exposiciones, crónicas, entrevistas) con una rúbrica.",
     "3.2": "El juego simula la interacción eligiendo intervenciones; la interacción oral real debe observarse en el aula.",
     "7.1": "La identidad lectora se construye con lecturas completas a lo largo del tiempo; el juego solo observa estrategias de selección.",
-    "7.2": "El juego recoge una recomendación escrita; compartir lecturas en comunidad requiere actividades presenciales.",
+    "7.2": "El juego no puede evaluar automáticamente el compartir la experiencia lectora. Requiere actividades presenciales (club de lectura, reseñas, recomendaciones orales o escritas).",
     "10.1": "El juego observa la elección de respuestas respetuosas; la gestión real de conflictos debe observarse en situaciones de aula.",
-    "8.2": "Los textos creados se guardan para que el docente los valore; el juego no puntúa la calidad literaria.",
-    "5.1": "Los textos escritos se guardan para la valoración docente; el juego solo comprueba aspectos formales básicos."
+    "8.2": "El juego solo comprueba el reconocimiento de rimas y recursos; la creación literaria propia (versos, poemas) debe trabajarse y valorarse en el aula.",
+    "5.1": "El juego solo observa la estructura de la noticia (ordenar sus partes); la redacción de textos propios no se evalúa automáticamente y debe valorarse en el aula."
   };
   E.REC = REC; E.EXTENSION = EXTENSION;
 
@@ -41,7 +41,7 @@ window.PP = window.PP || {};
     E.sesion = {
       id: "S" + Date.now().toString(36).toUpperCase(),
       inicio: Date.now(), codigo: perfil.codigo || "anónimo", alias: perfil.alias || "", curso: perfil.curso, ciclo: Math.ceil(perfil.curso / 2),
-      eventos: [], producciones: [], audios: [], misiones: {}, puntos: 0, fotos: 0, doradas: 0
+      eventos: [], misiones: {}, puntos: 0, fotos: 0, doradas: 0
     };
     return E.sesion;
   };
@@ -59,8 +59,6 @@ window.PP = window.PP || {};
   };
   /** Anota los modos de juego usados en la sesión (Aventura, Gran Reto, Repaso…) para el informe */
   E.marcarModo = function (nombre) { if (!E.sesion) return; E.sesion.modos = E.sesion.modos || []; if (!E.sesion.modos.includes(nombre)) E.sesion.modos.push(nombre); };
-  E.produccion = function (p) { if (E.sesion) E.sesion.producciones.push(Object.assign({ t: Date.now() }, p)); };
-  E.audio = function (a) { if (E.sesion) E.sesion.audios.push(Object.assign({ t: Date.now() }, a)); };
   E.misionCompletada = function (id, datos) { if (E.sesion) E.sesion.misiones[id] = Object.assign({ t: Date.now() }, datos); };
 
   E.valorMision = function (id) {
@@ -71,13 +69,11 @@ window.PP = window.PP || {};
   };
 
   E.resumenCriterio = function (code) {
-    const s = E.sesion || { eventos: [], producciones: [], audios: [] };
+    const s = E.sesion || { eventos: [] };
     const ev = s.eventos.filter((e) => e.crit === code);
     const prim = ev.filter((e) => e.intento === 1);
-    const prod = s.producciones.filter((p) => p.crit === code);
-    const aud = s.audios.filter((a) => a.crit === code);
     const mecanicas = Array.from(new Set(prim.map((e) => e.mecanica)));
-    const misiones = Array.from(new Set(ev.map((e) => e.mision).concat(prod.map((p) => p.mision)).concat(aud.map((a) => a.mision))));
+    const misiones = Array.from(new Set(ev.map((e) => e.mision)));
     const n = prim.length;
     const pct = n ? prim.reduce((a, e) => a + e.ok * (e.ayuda ? 0.75 : 1), 0) / n : null;
     const ayudas = prim.filter((e) => e.ayuda).length;
@@ -89,13 +85,12 @@ window.PP = window.PP || {};
     let nivel = null;
     if (n >= 3) nivel = pct < 0.5 ? "En inicio" : pct < 0.7 ? "En desarrollo" : pct < 0.9 ? "Logrado en el juego" : "Destacado en el juego";
     let estado;
-    if (!n && !prod.length && !aud.length) estado = misiones.length ? "Trabajado sin evidencias" : "No trabajado en esta sesión";
-    else if (!n) estado = "Producción registrada: requiere valoración docente";
+    if (!n) estado = misiones.length ? "Trabajado sin evidencias" : "No trabajado en esta sesión";
     else if (n < 4) estado = "Evidencia limitada";
     else if (n >= 8 && mecanicas.length >= 2) estado = "Evidencia consistente en el juego";
     else estado = "Evidencia parcial";
     const rec = REC[code] ? (pct !== null && pct >= 0.7 ? REC[code].alto : REC[code].bajo) : "";
-    return { code, n, pct, nivel, estado, mecanicas, misiones, ayudas, reintentosOk, errores, subtipos, producciones: prod, audios: aud, rec, extension: EXTENSION[code] || "" };
+    return { code, n, pct, nivel, estado, mecanicas, misiones, ayudas, reintentosOk, errores, subtipos, rec, extension: EXTENSION[code] || "" };
   };
 
   E.informe = function () {
@@ -108,7 +103,7 @@ window.PP = window.PP || {};
       sesion: s.id, inicio: s.inicio, fin: Date.now(), duracionMs: Date.now() - s.inicio,
       puntos: s.puntos, misiones: s.misiones, nMisiones: Object.keys(s.misiones).length,
       intentos: s.eventos.length, itemsPrimerIntento: prim.length, pctAciertos: prim.length ? aciertos / prim.length : null,
-      ayudas: prim.filter((e) => e.ayuda).length, criterios: crits, producciones: s.producciones, audios: s.audios.map((a) => ({ mision: a.mision, crit: a.crit, duracion: a.duracion })),
+      ayudas: prim.filter((e) => e.ayuda).length, criterios: crits,
       fuente: PP.CURRICULO.fuente
     };
   };
@@ -125,7 +120,6 @@ window.PP = window.PP || {};
     const s = E.sesion; if (!s) return "";
     const filas = [["sesion", "codigo", "curso", "hora", "mision", "mecanica", "criterio", "item", "respuesta", "correcta", "resultado", "intento", "ayuda", "tipo_de_reto"]];
     s.eventos.forEach((e) => filas.push([s.id, s.codigo, s.curso + "º", new Date(e.t).toLocaleTimeString("es-ES"), e.mision, e.mecanica, e.crit, e.item, e.respuesta, e.correcta, e.ok, e.intento, e.ayuda ? "sí" : "no", e.subtipo || ""]));
-    s.producciones.forEach((p) => filas.push([s.id, s.codigo, s.curso + "º", new Date(p.t).toLocaleTimeString("es-ES"), p.mision, "produccion-" + p.tipo, p.crit, p.consigna || "", p.texto, "", "valoración docente", 1, "no", "producción"]));
     return "﻿" + filas.map((f) => f.map(csvCelda).join(";")).join("\n");
   };
   E.json = function () { return JSON.stringify(E.informe(), null, 2); };

@@ -60,7 +60,7 @@ window.PP = window.PP || {};
       C.orden.filter((c) => C.bloqueEnJuego[c] === b).forEach((c) => {
         const n = retosDisponibles().filter((m) => m.criterios.includes(c)).length;
         lista.appendChild(el("button", { class: "btn btn-sec criterio-btn", type: "button", disabled: !n, onclick: () => Modos.empezarTema({ criterio: c }), html:
-          "<b>" + c + "</b><span>" + U.esc(C.etiquetas[c]) + "</span><small>" + n + (n === 1 ? " reto" : " retos") + "</small>" }));
+          "<b>" + c + "</b><span>" + U.esc(C.etiquetas[c]) + "</span><small>" + (n ? n + (n === 1 ? " reto" : " retos") : "No se evalúa en el juego") + "</small>" }));
       });
       detalle.appendChild(lista);
     }

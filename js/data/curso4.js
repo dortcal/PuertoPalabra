@@ -115,13 +115,6 @@ PP.CONTENIDO[4] = {
         { t: "(Te vas sin despedirte.)", ok: false, fb: "Siempre hay que despedirse." } ] }
     ]
   },
-  escritura: {
-    titular: { titulo: "Escribe el titular", tipo: "titular", consigna: "Escribe el titular de la entrevista: breve, claro y que llame la atención.", modelo: "Los científicos vigilan el volcán a todas horas", min: 5, maxPalabras: 14, max: 120, incluir: ["volcán"], punto: false, evaluarFormato: true, boton: "Publicar titular" },
-    verso: { titulo: "Tus propios versos", tipo: "verso", consigna: "Escribe una estrofa de dos o cuatro versos sobre el volcán o el mar, con rima.", modelo: "Duerme el volcán gigante / bajo su manta de nieve, / y sueña que el mar lo mueve / con su canto susurrante.", min: 8, max: 300, filas: 4, sello: "¡QUÉ POEMA!", boton: "Guardar poema" },
-    recomendacion: { titulo: "Tu recomendación", tipo: "recomendacion", consigna: "Escribe una recomendación del libro que has elegido: por qué te apetece leerlo y a quién se lo recomendarías.", modelo: "Me apetece leer este libro porque…", min: 12, max: 450, filas: 4, punto: true, boton: "Compartir" },
-    portada: { titulo: "La portada", tipo: "portada", consigna: "Escribe el gran titular de la portada sobre la captura del Borrón.", modelo: "Las fotos de una reportera llevan a la captura del Borrón", min: 5, maxPalabras: 14, max: 120, incluir: ["Borrón"], punto: false, evaluarFormato: true, sello: "¡A IMPRENTA!", boton: "Enviar a imprenta" }
-  },
-  grabacion: { consigna: "Graba una crónica de radio de 30 segundos sobre lo que te explicó la volcanóloga.", guion: ["Saluda y presenta la noticia.", "Explica cómo se vigila el volcán.", "Despídete de los oyentes."], segundos: 35 },
   cartel: {
     formato: "cartel", etiqueta: "RECETA", titulo: "Mojo verde de la abuela Pino",
     lineas: ["Ingredientes: cilantro, 3 dientes de ajo, comino, sal, aceite de oliva, un chorrito de vinagre y medio pimiento verde.", "1. Pela los ajos.", "2. Machácalos en el mortero con la sal y el comino.", "3. Añade el cilantro y el pimiento picados y sigue machacando.", "4. Echa el aceite poco a poco y un chorrito de vinagre.", "5. Mezcla bien y sírvelo con papas arrugadas."],

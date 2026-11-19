@@ -42,8 +42,8 @@ window.PP = window.PP || {};
     tabla.innerHTML = "<caption>Criterios de evaluación de Lengua Castellana y Literatura (Decreto 211/2022, " + inf.ciclo + ".º ciclo)</caption><thead><tr><th scope='col'>Criterio</th><th scope='col'>Bloque</th><th scope='col'>Evidencias</th><th scope='col'>Acierto</th><th scope='col'>Nivel observado</th><th scope='col'>Estado de la evidencia</th></tr></thead>";
     const tb = el("tbody"); tabla.appendChild(tb);
     inf.criterios.forEach((c) => {
-      const tr = el("tr", { class: c.n || c.producciones.length || c.audios.length ? "" : "vacio" });
-      tr.innerHTML = "<th scope='row'><b>" + c.code + "</b> " + U.esc(PP.CURRICULO.etiquetas[c.code]) + "</th><td>" + PP.CURRICULO.bloqueEnJuego[c.code] + "</td><td>" + c.n + (c.producciones.length ? " + " + c.producciones.length + " prod." : "") + (c.audios.length ? " + audio" : "") + "</td><td>" + (c.pct === null ? "—" : Math.round(c.pct * 100) + " %") + "</td><td>" + nivelHTML(c) + "</td><td>" + U.esc(c.estado) + "</td>";
+      const tr = el("tr", { class: c.n ? "" : "vacio" });
+      tr.innerHTML = "<th scope='row'><b>" + c.code + "</b> " + U.esc(PP.CURRICULO.etiquetas[c.code]) + "</th><td>" + PP.CURRICULO.bloqueEnJuego[c.code] + "</td><td>" + c.n + "</td><td>" + (c.pct === null ? "—" : Math.round(c.pct * 100) + " %") + "</td><td>" + nivelHTML(c) + "</td><td>" + U.esc(c.estado) + "</td>";
       tb.appendChild(tr);
       const det = el("tr", { class: "detalle" }); const td = el("td", { colspan: 6 });
       const partes = [];
@@ -53,7 +53,7 @@ window.PP = window.PP || {};
       if (st.length > 1 || (st.length === 1 && c.subtipos[st[0]].n >= 2)) partes.push("<p><b>Por tipo de reto:</b></p><ul class='inf-sub'>" + st.map((k) => { const x = c.subtipos[k], pc = Math.round(x.ok / x.n * 100); return "<li><span>" + U.esc(k) + "</span><span class='barra-mini' aria-hidden='true'><i style='width:" + pc + "%'></i></span><b>" + pc + " %</b> <small>(" + x.n + (x.n === 1 ? " reto" : " retos") + ")</small></li>"; }).join("") + "</ul>");
       if (c.errores.length) partes.push("<p><b>Errores detectados:</b></p><ul>" + c.errores.slice(0, 6).map((e) => "<li>" + U.esc(e) + "</li>").join("") + (c.errores.length > 6 ? "<li>… y " + (c.errores.length - 6) + " más (ver registro CSV)</li>" : "") + "</ul>");
       if (c.reintentosOk) partes.push("<p><b>Aprendizaje durante el juego:</b> corrigió " + c.reintentosOk + " respuesta(s) tras la retroalimentación.</p>");
-      if (c.n || c.producciones.length) partes.push("<p><b>Recomendación:</b> " + U.esc(c.rec) + "</p>");
+      if (c.n) partes.push("<p><b>Recomendación:</b> " + U.esc(c.rec) + "</p>");
       if (c.extension) partes.push("<p class='ext'><b>Limitación del juego:</b> " + U.esc(c.extension) + "</p>");
       td.innerHTML = partes.join(""); det.appendChild(td); tb.appendChild(det);
     });
@@ -66,17 +66,6 @@ window.PP = window.PP || {};
       el("div", {}, [el("h3", { text: "Recomendaciones de mejora" }), mejorar.length ? el("ul", {}, mejorar.map((c) => el("li", { html: "<b>" + c.code + "</b> " + U.esc(c.rec) }))) : el("p", { text: "No se detectan dificultades destacables en los criterios con evidencias. Conviene ampliar la observación al resto de criterios." })])
     ]);
 
-    // Producciones
-    const prod = el("section", { class: "inf-prod" }, [el("h3", { text: "Producciones guardadas (para valoración docente)" })]);
-    if (!inf.producciones.length && !PP.Eval.sesion.audios.length) prod.appendChild(el("p", { text: "No hay producciones en esta sesión." }));
-    inf.producciones.forEach((p) => {
-      const mis = PP.MISIONES.find((m) => m.id === p.mision);
-      prod.appendChild(el("div", { class: "prod" }, [el("p", { class: "prod-cab", html: "<b>" + U.esc(mis ? mis.titulo : p.mision) + "</b> · criterio " + p.crit + " · " + U.esc(p.tipo) }), el("p", { class: "prod-consigna", text: p.consigna || "" }), el("blockquote", { text: p.texto || "(vacío)" }),
-        p.comprobaciones ? el("p", { class: "prod-checks", html: p.comprobaciones.map((c) => (c.ok ? "✔ " : "✘ ") + U.esc(c.txt)).join(" · ") }) : null]));
-    });
-    PP.Eval.sesion.audios.forEach((a) => { if (!a.url) return; prod.appendChild(el("div", { class: "prod" }, [el("p", { class: "prod-cab", html: "<b>Crónica oral</b> · criterio " + a.crit + " · " + a.duracion + " s" }), el("audio", { controls: true, src: a.url })])); });
-    if (PP.Eval.sesion.audios.length) prod.appendChild(el("p", { class: "nota", text: "Las grabaciones solo se conservan mientras esta pestaña esté abierta; no se envían a ningún servidor." }));
-
     const btns = el("div", { class: "inf-btns no-imprimir" }, [
       el("button", { class: "btn btn-primario", type: "button", html: U.icon("print") + " Imprimir / PDF", onclick: () => window.print() }),
       el("button", { class: "btn btn-sec", type: "button", html: U.icon("download") + " Resumen CSV", onclick: () => PP.Eval.descargar("puerto-palabra_" + inf.codigo + "_" + inf.sesion + "_resumen.csv", PP.Eval.csvResumen(), "text/csv;charset=utf-8") }),
@@ -86,7 +75,7 @@ window.PP = window.PP || {};
       el("button", { class: "btn btn-terc", type: "button", html: U.icon("back") + " Volver al juego", onclick: () => { if (PP.juego.curso && PP.juego.tipoModo === "aventura") PP.juego.volverAlMundo(); else if (PP.juego.curso) PP.Modos.abrir(); else PP.UI.mostrar("pantalla-inicio"); } })
     ]);
     const pie = el("p", { class: "inf-fuente", text: "Referente curricular: " + inf.fuente + " Los textos de los criterios se reproducen literalmente; las descripciones cortas son paráfrasis del juego." });
-    cont.append(btns, cab, kpis, aviso, resumen, tabla, prod, pie);
+    cont.append(btns, cab, kpis, aviso, resumen, tabla, pie);
     cont.scrollTop = 0;
   };
 

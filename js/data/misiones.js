@@ -38,9 +38,9 @@ PP.MISIONES = [
     pasos: [ { tipo: "chismografo", ref: "chismografo", crit: "6.1" } ] },
 
   { id: "O3", barrio: "onda", lugar: "plaza", titulo: "Exclusiva en directo",
-    resumen: "Tienes una entrevista en la Plaza Mayor. Pregunta bien, escucha y escribe el titular.",
-    criterios: ["3.2", "5.1", "3.1"],
-    pasos: [ { tipo: "dialogo", ref: "entrevista", crit: "3.2" }, { tipo: "escritura", ref: "escritura.titular", crit: "5.1" }, { tipo: "grabacion", ref: "grabacion", crit: "3.1" } ] },
+    resumen: "Tienes una entrevista en la Plaza Mayor. Elige bien tus preguntas y escucha con atención: de eso depende la exclusiva.",
+    criterios: ["3.2"],
+    pasos: [ { tipo: "dialogo", ref: "entrevista", crit: "3.2" } ] },
 
   { id: "O4", barrio: "onda", lugar: "ayuntamiento", titulo: "El cartel misterioso",
     resumen: "Han colgado un aviso en el Ayuntamiento. Léelo con atención: esconde un destino.",
@@ -53,14 +53,14 @@ PP.MISIONES = [
     pasos: [ { tipo: "paginas", ref: "historia" }, { tipo: "ordenar", ref: "historia", crit: "8.1" }, { tipo: "lectura", ref: "historia" }, { tipo: "preguntas", ref: "historia", crit: "8.1" } ] },
 
   { id: "L2", barrio: "literario", lugar: "casaPoeta", titulo: "Poeta sin rima",
-    resumen: "A la poeta del barrio le han borrado las rimas. Ayúdala y escribe tus propios versos.",
+    resumen: "A la poeta del barrio le han borrado las rimas. Ayúdala a recuperarlas todas.",
     criterios: ["8.2"],
-    pasos: [ { tipo: "rimas", ref: "rimas", crit: "8.2" }, { tipo: "escritura", ref: "escritura.verso", crit: "8.2" } ] },
+    pasos: [ { tipo: "rimas", ref: "rimas", crit: "8.2" } ] },
 
   { id: "L3", barrio: "literario", lugar: "parque", titulo: "Club de lectura",
     resumen: "El club de lectura del Parque de los Dragos necesita a alguien que recomiende libros.",
-    criterios: ["7.1", "7.2"],
-    pasos: [ { tipo: "biblioteca", ref: "biblioteca", crit: "7.1" }, { tipo: "escritura", ref: "escritura.recomendacion", crit: "7.2" } ] },
+    criterios: ["7.1"],
+    pasos: [ { tipo: "biblioteca", ref: "biblioteca", crit: "7.1" } ] },
 
   { id: "T1", barrio: "taller", lugar: "taller", titulo: "Taller de tuneo",
     resumen: "En este taller no se tunean coches: se tunean palabras. Monta piezas y crea palabras nuevas.",
@@ -83,9 +83,9 @@ PP.MISIONES = [
     pasos: [ { tipo: "autopista", ref: "autopista", crit: "9.1" } ] },
 
   { id: "F", barrio: "onda", lugar: "periodico", titulo: "Edición especial", final: true, requiere: 10,
-    resumen: "Ha llegado el momento: persigue al Borrón, fotografíalo y publica la gran noticia.",
+    resumen: "Ha llegado el momento: persigue al Borrón, fotografíalo y ordena la gran noticia para la portada.",
     criterios: ["5.1"],
-    pasos: [ { tipo: "persecucion" }, { tipo: "ordenar", ref: "noticia", crit: "5.1" }, { tipo: "escritura", ref: "escritura.portada", crit: "5.1" } ] },
+    pasos: [ { tipo: "persecucion" }, { tipo: "ordenar", ref: "noticia", crit: "5.1" } ] },
 
   // ---- Ampliación (añadidas al final para no alterar los códigos de partida guardados) ----
   { id: "T5", barrio: "taller", lugar: "academia", titulo: "Sílabas y tildes",

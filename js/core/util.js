@@ -76,7 +76,6 @@ window.PP = window.PP || {};
     radio: '<rect x="3" y="8" width="18" height="12" rx="2"/><circle cx="8.5" cy="14" r="3" fill="#0006"/><rect x="13.5" y="11" width="5" height="1.6" fill="#0006"/><rect x="13.5" y="14" width="5" height="1.6" fill="#0006"/><path d="M7 8l10-5" stroke="currentColor" stroke-width="1.6"/>',
     trophy: '<path d="M7 3h10v4a5 5 0 0 1-10 0zM5 4H2.5a3.5 3.5 0 0 0 4.5 5M19 4h2.5a3.5 3.5 0 0 1-4.5 5"/><rect x="10.5" y="12" width="3" height="5"/><rect x="7" y="17" width="10" height="3" rx="1"/>',
     doc: '<path d="M6 2h8l5 5v15H6z"/><path d="M9 11h7M9 14h7M9 17h5" stroke="#0006" stroke-width="1.6"/>',
-    mic: '<rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V22" stroke="currentColor" stroke-width="2" fill="none"/>',
     help: '<circle cx="12" cy="12" r="10"/><path d="M9.2 9.2a2.9 2.9 0 1 1 3.9 2.7c-.7.3-1.1.9-1.1 1.6v.8" stroke="#0008" stroke-width="2.2" fill="none" stroke-linecap="round"/><circle cx="12" cy="17.6" r="1.3" fill="#0008"/>',
     back: '<path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>',
     up: '<path d="M6 15l6-6 6 6" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>',

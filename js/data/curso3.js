@@ -115,13 +115,6 @@ PP.CONTENIDO[3] = {
         { t: "Chao.", ok: 0.5, fb: "Es una despedida muy informal para una entrevista." } ] }
     ]
   },
-  escritura: {
-    titular: { titulo: "Escribe el titular", tipo: "titular", consigna: "Escribe el titular de la entrevista a la farera: breve y que diga lo más importante.", modelo: "La farera de la Punta cuida la luz que guía a los barcos", min: 5, maxPalabras: 14, max: 120, incluir: ["farera"], punto: false, evaluarFormato: true, boton: "Publicar titular" },
-    verso: { titulo: "Tus propios versos", tipo: "verso", consigna: "Escribe dos versos que rimen sobre el faro, el mar o tu isla.", modelo: "Brilla el faro en la noche oscura / y guía al barco con ternura.", min: 6, max: 200, filas: 3, sello: "¡QUÉ POEMA!", boton: "Guardar poema" },
-    recomendacion: { titulo: "Tu recomendación", tipo: "recomendacion", consigna: "Escribe por qué te apetece leer el libro que has elegido y a quién se lo recomendarías.", modelo: "Me apetece leer este libro porque me gustan los misterios. Se lo recomendaría a mi hermano.", min: 10, max: 400, filas: 3, punto: true, boton: "Compartir" },
-    portada: { titulo: "La portada", tipo: "portada", consigna: "Escribe el gran titular de la portada sobre la captura del Borrón.", modelo: "Una reportera de El Eco descubre a la Banda del Borrón", min: 4, maxPalabras: 14, max: 120, incluir: ["Borrón"], punto: false, evaluarFormato: true, sello: "¡A IMPRENTA!", boton: "Enviar a imprenta" }
-  },
-  grabacion: { consigna: "Graba una crónica de radio de 30 segundos contando lo que te explicó la farera.", guion: ["Saluda y di quién eres.", "Cuenta qué hace la farera y para qué sirve el faro.", "Despídete."], segundos: 30 },
   cartel: {
     formato: "horario", etiqueta: "FIESTAS", titulo: "Fiestas del barrio · Sábado", subtitulo: "Programa de actividades",
     tabla: { cab: ["Hora", "Actividad", "Lugar"], filas: [["10:00", "Carrera de sacos", "Plaza Mayor"], ["12:00", "Taller de timple", "Casa de la Poeta"], ["17:00", "Concurso de cometas", "Mirador del Volcán"], ["21:00", "Verbena", "Paseo Marítimo"]] },
