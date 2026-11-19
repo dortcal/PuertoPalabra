@@ -107,7 +107,9 @@ window.PP = window.PP || {};
     circuito:     [5, 2, "abajo", "Entrada a la Autopista", "taller", "circuito"],
     mercado:      [2, 3, "abajo", "Mercado del Puerto", "puerto", "mercado"],
     estacion:     [4, 3, "abajo", "Estación de Guaguas", "puerto", "estacion"],
-    museo:        [1, 3, "abajo", "Museo del Mar", "puerto", "museo"]
+    museo:        [1, 3, "abajo", "Museo del Mar", "puerto", "museo"],
+    academia:     [4, 0, "abajo", "Academia de las Tildes", "taller", "academia"],
+    almacen:      [5, 1, "abajo", "Almacén de Palabras", "taller", "almacen"]
   };
 
   function manzana(i, j, x0, y0, x1, y1) {
@@ -336,6 +338,15 @@ window.PP = window.PP || {};
         g.fillStyle = "#6f8f6d"; g.beginPath(); g.arc(cx, cy - 6, Math.min(w, h) / 4, 0, 7); g.fill(); g.fillStyle = "rgba(255,255,255,0.3)"; g.beginPath(); g.arc(cx - 8, cy - 14, Math.min(w, h) / 10, 0, 7); g.fill();
         texto(g, "BIBLIOTECA", cx, y + h - 24, 20, "#5a2f6b"); break;
       case "teatro": g.fillStyle = "#7a1f3d"; g.fillRect(x + 10, y + 10, w - 20, h - 20); texto(g, "TEATRO DE LA LUNA", cx, cy, 18, "#ffe08a"); g.fillStyle = "#ffe08a"; g.beginPath(); g.arc(cx, cy - 34, 12, 0.6, 5.6); g.fill(); break;
+      case "academia":
+        g.fillStyle = "#f3ead7"; g.fillRect(x + 10, y + 10, w - 20, h - 20);
+        g.fillStyle = "#c1440e"; g.font = "900 64px Georgia, serif"; g.textAlign = "center"; g.textBaseline = "middle"; g.fillText("´", cx, cy - 18);
+        texto(g, "ACADEMIA", cx, cy + 16, 20, "#5b2a0e"); texto(g, "DE LAS TILDES", cx, cy + 38, 13, "#5b2a0e"); break;
+      case "almacen":
+        g.fillStyle = "#3b3f46"; g.fillRect(x + 10, y + 10, w - 20, h - 20);
+        g.fillStyle = "#555b66"; g.fillRect(x + 18, cy - 10, w - 36, 20);
+        ["#3a86ff", "#06d6a0", "#ff4f7b", "#ffbe0b"].forEach((col, k) => { g.fillStyle = col; g.fillRect(x + 24 + k * ((w - 60) / 4), cy - 22, (w - 60) / 4 - 8, 12); });
+        texto(g, "ALMACÉN DE PALABRAS", cx, cy + 32, 14, "#ffd23f"); break;
       case "casaPoeta": texto(g, "CASA DE LA POETA", cx, cy, 15, "#5b3a7a"); break;
       case "colegio": texto(g, "COLEGIO", cx, cy, 22, "#2f6b4f"); break;
       case "imprenta": texto(g, "IMPRENTA", cx, cy - 8, 24, "#fff"); texto(g, "TINTA FRESCA", cx, cy + 18, 14, "#ffd166"); break;

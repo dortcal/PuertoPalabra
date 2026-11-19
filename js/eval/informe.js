@@ -12,6 +12,7 @@ window.PP = window.PP || {};
 
   PP.UI.informe = function () {
     const J = PP.juego; if (J) J.pausar(true);
+    const tt = $("#toasts"); if (tt) tt.innerHTML = "";
     const inf = PP.Eval.informe();
     const cont = $("#informe-cuerpo"); cont.innerHTML = "";
     PP.UI.mostrar("pantalla-informe");
@@ -48,6 +49,8 @@ window.PP = window.PP || {};
       const partes = [];
       partes.push("<details><summary>Texto oficial del criterio " + c.code + "</summary><p class='literal'>" + U.esc(PP.CURRICULO.criterios[inf.ciclo][c.code]) + "</p></details>");
       if (c.misiones.length) partes.push("<p><b>Trabajado en:</b> " + c.misiones.map((id) => { const m = PP.MISIONES.find((x) => x.id === id); return m ? U.esc(m.titulo) : id; }).join(", ") + (c.mecanicas.length ? " · <b>Mecánicas:</b> " + c.mecanicas.join(", ") : "") + "</p>");
+      const st = Object.keys(c.subtipos || {});
+      if (st.length > 1 || (st.length === 1 && c.subtipos[st[0]].n >= 2)) partes.push("<p><b>Por tipo de reto:</b></p><ul class='inf-sub'>" + st.map((k) => { const x = c.subtipos[k], pc = Math.round(x.ok / x.n * 100); return "<li><span>" + U.esc(k) + "</span><span class='barra-mini' aria-hidden='true'><i style='width:" + pc + "%'></i></span><b>" + pc + " %</b> <small>(" + x.n + (x.n === 1 ? " reto" : " retos") + ")</small></li>"; }).join("") + "</ul>");
       if (c.errores.length) partes.push("<p><b>Errores detectados:</b></p><ul>" + c.errores.slice(0, 6).map((e) => "<li>" + U.esc(e) + "</li>").join("") + (c.errores.length > 6 ? "<li>… y " + (c.errores.length - 6) + " más (ver registro CSV)</li>" : "") + "</ul>");
       if (c.reintentosOk) partes.push("<p><b>Aprendizaje durante el juego:</b> corrigió " + c.reintentosOk + " respuesta(s) tras la retroalimentación.</p>");
       if (c.n || c.producciones.length) partes.push("<p><b>Recomendación:</b> " + U.esc(c.rec) + "</p>");

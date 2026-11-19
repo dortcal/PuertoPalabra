@@ -83,6 +83,9 @@ window.PP = window.PP || {};
     const ayudas = prim.filter((e) => e.ayuda).length;
     const reintentosOk = ev.filter((e) => e.intento > 1 && e.ok === 1).length;
     const errores = prim.filter((e) => e.ok < 1 && e.detalle).map((e) => e.detalle);
+    // Desglose por tipo de reto (p. ej. literal / inferencial / crítica; sílaba tónica / clasificación / tilde)
+    const subtipos = {};
+    prim.forEach((e) => { if (!e.subtipo) return; const k = e.subtipo; subtipos[k] = subtipos[k] || { n: 0, ok: 0 }; subtipos[k].n++; subtipos[k].ok += e.ok * (e.ayuda ? 0.75 : 1); });
     let nivel = null;
     if (n >= 3) nivel = pct < 0.5 ? "En inicio" : pct < 0.7 ? "En desarrollo" : pct < 0.9 ? "Logrado en el juego" : "Destacado en el juego";
     let estado;
@@ -92,7 +95,7 @@ window.PP = window.PP || {};
     else if (n >= 8 && mecanicas.length >= 2) estado = "Evidencia consistente en el juego";
     else estado = "Evidencia parcial";
     const rec = REC[code] ? (pct !== null && pct >= 0.7 ? REC[code].alto : REC[code].bajo) : "";
-    return { code, n, pct, nivel, estado, mecanicas, misiones, ayudas, reintentosOk, errores, producciones: prod, audios: aud, rec, extension: EXTENSION[code] || "" };
+    return { code, n, pct, nivel, estado, mecanicas, misiones, ayudas, reintentosOk, errores, subtipos, producciones: prod, audios: aud, rec, extension: EXTENSION[code] || "" };
   };
 
   E.informe = function () {
@@ -120,9 +123,9 @@ window.PP = window.PP || {};
   };
   E.csvRegistro = function () {
     const s = E.sesion; if (!s) return "";
-    const filas = [["sesion", "codigo", "curso", "hora", "mision", "mecanica", "criterio", "item", "respuesta", "correcta", "resultado", "intento", "ayuda"]];
-    s.eventos.forEach((e) => filas.push([s.id, s.codigo, s.curso + "º", new Date(e.t).toLocaleTimeString("es-ES"), e.mision, e.mecanica, e.crit, e.item, e.respuesta, e.correcta, e.ok, e.intento, e.ayuda ? "sí" : "no"]));
-    s.producciones.forEach((p) => filas.push([s.id, s.codigo, s.curso + "º", new Date(p.t).toLocaleTimeString("es-ES"), p.mision, "produccion-" + p.tipo, p.crit, p.consigna || "", p.texto, "", "valoración docente", 1, "no"]));
+    const filas = [["sesion", "codigo", "curso", "hora", "mision", "mecanica", "criterio", "item", "respuesta", "correcta", "resultado", "intento", "ayuda", "tipo_de_reto"]];
+    s.eventos.forEach((e) => filas.push([s.id, s.codigo, s.curso + "º", new Date(e.t).toLocaleTimeString("es-ES"), e.mision, e.mecanica, e.crit, e.item, e.respuesta, e.correcta, e.ok, e.intento, e.ayuda ? "sí" : "no", e.subtipo || ""]));
+    s.producciones.forEach((p) => filas.push([s.id, s.codigo, s.curso + "º", new Date(p.t).toLocaleTimeString("es-ES"), p.mision, "produccion-" + p.tipo, p.crit, p.consigna || "", p.texto, "", "valoración docente", 1, "no", "producción"]));
     return "﻿" + filas.map((f) => f.map(csvCelda).join(";")).join("\n");
   };
   E.json = function () { return JSON.stringify(E.informe(), null, 2); };

@@ -20,6 +20,12 @@ Puerto Palabra es un videojuego de ciudad abierta en vista cenital. El alumnado 
 
 Los tres generan el mismo informe y este indica el modo usado. En los modos de reto no se trabaja la conducción, pero sí las mismas pruebas de lengua. Para retomar una partida en otro dispositivo se usa el **código de partida** (botón de la casa → copiar código); recupera el progreso, no las evidencias del informe.
 
+### Nuevas misiones (ampliación)
+
+- **Sílabas y tildes** (9.1): útil antes y después de trabajar la acentuación. El informe separa los fallos en sílaba tónica, clasificación y regla, así que permite ver si el problema es *oír* la sílaba fuerte o *aplicar* la regla.
+- **La cinta clasificadora** (9.1): las palabras de «doble cara» muestran si el alumnado clasifica por la función en la frase o por memoria. Con «sin límite de tiempo» la caja espera.
+- **El guion secreto** (4.1 y 4.2): el informe da el porcentaje de preguntas literales, inferenciales y críticas. Usar la pista (resaltar el párrafo) cuenta como ayuda.
+
 ## 2. Qué cambia de un curso a otro
 
 Todos los cursos comparten las mismas misiones, igual que el decreto mantiene los mismos criterios en los tres ciclos. Cambian:

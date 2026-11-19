@@ -650,5 +650,6 @@ window.PP = window.PP || {};
     });
   };
 
+  S.marco = marco; S.ciclo = ciclo;
   PP.Escenas = S;
 })();

@@ -38,6 +38,18 @@ Ejecutado en Chrome (Playwright, modo sin pantalla):
 
 No verificado: que el audio de las emisoras suene bien en altavoces reales (solo se comprobó que las pistas se programan sin errores), la copia al portapapeles fuera de Chrome y el uso en tableta o pizarra digital reales.
 
+## Ampliación: Sílabas y tildes, La cinta clasificadora y El guion secreto (19/11/2026)
+
+Ejecutado en Chrome (Playwright, modo sin pantalla):
+
+- Las tres misiones completas en los seis cursos, acertando y con un 40 % de errores deliberados (1.º, 3.º y 5.º). Sin errores de consola.
+- Aventura libre completa con 18 misiones en 2.º y 5.º; Gran Reto y Repaso del criterio 9.1 en 5.º (incluyen las nuevas misiones).
+- Caja que se escapa de la cinta (registra «no clasificó a tiempo» y vuelve a salir); modo tranquilo (la caja se detiene a mitad de la cinta); salir a mitad de la actividad.
+- Informe: desglose por tipo de reto y columna `tipo_de_reto` en el CSV. Los códigos de partida generados antes de la ampliación se siguen cargando.
+- Revisión visual de las tres escenas en capturas a 1180×820.
+
+No verificado: rendimiento de la animación de la cinta en tabletas o pizarras digitales reales y lectura en voz alta de las sílabas con voces reales.
+
 ## Errores encontrados y corregidos durante las pruebas
 
 1. **Autopista bloqueada al terminar**: un conflicto de nombres hacía que la misión no se cerrara. Corregido.
@@ -52,6 +64,9 @@ No verificado: que el audio de las emisoras suene bien en altavoces reales (solo
 
 - Con el código de jugador por defecto («anónimo») el progreso se guardaba bajo otro nombre al volver a jugar (se perdían las letras con tilde). Corregido.
 - Con los controles clásicos la moto arrancaba mirando a una pared. Ahora arranca orientada a la calle despejada.
+
+- El diálogo de «salir al menú» compartía nombre de clase CSS con las conversaciones de las misiones y las deformaba. Corregido (renombrado).
+- Los avisos flotantes podían quedar encima del informe. Ahora se limpian al abrirlo.
 
 ## Pendiente de comprobar en el aula
 

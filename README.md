@@ -16,6 +16,14 @@ Tras elegir curso y reportero/a hay tres modos:
 
 Los modos 1 y 2 reutilizan las pruebas de las misiones (mismas mecánicas y misma evaluación), sin los pasos que exigen conducir, y no cambian el progreso de la ciudad. Todos alimentan el mismo informe docente, que indica el modo usado.
 
+## Misiones
+
+18 misiones por curso en cuatro barrios. Las tres últimas incorporadas:
+
+- **Sílabas y tildes** (Academia de las Tildes): sílabas en 1.er ciclo; sílaba tónica, agudas, llanas y esdrújulas y tilde en 2.º y 3.er ciclo; hiatos, sobresdrújulas y tilde diacrítica en 3.er ciclo.
+- **La cinta clasificadora** (Almacén de Palabras): clases de palabras en su frase, con palabras de «doble cara» y racha.
+- **El guion secreto** (Cine Atlántico): lectura de un texto original; cada respuesta abre una cifra de la caja fuerte. Preguntas literales, inferenciales y críticas.
+
 ## Guardar y retomar (código de partida)
 
 En el juego, el botón de la casa (o el móvil → *Partida*) muestra un **código** del tipo `PP1-049G-0082-…`. Se puede copiar o descargar. Con él, desde *Continuar con código* en la pantalla de inicio, se recupera el curso, las misiones y estrellas, las palabras doradas, los logros, el vehículo y la posición. El código lleva un control de errores y no contiene datos personales. Recupera el **progreso**; las evidencias detalladas del informe docente se guardan solo en el dispositivo donde se jugó.
@@ -39,12 +47,13 @@ index.html              Pantallas y capas de interfaz
 css/estilos.css         Dirección de arte, adaptación de pantalla, impresión del informe
 js/core/                Utilidades, guardado local, audio (Web Audio), voz (Web Speech), controles
 js/world/               Ciudad (generación y dibujo por trozos), mundo abierto (vehículo, tráfico, GPS)
-js/juegos/              Escenas de misión (diálogo, radio, cazabulos, taller, corrector…) y autopista
+js/juegos/              Escenas de misión (ampliacion.js: tildes, cinta clasificadora, guion secreto) (diálogo, radio, cazabulos, taller, corrector…) y autopista
 js/eval/                Registro de evidencias, informe docente, exportación CSV/JSON, historial
 js/modos.js             Gran Reto y Repaso por temáticas
 js/ui/                  HUD, móvil del juego, ajustes y retratos SVG de los personajes
 js/data/curriculo.js    Criterios oficiales (texto literal por ciclo)
-js/data/misiones.js     Plantilla de 15 misiones (común a todos los cursos)
+js/data/misiones.js     Plantilla de 18 misiones (común a todos los cursos)
+js/data/ampliacion.js   Contenidos de las misiones T5, T6 y O5 para cada curso
 js/data/cursoN.js       Contenidos de cada curso (1.º a 6.º)
 docs/                   Matriz de trazabilidad, guía docente e informe de pruebas
 ```

@@ -23,7 +23,7 @@ async def main():
             await pg.click("#intro-saltar"); await pg.wait_for_timeout(900)
             await pg.click("#escena .esc-pie .btn"); await pg.wait_for_timeout(300)
             res=[]
-            for mid in ["P1","P2","P3","O1","O2","O3","O4","L1","L2","L3","T1","T2","T3","T4","F"]:
+            for mid in ["P1","P2","P3","O1","O2","O3","O4","L1","L2","L3","T1","T2","T3","T4","T5","T6","O5","F"]:
                 r = await pg.evaluate(f"autoMision('{mid}')")
                 res.append(f"{mid}: {r}")
                 if SHOTS and mid in ("P1","O2","T4"):

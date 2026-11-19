@@ -31,6 +31,44 @@
       const fin = $$(".esc-pie .btn").find((b) => /Hecho/.test(b.textContent)); if (fin) fin.click();
       return true;
     }
+    // --- Ampliación: sílabas y tildes ---
+    if ($(".tl-zona")) {
+      const C = PP.juego.contenido.tildes, ok = (b) => b && !b.disabled;
+      const err = Math.random() < (window.__errar || 0);
+      const pal = $(".tl-palabra[data-i]");
+      const palmas = $$(".tl-palmas button:not([disabled])");
+      if (palmas.length && pal) { const it = C.items[+pal.dataset.i]; const b = err ? palmas.find((x) => +x.dataset.k !== it.s.length) : palmas.find((x) => +x.dataset.k === it.s.length); if (b) b.click(); else palmas[0].click(); await sleep(80); return true; }
+      const fichas = $$(".tl-fichas button:not([disabled])");
+      if (fichas.length) { const filled = $$(".tl-hueco.lleno").length; const it = C.items.find((x) => x.s.length === $$(".tl-hueco").length && fichas.every((f) => x.s.includes(f.textContent)) && x.s.slice(0, filled).join("") === $$(".tl-hueco.lleno").map((h) => h.textContent).join("")); const need = it ? it.s[filled] : null; const b = fichas.find((f) => f.textContent === need) || fichas[0]; b.click(); await sleep(40); return true; }
+      const sil = $(".tl-silabas[data-i]:not(.resuelta)"); const sb = $$(".tl-silabas:not(.resuelta) button:not([disabled])");
+      if (sil && sb.length) { const it = C.items[+sil.dataset.i]; const b = err ? sb.find((x) => +x.dataset.k !== it.t) || sb[0] : sb.find((x) => +x.dataset.k === it.t); if (ok(b)) b.click(); await sleep(60); return true; }
+      const cl = $$(".tl-clases button:not([disabled])");
+      if (cl.length && sil) { const it = C.items[+sil.dataset.i]; const n = it.s.length - 1 - it.t; const name = ["aguda", "llana", "esdrújula", "sobresdrújula"][Math.min(3, n)]; const b = cl.find((x) => x.dataset.c === name); if (ok(b)) b.click(); await sleep(60); return true; }
+      const sn = $$(".tl-sino button[data-v]:not([disabled])");
+      if (sn.length && sil) { const it = C.items[+sil.dataset.i]; const v = /[áéíóú]/i.test(it.p); const b = sn.find((x) => x.dataset.v === String(err ? !v : v)); if (ok(b)) b.click(); await sleep(60); return true; }
+      const fr = $(".tl-frase[data-i]"); const fb = $$(".tl-sino button[data-k]:not([disabled])");
+      if (fr && fb.length) { const it = C.diacriticas[+fr.dataset.i]; const b = fb.find((x) => +x.dataset.k === it.c); if (ok(b)) b.click(); await sleep(60); return true; }
+      const p = $$(".esc-pie .btn").pop(); if (p) p.click(); await sleep(60); return true;
+    }
+    // --- Ampliación: cinta clasificadora ---
+    if ($(".cn-cinta")) {
+      const C = PP.juego.contenido.clasificador, caja = $(".cn-caja[data-i]");
+      const fin = $$(".esc-pie .btn").find((b) => /Hecho/.test(b.textContent)); if (fin) { fin.click(); return true; }
+      if (caja && /entra|prisa/.test(caja.className) && !/vuela|cae|oculta/.test(caja.className)) {
+        const it = C.items[+caja.dataset.i]; const bins = $$(".cn-bin:not([disabled])");
+        const err = Math.random() < (window.__errar || 0);
+        const b = err ? bins.find((x) => x.dataset.cat !== it.c) : bins.find((x) => x.dataset.cat === it.c);
+        if (b) b.click();
+      }
+      await sleep(150); return true;
+    }
+    // --- Ampliación: guion secreto ---
+    if ($(".gn-papel")) {
+      const q = $(".gn-q[data-q]"), C = PP.juego.contenido.guion;
+      const ops = $$(".gn-preg .libreta-ops button:not([disabled])");
+      if (q && ops.length) { const it = C.preguntas[+q.dataset.q]; const err = Math.random() < (window.__errar || 0); const b = err ? ops.find((x) => +x.dataset.k !== it.c) : ops.find((x) => +x.dataset.k === it.c); if (b) b.click(); await sleep(60); return true; }
+      const p = $$(".esc-pie .btn").pop(); if (p) p.click(); await sleep(60); return true;
+    }
     if ($(".parejas")) {
       const izq = $$(".parejas .col:first-child .carta:not([disabled])");
       if (izq.length) {

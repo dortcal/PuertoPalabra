@@ -85,7 +85,23 @@ PP.MISIONES = [
   { id: "F", barrio: "onda", lugar: "periodico", titulo: "Edición especial", final: true, requiere: 10,
     resumen: "Ha llegado el momento: persigue al Borrón, fotografíalo y publica la gran noticia.",
     criterios: ["5.1"],
-    pasos: [ { tipo: "persecucion" }, { tipo: "ordenar", ref: "noticia", crit: "5.1" }, { tipo: "escritura", ref: "escritura.portada", crit: "5.1" } ] }
+    pasos: [ { tipo: "persecucion" }, { tipo: "ordenar", ref: "noticia", crit: "5.1" }, { tipo: "escritura", ref: "escritura.portada", crit: "5.1" } ] },
+
+  // ---- Ampliación (añadidas al final para no alterar los códigos de partida guardados) ----
+  { id: "T5", barrio: "taller", lugar: "academia", titulo: "Sílabas y tildes",
+    resumen: "En la Academia de las Tildes, el Borrón ha desordenado las sílabas y ha robado las tildes. Devuélvelas a su sitio.",
+    criterios: ["9.1"],
+    pasos: [ { tipo: "tildes", ref: "tildes", crit: "9.1" } ] },
+
+  { id: "T6", barrio: "taller", lugar: "almacen", titulo: "La cinta clasificadora",
+    resumen: "En el Almacén de Palabras se han mezclado todas las cajas. Clasifica cada palabra según lo que hace en su frase.",
+    criterios: ["9.1"],
+    pasos: [ { tipo: "clasificador", ref: "clasificador", crit: "9.1" } ] },
+
+  { id: "O5", barrio: "onda", lugar: "cine", titulo: "El guion secreto",
+    resumen: "El Borrón ha encerrado el guion de la película del Cine Atlántico en una caja fuerte. Lee con atención para descubrir la combinación.",
+    criterios: ["4.1", "4.2"],
+    pasos: [ { tipo: "guion", ref: "guion", crit: "4.1" } ] }
 ];
 
 /* Palabras doradas: coleccionables escondidos por la ciudad (vocabulario del español de Canarias).

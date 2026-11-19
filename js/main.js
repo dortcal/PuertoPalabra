@@ -25,7 +25,10 @@ window.PP = window.PP || {};
       { id: "barrio", t: "Color recuperado", d: "Devuelve el color a un barrio entero." },
       { id: "ciudad", t: "Ciudad a todo color", d: "Recupera los cuatro barrios." },
       { id: "doradas5", t: "Buscador de tesoros", d: "Encuentra 5 palabras doradas." },
-      { id: "doradas", t: "Diccionario canario", d: "Encuentra todas las palabras doradas." }
+      { id: "doradas", t: "Diccionario canario", d: "Encuentra todas las palabras doradas." },
+      { id: "guardian", t: "Guardián de la tilde", d: "Consigue 3 estrellas en «Sílabas y tildes»." },
+      { id: "cinta", t: "Clasificador experto", d: "Consigue una racha de 8 en la cinta clasificadora." },
+      { id: "guionista", t: "Caja fuerte abierta", d: "Abre la caja fuerte del cine sin ningún error." }
     ]
   };
   PP.juego = J;
@@ -354,6 +357,9 @@ window.PP = window.PP || {};
         case "escritura": r = await Esc.escritura(datos, ctx); break;
         case "biblioteca": r = await Esc.biblioteca(datos, ctx); break;
         case "grabacion": r = await Esc.grabacion(datos, ctx); break;
+        case "tildes": r = await Esc.tildes(datos, ctx); break;
+        case "clasificador": r = await Esc.clasificador(datos, ctx); if (r && r.mejorRacha >= 8) J.logro("cinta"); break;
+        case "guion": r = await Esc.guion(datos, ctx); if (r && r.sinFallos) J.logro("guionista"); break;
         case "autopista": r = await PP.Autopista.jugar(datos, ctx); if (r.hecho && r.aciertos >= Math.min(8, datos.length) && (J.ciclo > 1 || r.aciertos >= 6)) J.logro("turbo"); break;
         case "preguntas": {
           const extra = {};
@@ -485,7 +491,7 @@ window.PP = window.PP || {};
     PP.Store.guardar();
     // logros
     J.logro("primera");
-    if (estrellas === 3) ({ P1: "poliglota", P2: "mediador", O2: "cazabulos", L2: "poeta" })[mis.id] && J.logro({ P1: "poliglota", P2: "mediador", O2: "cazabulos", L2: "poeta" }[mis.id]);
+    if (estrellas === 3) ({ P1: "poliglota", P2: "mediador", O2: "cazabulos", L2: "poeta", T5: "guardian" })[mis.id] && J.logro({ P1: "poliglota", P2: "mediador", O2: "cazabulos", L2: "poeta", T5: "guardian" }[mis.id]);
     if (v.n >= 4 && v.pct === 1) J.logro("sinborrones");
     const restAntes = Object.assign({}, M.restauracion);
     refrescarMarcadores();

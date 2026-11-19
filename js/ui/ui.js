@@ -155,7 +155,7 @@ window.PP = window.PP || {};
     const tecla = (e) => { if (e.code === "Escape") { e.stopPropagation(); e.preventDefault(); cerrar(); if (o.alCerrar) o.alCerrar(); } };
     document.addEventListener("keydown", tecla, true);
     const botones = el("div", { class: "fila-centro" }, (o.botones || []).map((b) => el("button", { class: "btn " + (b.clase || "btn-sec"), type: "button", html: (b.icono ? U.icon(b.icono) : "") + U.esc(b.t), onclick: () => { PP.Audio.sfx("clic"); if (b.cerrar !== false) cerrar(); if (b.f) b.f(); } })));
-    const caja = el("div", { class: "dialogo", role: "dialog", "aria-modal": "true", "aria-labelledby": "dlg-tit" }, [el("h2", { id: "dlg-tit", text: o.titulo })].concat(o.cuerpo || [], [botones]));
+    const caja = el("div", { class: "dlg-conf", role: "dialog", "aria-modal": "true", "aria-labelledby": "dlg-tit" }, [el("h2", { id: "dlg-tit", text: o.titulo })].concat(o.cuerpo || [], [botones]));
     f.appendChild(caja);
     setTimeout(() => { const b = caja.querySelector(".btn-primario") || caja.querySelector("button"); if (b) b.focus(); }, 30);
     return { cerrar };
@@ -224,7 +224,7 @@ window.PP = window.PP || {};
     Object.keys(PP.BARRIOS).forEach((b) => {
       const B = PP.BARRIOS[b];
       const grupo = el("section", { class: "grupo-mis" }, [el("h3", { html: '<span class="punto" style="background:' + B.color + '"></span>' + U.esc(B.nombre) + " <small>Bloque " + B.bloque + ": " + U.esc(PP.CURRICULO.bloques[B.bloque].nombre) + "</small>" })]);
-      PP.MISIONES.filter((m) => m.barrio === b).forEach((m) => {
+      PP.MISIONES.filter((m) => m.barrio === b).sort((x, y) => (x.final ? 1 : 0) - (y.final ? 1 : 0)).forEach((m) => {
         const st = pr.misiones[m.id], bloq = m.requiere && hechas < m.requiere;
         const lugar = PP.Ciudad.lugares[m.lugar];
         grupo.appendChild(el("div", { class: "fila-mis" + (st ? " hecha" : "") }, [
