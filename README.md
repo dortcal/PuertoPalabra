@@ -11,7 +11,7 @@ La estética de «ciudad abierta» se inspira en los juegos de mundo abierto, pe
 - **En línea:** abre la dirección de GitHub Pages del repositorio (ver «Publicar»).
 - **Sin conexión:** descarga la carpeta y abre `index.html` con un doble clic. No hace falta servidor ni instalación.
 - **Controles:**
-  - Ordenador: flechas o WASD para conducir, ESPACIO o ENTER para entrar en misiones y hacer fotos, P o ESC para el móvil (pausa), M para el mapa, G para el GPS, números 1-4 para responder.
+  - Ordenador: flechas o WASD para conducir (↑ acelera, ↓ marcha atrás, ← → giran), ESPACIO o ENTER para entrar en misiones y hacer fotos, P o ESC para el móvil (pausa), M para el mapa, G para el GPS, números 1-4 para responder.
   - Tableta y pizarra digital: joystick en pantalla, botón ▶ o cámara y botón GPS. Si pulsas el GPS dos veces, la moto conduce sola.
 
 ## Estructura

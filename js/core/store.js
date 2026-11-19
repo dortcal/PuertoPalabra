@@ -13,7 +13,7 @@ window.PP = window.PP || {};
     altoContraste: false,
     reducirMovimiento: false,
     sinTiempo: false,       // sin límite de tiempo
-    control: "sencillo",    // "sencillo" (direccional) | "clasico" (girar)
+    control: "clasico",     // "clasico" (arriba acelera, abajo marcha atrás, lados giran) | "sencillo" (direccional)
     ayudasProgresivas: true
   };
 
@@ -31,6 +31,8 @@ window.PP = window.PP || {};
     progreso: base.progreso || {},          // por clave perfil+curso: { misiones:{id:{estrellas,mejor}}, doradas:[], logros:[], vehiculo, color }
     historial: base.historial || []         // resúmenes de sesiones finalizadas (máx. 60)
   };
+  // Migración: la conducción por defecto pasó a ser la clásica (acelerar / marcha atrás / girar)
+  if (!PP.datos.ajustes.controlV2) { PP.datos.ajustes.control = "clasico"; PP.datos.ajustes.controlV2 = true; }
   PP.ajustes = PP.datos.ajustes;
 
   PP.Store = {

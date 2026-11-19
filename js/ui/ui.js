@@ -54,7 +54,7 @@ window.PP = window.PP || {};
       el("h3", { text: "Juego" }),
       fila("Sin límite de tiempo (modo tranquilo)", casilla("sinTiempo")),
       fila("Ayudas progresivas (pistas)", casilla("ayudasProgresivas")),
-      fila("Conducción", selector("control", [["sencillo", "Sencilla: la flecha indica hacia dónde ir"], ["clasico", "Clásica: girar y acelerar"]]))
+      fila("Conducción", selector("control", [["clasico", "Clásica: ↑ acelera, ↓ marcha atrás, ← → giran"], ["sencillo", "Sencilla: la flecha indica hacia dónde ir"]]))
     );
     if (!PP.Voz.hayEspanol) cont.appendChild(el("p", { class: "nota", text: "Aviso: este dispositivo no tiene una voz en español instalada; los textos siempre aparecen escritos." }));
     if (!PP.Store.disponible()) cont.appendChild(el("p", { class: "nota", text: "Aviso: el navegador no permite guardar datos (modo privado). El progreso se perderá al cerrar." }));

@@ -175,7 +175,7 @@ window.PP = window.PP || {};
     objetivoLibre();
     PP.Input.limpiarPulsados();
     if (primeraVez) setTimeout(() => Esc.aviso({ titulo: "¿Cómo se juega?", texto: "Conduce tu moto por la ciudad y entra en las misiones (los rombos de colores).", lista: [
-      PP.Input.tactil ? "Mueve el <b>joystick</b> para conducir. El botón <b>▶</b> entra en la misión." : "Conduce con las <b>flechas</b> o <b>WASD</b>. Entra en una misión con <b>ESPACIO</b> o <b>ENTER</b>.",
+      PP.Input.tactil ? "Joystick: <b>arriba</b> acelera, <b>abajo</b> marcha atrás, <b>izquierda y derecha</b> giran. El botón <b>▶</b> entra en la misión." : "Conduce con las <b>flechas</b> o <b>WASD</b>: <b>↑</b> acelera, <b>↓</b> marcha atrás, <b>←</b> y <b>→</b> giran. Entra en una misión con <b>ESPACIO</b> o <b>ENTER</b>.",
       "El botón <b>GPS</b> te marca el camino. Si lo pulsas dos veces, la moto conduce sola.",
       "El <b>móvil</b> (tecla P) tiene el mapa, las misiones, los ajustes y tu informe.",
       "Cada barrio trabaja un bloque de Lengua. ¡Completa sus misiones para devolverle el color!"

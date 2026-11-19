@@ -131,7 +131,17 @@ window.PP = window.PP || {};
   M.prepararDoradas = function (recogidas) { M.doradas = M._posDoradas.filter((d) => !recogidas.includes(d.i)); };
 
   // ---------------- API para misiones ----------------
-  M.colocarJugador = function (lugar) { const l = C.lugares[lugar]; if (!l) return; M.jugador.x = l.x; M.jugador.y = l.y; M.jugador.v = 0; M.cam.x = l.x; M.cam.y = l.y; };
+  M.colocarJugador = function (lugar) { const l = C.lugares[lugar]; if (!l) return; M.jugador.x = l.x; M.jugador.y = l.y; M.jugador.v = 0; M.cam.x = l.x; M.cam.y = l.y; M.orientarLibre(); };
+  /** Gira la moto hacia el tramo de calle más despejado, para no arrancar mirando a una pared */
+  M.orientarLibre = function () {
+    const j = M.jugador; let mejor = j.ang, mejorD = -1;
+    for (let k = 0; k < 16; k++) {
+      const a = -Math.PI / 2 + k * Math.PI / 8; let d = 0;
+      while (d < 480 && !solido(j.x + Math.cos(a) * (d + 14), j.y + Math.sin(a) * (d + 14))) d += 8;
+      if (d > mejorD + 1) { mejorD = d; mejor = a; }
+    }
+    j.ang = mejor;
+  };
   M.fijarMarcadores = function (lista) { M.marcadores = lista; };
   M.fijarDestinos = function (lista, alLlegar) { M.destinos = lista; M.cb.destino = alLlegar; };
   M.limpiarObjetivos = function () { M.destinos = []; M.fichas = []; M.borron = null; M.cb.destino = M.cb.ficha = M.cb.foto = null; M.gps(null); };
@@ -205,7 +215,7 @@ window.PP = window.PP || {};
       dir = { x: dx / d, y: dy / d };
       if (Math.hypot(dir.x, dir.y) > 0 && (I.teclas.arriba || I.teclas.abajo || I.teclas.izq || I.teclas.der || I.joy.activo)) { M.autopiloto = false; }
     }
-    const usaDireccional = aj.control === "sencillo" || I.joy.activo || M.autopiloto;
+    const usaDireccional = aj.control === "sencillo" || M.autopiloto;
     if (usaDireccional) {
       const mag = Math.min(1, Math.hypot(dir.x, dir.y));
       if (mag > 0.15) {
@@ -215,12 +225,14 @@ window.PP = window.PP || {};
         acel = Math.abs(dif) > 0.9 ? (j.v > 120 ? -0.5 : 0.2 * mag) : mag * (M.autopiloto ? 0.75 : 1);
       }
     } else if (controla) {
-      if (I.teclas.arriba) acel = 1; if (I.teclas.abajo) acel = j.v > 10 ? -1 : -0.5;
-      giro = (I.teclas.der ? 1 : 0) - (I.teclas.izq ? 1 : 0);
+      // Control clásico: arriba acelera, abajo frena y luego marcha atrás, izquierda/derecha giran
+      let av = (I.teclas.arriba ? 1 : 0) - (I.teclas.abajo ? 1 : 0), gx = (I.teclas.der ? 1 : 0) - (I.teclas.izq ? 1 : 0);
+      if (I.joy.activo) { av = Math.abs(I.joy.y) > 0.15 ? -I.joy.y : 0; gx = Math.abs(I.joy.x) > 0.15 ? I.joy.x : 0; }
+      acel = av; giro = gx;
     }
     if (acel > 0) j.v += acel * 420 * dt; else if (acel < 0) j.v += acel * 600 * dt; else j.v *= Math.pow(0.25, dt);
-    j.v = U.clamp(j.v, -120, vmax);
-    const factorGiro = usaDireccional ? Math.max(0.8, U.clamp(Math.abs(j.v) / 120, 0, 1)) : U.clamp(Math.abs(j.v) / 120, 0, 1) * (j.v < 0 ? -1 : 1);
+    j.v = U.clamp(j.v, -170, vmax);
+    const factorGiro = usaDireccional ? Math.max(0.8, U.clamp(Math.abs(j.v) / 120, 0, 1)) : U.clamp(Math.abs(j.v) / 120, 0.45, 1);
     j.ang += giro * 3.1 * dt * factorGiro;
     if (Math.abs(giro) > 0.7 && Math.abs(j.v) > 230 && !U.prefiereMenosMovimiento()) M.marcas.push({ x: j.x - Math.cos(j.ang) * 14, y: j.y - Math.sin(j.ang) * 14, a: 1 });
     if (M.marcas.length > 220) M.marcas.shift();
