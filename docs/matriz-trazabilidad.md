@@ -2,7 +2,7 @@
 
 Referente: **Decreto 211/2022, de 10 de noviembre (BOC n.º 231, 23/11/2022)**, Anexo de Lengua Castellana y Literatura de Educación Primaria (Canarias). Los textos de los criterios se han copiado del documento oficial incorporado al proyecto GAME LAB EDU (consulta: 19/11/2026). Las descripciones cortas de la segunda columna son paráfrasis del juego, no texto oficial.
 
-El decreto establece los mismos 15 criterios en los tres ciclos y gradúa la complejidad («de manera acompañada», «guiada», «autónoma»). Por eso el juego usa la misma estructura de misiones en los seis cursos y cambia los textos, el vocabulario, las ayudas y la exigencia de cada curso.
+El decreto establece los mismos 15 criterios en los tres ciclos (el juego trabaja 13: 3.1 y 7.2 quedan fuera, ver más abajo) y gradúa la complejidad («de manera acompañada», «guiada», «autónoma»). Por eso el juego usa la misma estructura de misiones en los seis cursos y cambia los textos, el vocabulario, las ayudas y la exigencia de cada curso.
 
 ## Criterio → mecánica → acción observable → evidencia → indicador
 
@@ -43,6 +43,10 @@ Consecuencias para la cobertura curricular:
 - **3.1 (producción oral) y 7.2 (compartir la experiencia lectora)** no figuran en el juego: no tienen ninguna actividad evaluable automáticamente, por lo que se han retirado del informe, del CSV y del JSON (el juego trabaja y muestra 13 criterios). Deben valorarse en el aula con las rúbricas oficiales.
 - **5.1 (producción escrita)** solo se observa mediante la ordenación de las partes de una noticia (misión F), por lo que su evidencia es limitada.
 - **8.2 (creación literaria)** solo se observa mediante el reconocimiento de rimas y recursos.
+
+## Variedad de actividades entre partidas (19/11/2026)
+
+Cada curso dispone de un banco ampliado de actividades (`js/data/banco.js`) que se mezcla con el contenido base. En cada misión el juego elige un subconjunto distinto de preguntas, perfiles, mensajes y palabras, y no repite lo ya visto hasta agotar el banco. Los criterios evaluados y la matriz anterior no cambian: varía el ítem concreto que observa cada mecánica. Los textos de lectura (boletín, cartel, leyenda, noticia) son fijos; varían las preguntas sobre ellos.
 
 ## Cómo se calcula el nivel observado
 
