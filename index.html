@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Puerto Palabra · Reporteros contra el Borrón · Lengua Castellana y Literatura</title>
+  <meta name="description" content="Videojuego educativo de Lengua Castellana y Literatura para 1.º a 6.º de Primaria (Canarias). Ciudad abierta, misiones de reportero e informe docente por criterios de evaluación.">
+  <meta name="theme-color" content="#14213d">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2314213d'/%3E%3Ctext x='32' y='45' font-size='38' text-anchor='middle' font-family='Georgia' font-weight='bold' fill='%23ffd23f'%3EÑ%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+  <!-- Mundo (lienzo de fondo: también sirve de fondo animado en los menús) -->
+  <canvas id="mundo" aria-label="Ciudad de Puerto Palabra" role="img"></canvas>
+
+  <!-- ================= PANTALLA DE INICIO ================= -->
+  <section id="pantalla-inicio" class="pantalla" aria-labelledby="titulo-juego">
+    <div class="inicio-velo"></div>
+    <div class="inicio-caja">
+      <div class="logo" id="titulo-juego" role="heading" aria-level="1">
+        <span class="logo-sup">Reporteros contra el Borrón</span>
+        <span class="logo-puerto">PUERTO</span>
+        <span class="logo-palabra">PALABRA</span>
+        <span class="logo-sub">Lengua Castellana y Literatura · 1.º a 6.º de Primaria</span>
+      </div>
+      <nav class="menu-inicio" aria-label="Menú principal">
+        <button id="btn-jugar" class="btn btn-grande btn-primario" type="button" data-foco>Jugar</button>
+        <button id="btn-como" class="btn btn-sec" type="button">Cómo se juega</button>
+        <button id="btn-ajustes-inicio" class="btn btn-sec" type="button">Ajustes</button>
+        <button id="btn-docente" class="btn btn-terc" type="button">Zona docente</button>
+      </nav>
+    </div>
+    <p class="creditos">Juego educativo original · Currículo: Decreto 211/2022 (Canarias) · Sin anuncios ni datos personales</p>
+  </section>
+
+  <!-- ================= PERFIL ================= -->
+  <section id="pantalla-perfil" class="pantalla panel-pantalla" hidden aria-labelledby="t-perfil">
+    <div class="panel">
+      <h2 id="t-perfil">Tu carnet de reportero</h2>
+      <h3>1. ¿En qué curso estás?</h3>
+      <div id="perfil-cursos" class="rejilla-cursos" role="group" aria-label="Curso"></div>
+      <h3>2. Elige tu reportero o reportera</h3>
+      <div id="perfil-avatares" class="rejilla-avatares" role="group" aria-label="Personaje"></div>
+      <h3>3. Código de clase <small>(opcional)</small></h3>
+      <label class="campo"><span>Tu docente puede darte un código, por ejemplo <b>5B-07</b>. <b>No escribas tu nombre.</b></span>
+        <input id="perfil-codigo" type="text" maxlength="16" autocomplete="off" placeholder="5B-07"></label>
+      <div class="fila-centro">
+        <button class="btn btn-terc" type="button" data-volver>Volver</button>
+        <button id="btn-perfil-ok" class="btn btn-primario btn-grande" type="button">¡A la redacción!</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= INTRO ================= -->
+  <section id="pantalla-intro" class="pantalla panel-pantalla" hidden aria-label="Introducción">
+    <div class="intro">
+      <div id="intro-cuerpo" aria-live="polite"></div>
+      <div class="fila-centro">
+        <button id="intro-saltar" class="btn btn-terc" type="button">Saltar</button>
+        <button id="intro-sig" class="btn btn-primario btn-grande" type="button">Siguiente</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= CÓMO SE JUEGA ================= -->
+  <section id="pantalla-como" class="pantalla panel-pantalla" hidden aria-labelledby="t-como">
+    <div class="panel">
+      <h2 id="t-como">Cómo se juega</h2>
+      <div class="como">
+        <div><h3>La historia</h3><p>La Banda del Borrón está borrando las palabras de Puerto Palabra y la ciudad pierde sus colores. Eres reportero o reportera del periódico <b>El Eco</b>: recorre la ciudad, completa misiones y consigue la foto del Borrón para la portada.</p></div>
+        <div><h3>Controles</h3>
+          <ul>
+            <li><b>Ordenador:</b> flechas o WASD para conducir · ESPACIO o ENTER para entrar en misiones y hacer fotos · P o ESC: móvil y pausa · M: mapa · G: GPS · H: claxon · MAYÚS: turbo · números 1-4 para elegir respuestas.</li>
+            <li><b>Tableta y pizarra digital:</b> joystick a la izquierda, botón ▶ (o cámara) a la derecha, botón GPS para que la moto conduzca sola.</li>
+          </ul></div>
+        <div><h3>Los cuatro barrios</h3>
+          <ul>
+            <li><b class="c-puerto">Puerto de las Lenguas</b> — Las lenguas y sus hablantes.</li>
+            <li><b class="c-onda">Distrito Onda</b> — Comunicación: radio, periódico, bulos y entrevistas.</li>
+            <li><b class="c-literario">Barrio Literario</b> — Leyendas, poemas y libros.</li>
+            <li><b class="c-taller">Taller de la Lengua</b> — Palabras, ortografía y gramática.</li>
+          </ul></div>
+        <div><h3>Errores</h3><p>Equivocarse forma parte del juego: siempre recibirás una explicación y podrás volver a intentarlo. Las <b>palabras doradas</b> (monedas con una Ñ) esconden vocabulario canario.</p></div>
+      </div>
+      <div class="fila-centro"><button class="btn btn-primario" type="button" data-volver>Entendido</button></div>
+    </div>
+  </section>
+
+  <!-- ================= AJUSTES (desde el inicio) ================= -->
+  <section id="pantalla-ajustes" class="pantalla panel-pantalla" hidden aria-labelledby="t-ajustes">
+    <div class="panel">
+      <h2 id="t-ajustes">Ajustes</h2>
+      <div id="ajustes-inicio-cuerpo" class="ajustes"></div>
+      <div class="fila-centro"><button class="btn btn-primario" type="button" data-volver>Guardar y volver</button></div>
+    </div>
+  </section>
+
+  <!-- ================= JUEGO (HUD) ================= -->
+  <section id="pantalla-juego" class="pantalla hud" hidden aria-label="Juego">
+    <div class="hud-sup">
+      <div class="hud-tarjeta hud-perfil"><span id="hud-curso"></span><span class="hud-pts"><b id="hud-puntos">0</b> pts</span><span class="hud-est">★ <b id="hud-estrellas">0</b></span></div>
+      <div id="hud-barrios" class="hud-tarjeta hud-barrios" aria-label="Recuperación de los barrios"></div>
+      <div class="hud-der">
+        <button id="btn-silencio" class="btn-icono hud-btn" type="button" aria-label="Silenciar" aria-pressed="false"></button>
+        <button id="btn-movil" class="btn-icono hud-btn" type="button" aria-label="Abrir el móvil (pausa)"><svg class="ico" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="3"/><rect x="8.5" y="5" width="7" height="11" rx="1" fill="#0006"/></svg></button>
+        <canvas id="minimapa" width="190" height="150" aria-hidden="true"></canvas>
+      </div>
+    </div>
+    <div id="objetivo" class="objetivo" hidden aria-live="polite"></div>
+    <div id="aviso-cerca" class="aviso-cerca" hidden aria-live="polite"></div>
+    <div class="ticker" aria-hidden="true"><span class="ticker-emisora">RADIO ONDA VOLCÁN 98.4</span><div class="ticker-ventana"><span id="ticker-txt"></span></div></div>
+    <div id="joystick" class="joystick" aria-hidden="true"><div class="mando"></div></div>
+    <div class="botones-der">
+      <button id="btn-gps" class="btn-redondo gps" type="button" aria-label="GPS"><svg class="ico" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3 7 7 3-7 3-3 7-3-7-7-3 7-3z"/></svg><span>GPS</span></button>
+      <button id="btn-accion" class="btn-redondo accion" type="button" aria-label="Acción"></button>
+    </div>
+  </section>
+
+  <!-- ================= INFORME ================= -->
+  <section id="pantalla-informe" class="pantalla panel-pantalla informe" hidden aria-label="Informe de la sesión">
+    <div id="informe-cuerpo" class="panel panel-ancho"></div>
+  </section>
+
+  <!-- ================= ZONA DOCENTE ================= -->
+  <section id="pantalla-docente" class="pantalla panel-pantalla" hidden aria-labelledby="t-docente">
+    <div class="panel panel-ancho">
+      <h2 id="t-docente">Zona docente</h2>
+      <div id="docente-cuerpo"></div>
+      <div class="fila-centro"><button class="btn btn-primario" type="button" data-volver>Volver al inicio</button></div>
+    </div>
+  </section>
+
+  <!-- Capas superpuestas -->
+  <div id="escena" class="escena" hidden aria-hidden="true"></div>
+  <div id="resultado" class="resultado" hidden></div>
+  <div id="movil" class="movil" hidden role="dialog" aria-modal="true" aria-label="Móvil del reportero">
+    <div class="movil-marco">
+      <div class="movil-barra"><b>PalabraPhone</b><button id="movil-cerrar" class="btn-icono" type="button" aria-label="Cerrar el móvil y seguir jugando"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round"/></svg></button></div>
+      <nav id="movil-tabs" class="movil-tabs" role="tablist"></nav>
+      <div id="movil-cuerpo" class="movil-cuerpo"></div>
+      <div class="movil-pie">
+        <button id="btn-fin-sesion" class="btn btn-sec btn-peq" type="button">Terminar e ir al informe</button>
+        <button id="btn-salir-menu" class="btn btn-terc btn-peq" type="button">Salir al menú</button>
+      </div>
+    </div>
+  </div>
+  <div id="toasts" class="toasts" aria-live="polite"></div>
+  <noscript><p class="noscript">Este juego necesita JavaScript activado.</p></noscript>
+
+  <!-- Scripts (sin módulos: funciona también abriendo el archivo directamente) -->
+  <script src="js/core/util.js"></script>
+  <script src="js/core/store.js"></script>
+  <script src="js/core/audio.js"></script>
+  <script src="js/core/voz.js"></script>
+  <script src="js/core/input.js"></script>
+  <script src="js/data/curriculo.js"></script>
+  <script src="js/data/misiones.js"></script>
+  <script src="js/data/curso1.js"></script>
+  <script src="js/data/curso2.js"></script>
+  <script src="js/data/curso3.js"></script>
+  <script src="js/data/curso4.js"></script>
+  <script src="js/data/curso5.js"></script>
+  <script src="js/data/curso6.js"></script>
+  <script src="js/world/ciudad.js"></script>
+  <script src="js/world/mundo.js"></script>
+  <script src="js/ui/retrato.js"></script>
+  <script src="js/eval/evaluacion.js"></script>
+  <script src="js/ui/ui.js"></script>
+  <script src="js/eval/informe.js"></script>
+  <script src="js/juegos/escenas.js"></script>
+  <script src="js/juegos/autopista.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
