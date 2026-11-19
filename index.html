@@ -25,12 +25,49 @@
       </div>
       <nav class="menu-inicio" aria-label="Menú principal">
         <button id="btn-jugar" class="btn btn-grande btn-primario" type="button" data-foco>Jugar</button>
+        <button id="btn-codigo" class="btn btn-sec" type="button">Continuar con código</button>
         <button id="btn-como" class="btn btn-sec" type="button">Cómo se juega</button>
         <button id="btn-ajustes-inicio" class="btn btn-sec" type="button">Ajustes</button>
         <button id="btn-docente" class="btn btn-terc" type="button">Zona docente</button>
       </nav>
     </div>
     <p class="creditos">Juego educativo original · Currículo: Decreto 211/2022 (Canarias) · Sin anuncios ni datos personales</p>
+  </section>
+
+  <!-- ================= CONTINUAR CON CÓDIGO ================= -->
+  <section id="pantalla-codigo" class="pantalla panel-pantalla" hidden aria-labelledby="t-codigo">
+    <div class="panel">
+      <h2 id="t-codigo">Continuar con un código de partida</h2>
+      <p>Escribe o pega el código que te dio el juego al guardar (empieza por <b>PP1</b>). Recuperarás tu curso, tus misiones y estrellas, tus palabras doradas, tus logros y tu vehículo.</p>
+      <label class="campo-codigo"><span>Tu código de partida</span>
+        <textarea id="codigo-entrada" rows="3" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="PP1-XXXX-XXXX-XXXX-…"></textarea></label>
+      <p id="codigo-msg" class="codigo-msg" role="alert" aria-live="assertive"></p>
+      <div class="fila-centro">
+        <button id="btn-codigo-ok" class="btn btn-primario" type="button">Cargar y jugar</button>
+        <button class="btn btn-sec" type="button" data-volver>Volver</button>
+      </div>
+      <p class="nota">Aviso: el código recupera tu progreso en el juego. Los informes detallados para el profesorado se guardan solo en el dispositivo donde se ha jugado.</p>
+    </div>
+  </section>
+
+  <!-- ================= MODOS DE JUEGO ================= -->
+  <section id="pantalla-modos" class="pantalla panel-pantalla" hidden aria-labelledby="t-modos">
+    <div class="panel panel-ancho">
+      <h2 id="t-modos">Elige tu modo de juego</h2>
+      <p id="modos-saludo"></p>
+      <div id="modos-rejilla" class="modos-rejilla"></div>
+      <div class="fila-centro"><button id="btn-modos-volver" class="btn btn-terc" type="button">Volver al inicio</button></div>
+    </div>
+  </section>
+
+  <!-- ================= REPASO POR TEMÁTICAS ================= -->
+  <section id="pantalla-tematica" class="pantalla panel-pantalla" hidden aria-labelledby="t-tema">
+    <div class="panel panel-ancho">
+      <h2 id="t-tema">Repaso por temáticas</h2>
+      <p>Elige un bloque de contenidos de Lengua. Después puedes repasarlo entero o quedarte con un criterio concreto.</p>
+      <div id="tema-cuerpo"></div>
+      <div class="fila-centro"><button id="btn-tema-volver" class="btn btn-terc" type="button">Volver a los modos</button></div>
+    </div>
   </section>
 
   <!-- ================= PERFIL ================= -->
@@ -70,7 +107,7 @@
         <div><h3>La historia</h3><p>La Banda del Borrón está borrando las palabras de Puerto Palabra y la ciudad pierde sus colores. Eres reportero o reportera del periódico <b>El Eco</b>: recorre la ciudad, completa misiones y consigue la foto del Borrón para la portada.</p></div>
         <div><h3>Controles</h3>
           <ul>
-            <li><b>Ordenador:</b> flechas o WASD para conducir (↑ acelera · ↓ marcha atrás · ← → giran) · ESPACIO o ENTER para entrar en misiones y hacer fotos · P o ESC: móvil y pausa · M: mapa · G: GPS · H: claxon · MAYÚS: turbo · números 1-4 para elegir respuestas.</li>
+            <li><b>Ordenador:</b> flechas o WASD para conducir (↑ acelera · ↓ marcha atrás · ← → giran) · R: cambiar de emisora · ESPACIO o ENTER para entrar en misiones y hacer fotos · P o ESC: móvil y pausa · M: mapa · G: GPS · H: claxon · MAYÚS: turbo · números 1-4 para elegir respuestas.</li>
             <li><b>Tableta y pizarra digital:</b> joystick a la izquierda (arriba acelera, abajo marcha atrás, lados giran), botón ▶ (o cámara) a la derecha, botón GPS para que la moto conduzca sola.</li>
           </ul></div>
         <div><h3>Los cuatro barrios</h3>
@@ -101,6 +138,8 @@
       <div class="hud-tarjeta hud-perfil"><span id="hud-curso"></span><span class="hud-pts"><b id="hud-puntos">0</b> pts</span><span class="hud-est">★ <b id="hud-estrellas">0</b></span></div>
       <div id="hud-barrios" class="hud-tarjeta hud-barrios" aria-label="Recuperación de los barrios"></div>
       <div class="hud-der">
+        <button id="btn-menu" class="btn-icono hud-btn" type="button" aria-label="Salir al menú principal" title="Menú principal"></button>
+        <button id="btn-radio" class="btn-icono hud-btn" type="button" aria-label="Cambiar de emisora de radio (tecla R)" title="Radio (R)"></button>
         <button id="btn-silencio" class="btn-icono hud-btn" type="button" aria-label="Silenciar" aria-pressed="false"></button>
         <button id="btn-movil" class="btn-icono hud-btn" type="button" aria-label="Abrir el móvil (pausa)"><svg class="ico" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="3"/><rect x="8.5" y="5" width="7" height="11" rx="1" fill="#0006"/></svg></button>
         <canvas id="minimapa" width="190" height="150" aria-hidden="true"></canvas>
@@ -108,7 +147,7 @@
     </div>
     <div id="objetivo" class="objetivo" hidden aria-live="polite"></div>
     <div id="aviso-cerca" class="aviso-cerca" hidden aria-live="polite"></div>
-    <div class="ticker" aria-hidden="true"><span class="ticker-emisora">RADIO ONDA VOLCÁN 98.4</span><div class="ticker-ventana"><span id="ticker-txt"></span></div></div>
+    <div class="ticker" aria-hidden="true"><span id="ticker-emisora" class="ticker-emisora">RADIO ONDA VOLCÁN 98.4</span><div class="ticker-ventana"><span id="ticker-txt"></span></div></div>
     <div id="joystick" class="joystick" aria-hidden="true"><div class="mando"></div></div>
     <div class="botones-der">
       <button id="btn-gps" class="btn-redondo gps" type="button" aria-label="GPS"><svg class="ico" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3 7 7 3-7 3-3 7-3-7-7-3 7-3z"/></svg><span>GPS</span></button>
@@ -140,10 +179,12 @@
       <div id="movil-cuerpo" class="movil-cuerpo"></div>
       <div class="movil-pie">
         <button id="btn-fin-sesion" class="btn btn-sec btn-peq" type="button">Terminar e ir al informe</button>
+        <button id="btn-cambiar-modo" class="btn btn-sec btn-peq" type="button">Cambiar de modo</button>
         <button id="btn-salir-menu" class="btn btn-terc btn-peq" type="button">Salir al menú</button>
       </div>
     </div>
   </div>
+  <div id="dialogo" class="dialogo-fondo" hidden></div>
   <div id="toasts" class="toasts" aria-live="polite"></div>
   <noscript><p class="noscript">Este juego necesita JavaScript activado.</p></noscript>
 
@@ -153,6 +194,7 @@
   <script src="js/core/audio.js"></script>
   <script src="js/core/voz.js"></script>
   <script src="js/core/input.js"></script>
+  <script src="js/core/codigo.js"></script>
   <script src="js/data/curriculo.js"></script>
   <script src="js/data/misiones.js"></script>
   <script src="js/data/curso1.js"></script>
@@ -168,6 +210,7 @@
   <script src="js/ui/ui.js"></script>
   <script src="js/eval/informe.js"></script>
   <script src="js/juegos/escenas.js"></script>
+  <script src="js/modos.js"></script>
   <script src="js/juegos/autopista.js"></script>
   <script src="js/main.js"></script>
 </body>

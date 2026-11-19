@@ -114,6 +114,13 @@ window.PP = window.PP || {};
     literario: { bpm: 80,  raiz: 65, acordes: [[0,4,7,11],[-3,0,4,7],[2,5,9,12],[-5,-1,2,7]], bajo: "o.......o.......", arp: [0,1,2,3,4,3,2,1], arpPaso: 2, bombo: "", caja: "", hat: "", padV: 0.045, arpV: 0.06, lead: false, octavaArp: true },
     taller:    { bpm: 118, raiz: 48, acordes: [[0,3,7,12],[-4,0,3,8],[-2,2,5,10],[-2,2,5,10]], bajo: "o.o.o.o.o.o.o.o.", arp: [0,2,1,3], arpPaso: 4, bombo: "x...x...x...x...", caja: "....x.......x..x", hat: "..x...x...x...x.", metal: "......x.......x.", padV: 0.02, arpV: 0.045, lead: false },
     persecucion:{ bpm: 140, raiz: 50, acordes: [[0,3,7,12],[-4,0,3,8],[-2,2,5,10],[-5,-1,2,7]], bajo: "oooooooooooooooo", arp: [0,1,2,3], arpPaso: 2, bombo: "x...x...x...x.x.", caja: "....x.......x...", hat: "xxxxxxxxxxxxxxxx", padV: 0.03, arpV: 0.05, lead: true },
+    // --- Pistas de las emisoras de radio de la moto ---
+    r_alisio:  { bpm: 76,  raiz: 60, acordes: [[0,4,7,11],[2,5,9,12],[4,7,11,14],[-3,0,4,7]], bajo: "o.....o.....o...", arp: [1,3,2,3,1,2], arpPaso: 3, bombo: "x.....x...x.....", caja: "....x.......x...", hat: "..x...x...x...x.", padV: 0.06, arpV: 0.05, lead: false },
+    r_timple:  { bpm: 122, raiz: 62, acordes: [[0,4,7,12],[7,11,14,19],[0,4,7,12],[5,9,12,17]], bajo: "o.......o.o.....", arp: [0,1,2,1,3,2,1,2], arpPaso: 1, rasgueo: true, bombo: "x...x...x...x...", caja: "", hat: "..x...x...x...x.", padV: 0.02, arpV: 0.06, lead: true },
+    r_rock:    { bpm: 134, raiz: 45, acordes: [[0,7,12,19],[3,10,15,22],[5,12,17,24],[7,14,19,26]], bajo: "oooooooooooooooo", arp: [0,2,1,2], arpPaso: 2, bombo: "x.x...x.x.x...x.", caja: "....x.......x...", hat: "x.x.x.x.x.x.x.x.", metal: "..............x.", padV: 0.015, arpV: 0.05, lead: true },
+    r_salsa:   { bpm: 104, raiz: 55, acordes: [[0,4,7,10],[5,9,12,15],[7,11,14,17],[0,4,7,10]], bajo: "o..o..o.o..o..o.", arp: [0,2,1,3,2,1], arpPaso: 2, bombo: "x..x..x.x..x..x.", caja: "..x...x...x...x.", hat: "xxxxxxxxxxxxxxxx", metal: "x..x..x...x.x...", padV: 0.025, arpV: 0.055, lead: true },
+    r_clasica: { bpm: 66,  raiz: 62, acordes: [[0,4,7,12],[-3,0,4,9],[-5,-1,2,7],[0,4,7,12]], bajo: "o...............", arp: [0,1,2,3,4,3,2,1], arpPaso: 2, bombo: "", caja: "", hat: "", padV: 0.06, arpV: 0.06, lead: false, octavaArp: true },
+    r_palabra: { bpm: 92,  raiz: 58, acordes: [[0,3,7,10],[5,8,12,15],[3,7,10,14],[7,10,14,17]], bajo: "o.......o.o.....", arp: [0,2,1,2], arpPaso: 4, bombo: "x.......x.......", caja: "", hat: "..x...x...x...x.", padV: 0.035, arpV: 0.04, lead: false },
     mision:    { bpm: 88,  raiz: 60, acordes: [[0,4,7,11],[-3,0,4,7],[-7,-3,0,4],[-5,-1,2,5]], bajo: "o.......o...o...", arp: [0,2,1,3], arpPaso: 4, bombo: "", caja: "", hat: "....x.......x...", padV: 0.04, arpV: 0.04, lead: false }
   };
   const PAT = (s, i) => s && s.length ? s[i % s.length] : ".";
@@ -148,6 +155,20 @@ window.PP = window.PP || {};
       if (comp % 4 === 0 && sem < 6) lead(d, t, mtof(ac[(sem + compas) % ac.length] + 24), dt * (sem < 3 ? 3 : 1.6), 0.035);
     }
   }
+
+  // ---------- Emisoras de radio (la música de la moto mientras se conduce) ----------
+  // "auto" = la música cambia según el barrio. El resto fijan un estilo; "off" apaga la música.
+  A.RADIOS = [
+    { id: "auto",    nombre: "Radio Onda Volcán", frec: "98.4",  estilo: "La música cambia según el barrio", pista: null },
+    { id: "alisio",  nombre: "Alisio FM",         frec: "92.7",  estilo: "Chill y tranquila",               pista: "r_alisio" },
+    { id: "timple",  nombre: "Timple y Brisa",    frec: "101.3", estilo: "Folclore canario con rasgueo",    pista: "r_timple" },
+    { id: "rock",    nombre: "Roque Rock",        frec: "105.5", estilo: "Rock con mucha energía",          pista: "r_rock" },
+    { id: "salsa",   nombre: "Salsa del Atlántico", frec: "96.1", estilo: "Ritmos latinos para bailar",     pista: "r_salsa" },
+    { id: "clasica", nombre: "Radio Teide Clásica", frec: "88.9", estilo: "Música suave de cuerdas",        pista: "r_clasica" },
+    { id: "palabra", nombre: "Radio Palabra",     frec: "99.9",  estilo: "¿Sabías que…? Curiosidades de la lengua", pista: "r_palabra" },
+    { id: "off",     nombre: "Radio apagada",     frec: "",      estilo: "Solo el motor y la ciudad",       pista: null }
+  ];
+  A.radioActual = function () { return A.RADIOS.find((r) => r.id === PP.ajustes.emisora) || A.RADIOS[0]; };
 
   A.musica = function (nombre) {
     if (!A.ctx) { A._pendiente = nombre; return; }

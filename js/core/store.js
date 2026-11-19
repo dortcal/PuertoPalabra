@@ -14,7 +14,8 @@ window.PP = window.PP || {};
     reducirMovimiento: false,
     sinTiempo: false,       // sin límite de tiempo
     control: "clasico",     // "clasico" (arriba acelera, abajo marcha atrás, lados giran) | "sencillo" (direccional)
-    ayudasProgresivas: true
+    ayudasProgresivas: true,
+    emisora: "auto"         // emisora de radio de la moto (ver PP.Audio.RADIOS)
   };
 
   function leer() {

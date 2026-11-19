@@ -22,12 +22,12 @@ window.PP = window.PP || {};
       el("div", { class: "inf-logo", html: '<span class="logo-mini">PUERTO<b>PALABRA</b></span>' }),
       el("div", { class: "inf-datos", html:
         "<h2>Informe de la sesión</h2><p><b>Área:</b> " + U.esc(inf.area) + " · <b>Curso:</b> " + inf.curso + ".º de Primaria (" + inf.ciclo + ".º ciclo)</p>" +
-        "<p><b>Código del alumno/a:</b> " + U.esc(inf.codigo) + (inf.alias ? " · <b>Reportero/a:</b> " + U.esc(inf.alias) : "") + "</p>" +
+        (inf.modos && inf.modos.length ? "<p><b>Modo de juego:</b> " + U.esc(inf.modos.join(" · ")) + "</p>" : "") + "<p><b>Código del alumno/a:</b> " + U.esc(inf.codigo) + (inf.alias ? " · <b>Reportero/a:</b> " + U.esc(inf.alias) : "") + "</p>" +
         "<p><b>Fecha:</b> " + fecha.toLocaleDateString("es-ES") + " " + fecha.toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" }) + " · <b>Tiempo de juego:</b> " + U.fmtTiempo(inf.duracionMs) + " · <b>Sesión:</b> " + inf.sesion + "</p>" })
     ]);
     const kpi = (v, t) => el("div", { class: "kpi" }, [el("b", { text: v }), el("span", { text: t })]);
     const kpis = el("section", { class: "inf-kpis" }, [
-      kpi(inf.puntos, "puntos de prestigio"), kpi(inf.nMisiones + " / " + PP.MISIONES.length, "misiones superadas"),
+      kpi(inf.puntos, "puntos de prestigio"), kpi(inf.nMisiones + " / " + PP.MISIONES.length, "misiones y retos superados"),
       kpi(inf.pctAciertos === null ? "—" : Math.round(inf.pctAciertos * 100) + " %", "aciertos al primer intento"),
       kpi(inf.itemsPrimerIntento, "retos respondidos"), kpi(inf.intentos, "intentos totales"), kpi(inf.ayudas, "pistas usadas")
     ]);
@@ -80,7 +80,7 @@ window.PP = window.PP || {};
       el("button", { class: "btn btn-sec", type: "button", html: U.icon("download") + " Registro CSV", onclick: () => PP.Eval.descargar("puerto-palabra_" + inf.codigo + "_" + inf.sesion + "_registro.csv", PP.Eval.csvRegistro(), "text/csv;charset=utf-8") }),
       el("button", { class: "btn btn-sec", type: "button", html: U.icon("doc") + " Copiar resumen", title: "Copia el resumen (CSV) para pegarlo en una hoja de cálculo", onclick: (e) => { const b = e.currentTarget; try { navigator.clipboard.writeText(PP.Eval.csvResumen().replace(/^\ufeff/, "")).then(() => { b.innerHTML = U.icon("check") + " Copiado"; }, () => { b.textContent = "No se pudo copiar"; }); } catch (err) { b.textContent = "No se pudo copiar"; } } }),
       el("button", { class: "btn btn-sec", type: "button", html: U.icon("download") + " JSON", onclick: () => PP.Eval.descargar("puerto-palabra_" + inf.codigo + "_" + inf.sesion + ".json", PP.Eval.json(), "application/json") }),
-      el("button", { class: "btn btn-terc", type: "button", html: U.icon("back") + " Volver al juego", onclick: () => { if (PP.juego.curso) PP.juego.volverAlMundo(); else PP.UI.mostrar("pantalla-inicio"); } })
+      el("button", { class: "btn btn-terc", type: "button", html: U.icon("back") + " Volver al juego", onclick: () => { if (PP.juego.curso && PP.juego.tipoModo === "aventura") PP.juego.volverAlMundo(); else if (PP.juego.curso) PP.Modos.abrir(); else PP.UI.mostrar("pantalla-inicio"); } })
     ]);
     const pie = el("p", { class: "inf-fuente", text: "Referente curricular: " + inf.fuente + " Los textos de los criterios se reproducen literalmente; las descripciones cortas son paráfrasis del juego." });
     cont.append(btns, cab, kpis, aviso, resumen, tabla, prod, pie);

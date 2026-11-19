@@ -19,7 +19,7 @@ async def main():
             await pg.add_script_tag(path=str(RAIZ / "pruebas" / "autoplay.js"))
             await pg.click("#btn-jugar"); await pg.wait_for_timeout(200)
             await pg.click(f"#perfil-cursos .curso:nth-child({curso})"); await pg.fill("#perfil-codigo",f"T{curso}-01")
-            await pg.click("#btn-perfil-ok"); await pg.wait_for_timeout(300)
+            await pg.click("#btn-perfil-ok"); await pg.wait_for_timeout(300); await pg.click(".modo-aventura"); await pg.wait_for_timeout(300)
             await pg.click("#intro-saltar"); await pg.wait_for_timeout(900)
             await pg.click("#escena .esc-pie .btn"); await pg.wait_for_timeout(300)
             res=[]

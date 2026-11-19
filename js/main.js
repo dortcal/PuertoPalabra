@@ -65,6 +65,16 @@ window.PP = window.PP || {};
     $("#btn-gps").addEventListener("click", () => { PP.Audio.sfx("clic"); gpsBoton(); });
     $("#btn-accion").addEventListener("click", () => { PP.Input.pulsado.accion = true; if (!M.avisoCerca && !M.borron) PP.Audio.sfx("pito"); });
     $("#btn-salir-menu").addEventListener("click", () => { UI.cerrarMovil(false); salirAlMenu(); });
+    $("#btn-menu").innerHTML = U.icon("home"); $("#btn-radio").innerHTML = U.icon("radio");
+    $("#btn-menu").addEventListener("click", () => { PP.Audio.sfx("clic"); UI.confirmarSalida(); });
+    $("#btn-radio").addEventListener("click", () => { PP.Audio.init(); cambiarEmisora(1); });
+    // Continuar con código de partida
+    $("#btn-codigo").addEventListener("click", () => { PP.Audio.init(); PP.Audio.sfx("clic"); $("#codigo-msg").textContent = ""; UI.mostrar("pantalla-codigo"); setTimeout(() => $("#codigo-entrada").focus(), 80); });
+    $("#btn-codigo-ok").addEventListener("click", cargarCodigo);
+    $("#codigo-entrada").addEventListener("keydown", (e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); cargarCodigo(); } });
+    $("#btn-cambiar-modo").addEventListener("click", () => { UI.cerrarMovil(false); salirAlMenu("modos"); });
+    $("#btn-modos-volver").addEventListener("click", () => { PP.Audio.sfx("clic"); UI.mostrar("pantalla-inicio"); });
+    $("#btn-tema-volver").addEventListener("click", () => { PP.Audio.sfx("clic"); PP.Modos.abrir(); });
     $("#btn-fin-sesion").addEventListener("click", () => { UI.cerrarMovil(false); UI.informe(); });
     M.cb.marcador = (m) => { if (J.modo !== "mundo" || J.misionActiva) return; if (m.bloqueada) { UI.toast("Esta misión se desbloquea al completar " + m.requiere + " misiones.", "info"); return; } empezarMision(PP.MISIONES.find((x) => x.id === m.id)); };
     M.cb.aviso = (m) => UI.aviso(m);
@@ -76,6 +86,7 @@ window.PP = window.PP || {};
       if ((e.code === "Escape" || e.code === "KeyP") && $("#escena").hidden) UI.abrirMovil();
       if (e.code === "KeyM" && $("#escena").hidden) UI.abrirMovil("mapa");
       if (e.code === "KeyG") gpsBoton();
+      if (e.code === "KeyR" && $("#escena").hidden && !J.pausado && $("#dialogo").hidden) cambiarEmisora(e.shiftKey ? -1 : 1);
     });
     // Teclas numéricas para elegir opciones en escenas
     document.addEventListener("keydown", (e) => {
@@ -85,8 +96,8 @@ window.PP = window.PP || {};
       if (ops[n - 1]) { ops[n - 1].click(); e.preventDefault(); }
     });
     setInterval(() => { if (J.modo === "mundo" && !J.pausado) UI.ticker(); }, 16000);
-    setInterval(() => { if (E.sesion && J.modo !== "menu") { /* autoguardado ligero */ PP.Store.guardar(); } }, 20000);
-    window.addEventListener("beforeunload", () => { try { if (E.sesion) E.archivar(); PP.Store.guardar(); } catch (e) {} });
+    setInterval(() => { if (E.sesion && J.modo !== "menu") { /* autoguardado ligero */ J.guardarPos(); PP.Store.guardar(); } }, 20000);
+    window.addEventListener("beforeunload", () => { try { if (E.sesion) E.archivar(); J.guardarPos(); PP.Store.guardar(); } catch (e) {} });
     UI.mostrar("pantalla-inicio");
     PP.Audio.musica("menu");
   }
@@ -114,24 +125,35 @@ window.PP = window.PP || {};
     validar();
     ir.onclick = () => {
       if (!curso) return;
-      const codigo = cod.value.trim().replace(/[^A-Za-z0-9ºª\-_. ]/g, "").slice(0, 16) || "anónimo";
+      const codigo = cod.value.trim().replace(/[^A-Za-z0-9ºª\-_. áéíóúüñÁÉÍÓÚÜÑ]/g, "").slice(0, 16) || "anónimo";
       PP.datos.perfil = { curso, avatar, codigo, alias: PP.AVATARES.find((a) => a.id === avatar).nombre };
       PP.Store.guardar();
       empezarPartida();
     };
   }
 
-  function empezarPartida() {
+  /** Prepara curso, contenidos y sesión de evaluación. Devuelve false si no hay contenidos. */
+  function prepararJuego() {
     const p = PP.datos.perfil;
     J.curso = p.curso; J.ciclo = Math.ceil(p.curso / 2); J.avatar = PP.AVATARES.find((a) => a.id === p.avatar) || PP.AVATARES[0]; J.alias = p.alias;
     J.contenido = PP.CONTENIDO[J.curso];
-    if (!J.contenido) { UI.toast("No hay contenidos para este curso.", "mal"); return; }
+    if (!J.contenido) { UI.toast("No hay contenidos para este curso.", "mal"); return false; }
     if (!E.sesion || E.sesion.curso !== J.curso || E.sesion.codigo !== p.codigo) E.nueva(p);
+    return true;
+  }
+  // Tras el perfil (o un código de partida) se elige el modo de juego
+  function empezarPartida() { if (prepararJuego()) PP.Modos.abrir(); }
+  J.empezarPartida = empezarPartida;
+
+  /** Modo 3: aventura en la ciudad abierta */
+  J.iniciarAventura = function () {
+    if (!prepararJuego()) return;
+    J.tipoModo = "aventura"; E.marcarModo("Aventura libre");
     const pr = PP.Store.progreso();
     M.prepararDoradas(pr.doradas);
     if (!pr.introVista) { cinematica(() => { pr.introVista = true; PP.Store.guardar(); entrarAlMundo(true); }); }
     else entrarAlMundo(false);
-  }
+  };
 
   // ---------------- Cinemática de introducción ----------------
   function cinematica(fin) {
@@ -168,10 +190,12 @@ window.PP = window.PP || {};
     UI.mostrar("pantalla-juego");
     M.modoAtraccion = false; M.activo = true; J.modo = "mundo"; J.pausado = false;
     M.ajustar();
-    if (primeraVez) M.colocarJugador("colegio");
+    const pr0 = PP.Store.progreso();
+    if (primeraVez && !(pr0 && pr0.pos)) M.colocarJugador("colegio");
+    else if (pr0 && pr0.pos) { M.jugador.x = pr0.pos.x; M.jugador.y = pr0.pos.y; M.jugador.v = 0; M.cam.x = pr0.pos.x; M.cam.y = pr0.pos.y; M.orientarLibre(); }
     refrescarMarcadores();
     UI.actualizarHUD(); UI.aviso(null); UI.ticker("Radio Onda Volcán: ¡bienvenido a Puerto Palabra, " + J.alias + "!");
-    musicaBarrio(true);
+    musicaBarrio(true); radioAplicada = PP.ajustes.emisora; UI.etiquetaEmisora();
     objetivoLibre();
     PP.Input.limpiarPulsados();
     if (primeraVez) setTimeout(() => Esc.aviso({ titulo: "¿Cómo se juega?", texto: "Conduce tu moto por la ciudad y entra en las misiones (los rombos de colores).", lista: [
@@ -182,7 +206,44 @@ window.PP = window.PP || {};
     ], retrato: J.avatar, animo: "feliz", boton: "¡Entendido!" }, { tema: "onda", titulo: "Bienvenida" }).then(() => { J.modo = "mundo"; }), 400);
   }
   J.volverAlMundo = function () { UI.mostrar("pantalla-juego"); J.modo = "mundo"; J.pausar(false); M.ajustar(); };
-  function salirAlMenu() { if (E.sesion) E.archivar(); J.modo = "menu"; M.activo = false; M.modoAtraccion = true; M.limpiarObjetivos(); PP.Audio.motor(0, false); UI.mostrar("pantalla-inicio"); PP.Audio.musica("menu"); }
+  J.guardarPos = function () {
+    try { if (!PP.datos.perfil || J.tipoModo !== "aventura" || (J.modo !== "mundo" && J.modo !== "escena") || !M.jugador) return; const pr = PP.Store.progreso(); pr.pos = { x: Math.round(M.jugador.x), y: Math.round(M.jugador.y) }; } catch (e) { /* sin perfil aún */ }
+  };
+  function salirAlMenu(destino) {
+    J.guardarPos(); PP.Store.guardar();
+    if (E.sesion) E.archivar();
+    // si había una misión en curso, se abandona limpiamente
+    J.misionActiva = null; const esc = $("#escena"); if (esc) { esc.hidden = true; esc.innerHTML = ""; } const rs = $("#resultado"); if (rs) { rs.hidden = true; rs.innerHTML = ""; }
+    PP.Voz.callar(); J.pausado = false;
+    J.modo = "menu"; M.activo = false; M.modoAtraccion = true; M.limpiarObjetivos(); PP.Audio.motor(0, false);
+    if (destino === "modos" && PP.datos.perfil) PP.Modos.abrir(); else { UI.mostrar("pantalla-inicio"); PP.Audio.musica("menu"); }
+  }
+  J.salirAlMenu = salirAlMenu;
+
+  // ---------------- Código de partida ----------------
+  function cargarCodigo() {
+    const msg = $("#codigo-msg"), r = PP.Codigo.leer($("#codigo-entrada").value);
+    if (!r.ok) { msg.textContent = r.error; msg.className = "codigo-msg mal"; PP.Audio.sfx("mal"); return; }
+    const res = PP.Codigo.aplicar(r.datos);
+    msg.className = "codigo-msg bien"; msg.textContent = "¡Partida recuperada! Misiones: " + res.misiones + " · Palabras doradas: " + res.doradas + ".";
+    PP.Audio.sfx("bien"); $("#codigo-entrada").value = "";
+    setTimeout(() => empezarPartida(), 700);
+  }
+
+  // ---------------- Radio de la moto ----------------
+  let radioAplicada = null;
+  J.refrescarRadio = function () {
+    const id = PP.ajustes.emisora; if (id === radioAplicada) return;
+    radioAplicada = id; UI.reiniciarTicker();
+    if (J.modo === "mundo" && !J.misionActiva) musicaBarrio(true);
+  };
+  function cambiarEmisora(dir) {
+    if (J.modo !== "mundo" && J.modo !== "escena") return;
+    const L = PP.Audio.RADIOS, i = L.findIndex((r) => r.id === PP.ajustes.emisora), r = L[(Math.max(0, i) + dir + L.length) % L.length];
+    PP.ajustes.emisora = r.id; PP.Store.guardar(); PP.Audio.sfx("radio");
+    UI.toast(U.icon("radio") + " <b>" + U.esc(r.nombre) + (r.frec ? " " + r.frec : "") + "</b><br><small>" + U.esc(r.estilo) + "</small>", "info", 2400);
+    J.refrescarRadio();
+  }
 
   J.pausar = function (p) {
     J.pausado = p; M.activo = !p && J.modo !== "menu";
@@ -195,9 +256,16 @@ window.PP = window.PP || {};
     const j = M.jugador, b = PP.Ciudad.barrioDe(Math.floor(j.x / PP.Ciudad.T), Math.floor(j.y / PP.Ciudad.T));
     if (b !== ultimoBarrio || forzar) {
       ultimoBarrio = b;
-      if (PP.BARRIOS[b]) { PP.Audio.musica(PP.BARRIOS[b].musica); if (!forzar) UI.toast("<b>" + U.esc(PP.BARRIOS[b].nombre) + "</b><br><small>Bloque " + PP.BARRIOS[b].bloque + ": " + U.esc(PP.CURRICULO.bloques[PP.BARRIOS[b].bloque].nombre) + "</small>", "barrio", 2600); }
-      else PP.Audio.musica("menu");
+      if (PP.BARRIOS[b]) { aplicarMusica(PP.BARRIOS[b].musica); if (!forzar) UI.toast("<b>" + U.esc(PP.BARRIOS[b].nombre) + "</b><br><small>Bloque " + PP.BARRIOS[b].bloque + ": " + U.esc(PP.CURRICULO.bloques[PP.BARRIOS[b].bloque].nombre) + "</small>", "barrio", 2600); }
+      else aplicarMusica("menu");
     }
+  }
+  /** Con la radio en «auto» suena la música del barrio; con otra emisora, la de la emisora */
+  function aplicarMusica(pistaBarrio) {
+    const R = PP.Audio.radioActual();
+    if (R.id === "auto") PP.Audio.musica(pistaBarrio);
+    else if (R.pista) PP.Audio.musica(R.pista);
+    else PP.Audio.pararMusica();
   }
   setInterval(() => { if (J.modo === "mundo" && !J.pausado) musicaBarrio(false); }, 1000);
 
@@ -262,7 +330,13 @@ window.PP = window.PP || {};
     const B = PP.BARRIOS[mis.barrio];
     const r0 = await Esc.aviso({ titulo: mis.titulo, texto: mis.resumen, icono: "trophy", lista: ["<b>" + U.esc(B.nombre) + "</b> · Bloque " + B.bloque + ": " + U.esc(PP.CURRICULO.bloques[B.bloque].nombre), "Practicarás: " + mis.criterios.map((c) => U.esc(PP.CURRICULO.etiquetas[c].toLowerCase())).join("; ") + "."], boton: "Empezar misión" }, ctx);
     if (r0.abandonada) return terminarMision(mis, ctx, true);
-    for (const paso of mis.pasos) {
+    const completa = await correrPasos(mis, ctx, mis.pasos, false);
+    terminarMision(mis, ctx, !completa);
+  }
+
+  /** Ejecuta los pasos de una misión. Devuelve false si se abandona. sinMundo: modos de reto (sin conducir). */
+  async function correrPasos(mis, ctx, pasos, sinMundo) {
+    for (const paso of pasos) {
       ctx.crit = paso.crit || null;
       const datos = resolverRef(paso.ref);
       let r;
@@ -290,15 +364,16 @@ window.PP = window.PP || {};
           delete ctx.repetir; delete ctx.textoApoyo; delete ctx.apoyoInicial; break;
         }
         case "ir": r = await pasoIr(datos, ctx, paso.ref); break;
-        case "caza": r = await pasoCaza(datos, ctx); break;
+        case "caza": r = sinMundo ? await Esc.caza(datos, ctx) : await pasoCaza(datos, ctx); break;
         case "paginas": r = await pasoPaginas(datos, ctx); break;
         case "persecucion": r = await pasoPersecucion(ctx); break;
         default: r = { hecho: true };
       }
-      if (!r || r.abandonada) return terminarMision(mis, ctx, true);
+      if (!r || r.abandonada) return false;
     }
-    terminarMision(mis, ctx, false);
+    return true;
   }
+  J.correrPasos = correrPasos;
 
   function volverAConducir() { J.modo = "mundo"; M.activo = true; J.pausado = false; PP.Input.limpiarPulsados(); }
 

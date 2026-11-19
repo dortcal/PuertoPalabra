@@ -139,6 +139,37 @@ window.PP = window.PP || {};
     });
   };
 
+  // ======================= CAZA (versión sin conducir, para los modos de reto) =======================
+  S.caza = function (d, ctx) {
+    return promesa((res) => {
+      const m = marco({ tema: ctx.tema, mision: ctx.titulo, titulo: "¡A la caza!", consigna: U.esc(d.instruccion) + (d.explica ? " <small>" + U.esc(d.explica) + "</small>" : ""), icono: "gps", alSalir: () => { m.cerrar(); res({ abandonada: true }); } });
+      const buenas = U.shuffle(d.buenas), malas = U.shuffle(d.malas).map((x) => { const [t, por] = x.split("|"); return { t, por }; });
+      const objetivo = Math.min(d.objetivo || 5, buenas.length);
+      const items = U.shuffle(buenas.slice(0, objetivo + 2).map((t) => ({ t, ok: true })).concat(malas.slice(0, objetivo + 2).map((x) => ({ t: x.t, por: x.por, ok: false }))));
+      const marcador = el("p", { class: "caza-marcador", "aria-live": "polite" });
+      const arena = el("div", { class: "caza-arena", role: "group", "aria-label": "Palabras: toca las que cumplen la condición" });
+      m.cuerpo.append(marcador, arena);
+      let cogidas = 0;
+      const prog = () => { marcador.innerHTML = U.icon("star") + " Recogidas: <b>" + cogidas + " / " + objetivo + "</b>"; };
+      prog();
+      items.forEach((it, k) => {
+        const b = el("button", { class: "burbuja", type: "button", text: it.t, style: { animationDelay: (-(k * 0.43) % 3).toFixed(2) + "s" } });
+        b.addEventListener("click", () => {
+          PP.Eval.registrar({ crit: ctx.crit, ok: it.ok, mecanica: "caza", mision: ctx.id, item: "caza-" + it.t, respuesta: it.t, correcta: it.ok ? it.t : "(no recoger)", detalle: it.ok ? "" : "Eligió «" + it.t + "», que no cumplía la condición" });
+          b.disabled = true;
+          if (it.ok) {
+            b.classList.add("ok"); cogidas++; prog(); PP.Audio.sfx("recoger"); PP.juego.sumar(12);
+            m.fb("<strong>" + U.esc(it.t) + "</strong> " + U.esc(d.fbBien || "¡Sí!"), "bien");
+            if (cogidas >= objetivo) { arena.querySelectorAll(".burbuja:not(.ok)").forEach((x) => { x.disabled = true; }); m.pie.innerHTML = ""; m.pie.appendChild(m.boton("¡Hecho! " + U.icon("play"), () => { m.cerrar(); res({ hecho: true }); })); }
+          } else {
+            b.classList.add("mal"); m.fb("<strong>" + U.esc(it.t) + "</strong>: " + U.esc(it.por || "esta palabra no cumple la condición."), "mal");
+          }
+        });
+        arena.appendChild(b);
+      });
+    });
+  };
+
   // ======================= RADIO =======================
   S.radio = function (d, ctx) {
     return promesa((res) => {

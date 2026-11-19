@@ -501,3 +501,62 @@ body.reducir-movimiento *, body.reducir-movimiento *::before, body.reducir-movim
 /* Pizarras digitales y pantallas grandes: todo un poco mayor para verse desde el fondo del aula */
 @media (min-width: 1600px) and (min-height: 860px) { :root { --escala-pantalla: 1.22; } .esc-caja { width: min(1100px, 100%); } .panel { width: min(1100px, 100%); } .panel-ancho { width: min(1400px, 100%); } #minimapa { width: 240px; height: 190px; } }
 @media (min-width: 2300px) and (min-height: 1200px) { :root { --escala-pantalla: 1.45; } .esc-caja { width: min(1400px, 100%); } }
+
+/* ---------------- Diálogo, código de partida y radio ---------------- */
+.dialogo-fondo { position: fixed; inset: 0; z-index: 60; display: grid; place-items: center; padding: 14px; background: rgba(12, 18, 40, .72); backdrop-filter: blur(3px); }
+.dialogo { width: min(560px, 100%); max-height: calc(100vh - 28px); overflow: auto; background: var(--crema); border: 5px solid var(--noche); border-radius: 26px; padding: clamp(16px, 3vw, 26px); box-shadow: var(--sombra); animation: entraEsc .3s cubic-bezier(.2, .9, .3, 1.3); }
+.dialogo h2 { font-family: var(--f-titulo); margin: 0 0 .4em; }
+.dialogo .fila-centro { margin-top: 14px; }
+.bloque-codigo { background: #fff; border: 3px dashed var(--noche); border-radius: 16px; padding: 12px; margin: 10px 0; }
+.bloque-codigo p { margin: .3em 0; }
+.codigo-valor { display: block; margin: 8px 0; padding: 10px; background: var(--noche); color: var(--oro); border-radius: 12px; font: 900 1.15em/1.5 "Courier New", ui-monospace, monospace; letter-spacing: .06em; word-break: break-all; text-align: center; user-select: all; -webkit-user-select: all; }
+.codigo-estado { font-size: .9em; font-weight: 700; color: var(--ok); }
+.campo-codigo { display: block; margin: 12px 0; }
+.campo-codigo span { display: block; font-weight: 800; margin-bottom: 4px; }
+.campo-codigo textarea { width: 100%; padding: 12px; border: 3px solid var(--noche); border-radius: 14px; font: 800 1.15em/1.4 "Courier New", ui-monospace, monospace; text-transform: uppercase; letter-spacing: .05em; resize: vertical; background: #fff; color: var(--texto); }
+.codigo-msg { min-height: 1.5em; font-weight: 800; text-align: center; }
+.codigo-msg.mal { color: var(--mal); }
+.codigo-msg.bien { color: var(--ok); }
+@media (max-width: 760px) { .hud-der { gap: 5px; } .hud-der .btn-icono { width: 42px; height: 42px; } }
+
+/* ---------------- Modos de juego ---------------- */
+.modos-rejilla { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 16px; margin: 16px 0; }
+.modo-tarjeta { --c1: #ffd23f; --c2: #ff7a45; position: relative; display: flex; flex-direction: column; align-items: flex-start; gap: 8px; text-align: left; padding: 18px; min-height: 250px; border-radius: 24px; border: 4px solid var(--noche); box-shadow: 0 7px 0 var(--noche); background: linear-gradient(160deg, var(--c1), var(--c2)); color: var(--noche); transition: transform .15s; overflow: hidden; }
+.modo-tarjeta:hover, .modo-tarjeta:focus-visible { transform: translateY(-4px) rotate(-.6deg); }
+.modo-tarjeta:active { transform: translateY(3px); box-shadow: 0 2px 0 var(--noche); }
+.modo-reto { --c1: #ffe066; --c2: #ff9f43; }
+.modo-tema { --c1: #9ff0e0; --c2: #3bceac; }
+.modo-aventura { --c1: #ffb3c7; --c2: #c48cff; }
+.modo-ico { display: grid; place-items: center; width: 64px; height: 64px; border-radius: 18px; background: var(--noche); color: var(--oro); }
+.modo-ico .ico { width: 38px; height: 38px; }
+.modo-tit { font-family: var(--f-titulo); font-size: 1.5em; line-height: 1.1; }
+.modo-txt { font-weight: 600; line-height: 1.35; }
+.modo-etq { margin-top: auto; padding: 4px 12px; border-radius: 999px; background: rgba(255, 255, 255, .75); border: 2px solid var(--noche); font-weight: 800; font-size: .85em; }
+.bloques-rejilla { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; margin: 14px 0; }
+.bloque-tarjeta { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 12px 14px; text-align: left; border-radius: 18px; border: 4px solid var(--noche); border-left-width: 14px; border-left-color: var(--c); background: #fff; box-shadow: 0 5px 0 var(--noche); color: var(--noche); }
+.bloque-tarjeta b { font-size: 1.05em; }
+.bloque-tarjeta.sel { background: var(--c); }
+.tema-detalle { border: 4px dashed var(--c, var(--noche)); border-radius: 20px; padding: 14px; min-height: 80px; background: #fff; }
+.tema-detalle h3 { margin: 0 0 8px; font-family: var(--f-titulo); }
+.criterios-lista { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 8px; margin-top: 8px; }
+.criterio-btn { justify-content: flex-start; text-align: left; flex-wrap: wrap; gap: .3em .6em; }
+.criterio-btn small { margin-left: auto; opacity: .8; }
+.reto-caja { width: min(640px, 100%); }
+.reto-sub { margin: 0 0 8px; font-weight: 700; color: #444; }
+.tira-retos { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; list-style: none; padding: 0; margin: 10px 0; }
+.chip-reto { min-width: 40px; height: 40px; padding: 0 6px; display: grid; place-items: center; border-radius: 12px; border: 3px solid var(--noche); background: #eee; font-weight: 900; color: var(--noche); }
+.chip-reto.hecho { background: var(--c); }
+.chip-reto.actual { background: #fff; border-color: var(--c); box-shadow: 0 0 0 4px var(--c); animation: latido 1.2s ease-in-out infinite; }
+.chip-reto.saltado { background: #ddd; color: #666; }
+@keyframes latido { 50% { transform: scale(1.1); } }
+.racha { margin: 6px 0; font-weight: 800; }
+.reto-kpis { margin: 10px 0; }
+.caza-marcador { font-weight: 800; margin: 4px 0 10px; text-align: center; }
+.caza-arena { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; padding: 14px; border-radius: 22px; background: radial-gradient(circle at 30% 20%, rgba(255, 255, 255, .55), transparent 60%), rgba(59, 206, 172, .22); min-height: 220px; align-content: center; }
+.burbuja { min-height: 56px; padding: .5em 1.1em; border-radius: 999px; border: 3px solid var(--noche); background: #fff; color: var(--noche); font-weight: 800; font-size: 1.05em; box-shadow: 0 4px 0 var(--noche); animation: flota 3s ease-in-out infinite; }
+.burbuja:hover:not(:disabled) { background: var(--oro); }
+.burbuja.ok { background: #b7f0c8; border-color: var(--ok); animation: none; }
+.burbuja.mal { background: #ffd6d6; border-color: var(--mal); text-decoration: line-through; animation: none; opacity: .75; }
+@keyframes flota { 50% { transform: translateY(-8px); } }
+body.reducir-movimiento .burbuja, body.reducir-movimiento .chip-reto.actual { animation: none; }
+@media (prefers-reduced-motion: reduce) { .burbuja, .chip-reto.actual { animation: none; } }

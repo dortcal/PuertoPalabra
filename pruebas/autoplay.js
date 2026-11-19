@@ -25,6 +25,12 @@
       const cont = $$(".esc-pie .btn").find((b) => /Continuar/.test(b.textContent)); if (cont) cont.click();
       return true;
     }
+    if ($(".caza-arena")) {
+      const buenas = [].concat(...PP.juego.contenido.caza.map((c) => c.buenas));
+      for (const b of $$(".caza-arena .burbuja:not([disabled])")) { if (buenas.includes(b.textContent) && !$(".caza-arena .burbuja.ok:nth-child(99)")) { b.click(); await sleep(30); } }
+      const fin = $$(".esc-pie .btn").find((b) => /Hecho/.test(b.textContent)); if (fin) fin.click();
+      return true;
+    }
     if ($(".parejas")) {
       const izq = $$(".parejas .col:first-child .carta:not([disabled])");
       if (izq.length) {
@@ -145,6 +151,7 @@
     return true;
   }
 
+  window.__auto = { escena, autopista, mundo };
   window.autoMision = async function (id) {
     const J = PP.juego, M = PP.Mundo;
     const mis = PP.MISIONES.find((m) => m.id === id);

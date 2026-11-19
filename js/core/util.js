@@ -86,6 +86,7 @@ window.PP = window.PP || {};
     download: '<path d="M12 3v12M7 10l5 5 5-5" stroke="currentColor" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/><rect x="4" y="18" width="16" height="3" rx="1"/>',
     print: '<rect x="6" y="2" width="12" height="6"/><rect x="3" y="8" width="18" height="9" rx="2"/><rect x="7" y="14" width="10" height="8" fill="#fff" stroke="currentColor" stroke-width="1.5"/>',
     redo: '<path d="M19 8a8 8 0 1 0 1.5 6" stroke="currentColor" stroke-width="2.6" fill="none" stroke-linecap="round"/><path d="M20 3v6h-6z"/>',
+    home: '<path d="M3 11.5L12 4l9 7.5V21h-6v-6H9v6H3z"/>',
     exit: '<path d="M10 4H5v16h5" stroke="currentColor" stroke-width="2.4" fill="none"/><path d="M14 8l4 4-4 4M18 12H9" stroke="currentColor" stroke-width="2.4" fill="none" stroke-linecap="round"/>'
   };
   U.icon = (name, cls) => '<svg class="ico ' + (cls || "") + '" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">' + (ICON[name] || "") + "</svg>";

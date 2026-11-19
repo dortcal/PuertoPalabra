@@ -12,6 +12,14 @@ Puerto Palabra es un videojuego de ciudad abierta en vista cenital. El alumnado 
 | Taller de la Lengua | IV. Reflexión sobre la lengua | Taller de tuneo · Imprenta sin borrones · Caza gramatical · Autopista del Borrón |
 | (final) | — | Edición especial: persecución, noticia y portada (se desbloquea con 10 misiones) |
 
+### Modos de juego
+
+- **Gran Reto** (unos 15-25 min): 8 retos de los cuatro bloques. Útil como sesión de evaluación formativa completa.
+- **Repaso por temáticas:** el alumnado o el docente elige un bloque o un criterio y se trabaja solo eso. Útil para refuerzo o ampliación tras una unidad.
+- **Aventura libre:** exploración de la ciudad con misiones; mejor para varias sesiones.
+
+Los tres generan el mismo informe y este indica el modo usado. En los modos de reto no se trabaja la conducción, pero sí las mismas pruebas de lengua. Para retomar una partida en otro dispositivo se usa el **código de partida** (botón de la casa → copiar código); recupera el progreso, no las evidencias del informe.
+
 ## 2. Qué cambia de un curso a otro
 
 Todos los cursos comparten las mismas misiones, igual que el decreto mantiene los mismos criterios en los tres ciclos. Cambian:

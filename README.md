@@ -6,6 +6,24 @@ La Banda del Borrón está borrando las palabras de Puerto Palabra, una ciudad c
 
 La estética de «ciudad abierta» se inspira en los juegos de mundo abierto, pero el contenido es apto para Primaria: no hay violencia ni delitos.
 
+## Modos de juego
+
+Tras elegir curso y reportero/a hay tres modos:
+
+1. **Gran Reto:** ocho retos que mezclan los cuatro bloques de Lengua (dos por bloque, en orden alterno), con racha y estrellas. No hay que conducir.
+2. **Repaso por temáticas:** se elige un bloque o un criterio de evaluación y se practican solo sus retos.
+3. **Aventura libre:** la ciudad abierta con misiones, barrios que recuperan el color, radio y palabras doradas.
+
+Los modos 1 y 2 reutilizan las pruebas de las misiones (mismas mecánicas y misma evaluación), sin los pasos que exigen conducir, y no cambian el progreso de la ciudad. Todos alimentan el mismo informe docente, que indica el modo usado.
+
+## Guardar y retomar (código de partida)
+
+En el juego, el botón de la casa (o el móvil → *Partida*) muestra un **código** del tipo `PP1-049G-0082-…`. Se puede copiar o descargar. Con él, desde *Continuar con código* en la pantalla de inicio, se recupera el curso, las misiones y estrellas, las palabras doradas, los logros, el vehículo y la posición. El código lleva un control de errores y no contiene datos personales. Recupera el **progreso**; las evidencias detalladas del informe docente se guardan solo en el dispositivo donde se jugó.
+
+## Radio de la moto
+
+En la aventura, la tecla **R** (o el botón de la radio) cambia de emisora: Radio Onda Volcán (música según el barrio), Alisio FM, Timple y Brisa, Roque Rock, Salsa del Atlántico, Radio Teide Clásica, Radio Palabra («¿Sabías que…?») o radio apagada. La música se genera en el navegador; no hay archivos de audio ni licencias de terceros.
+
 ## Cómo jugar
 
 - **En línea:** abre la dirección de GitHub Pages del repositorio (ver «Publicar»).
@@ -23,6 +41,7 @@ js/core/                Utilidades, guardado local, audio (Web Audio), voz (Web 
 js/world/               Ciudad (generación y dibujo por trozos), mundo abierto (vehículo, tráfico, GPS)
 js/juegos/              Escenas de misión (diálogo, radio, cazabulos, taller, corrector…) y autopista
 js/eval/                Registro de evidencias, informe docente, exportación CSV/JSON, historial
+js/modos.js             Gran Reto y Repaso por temáticas
 js/ui/                  HUD, móvil del juego, ajustes y retratos SVG de los personajes
 js/data/curriculo.js    Criterios oficiales (texto literal por ciclo)
 js/data/misiones.js     Plantilla de 15 misiones (común a todos los cursos)

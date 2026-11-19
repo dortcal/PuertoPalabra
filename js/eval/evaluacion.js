@@ -57,6 +57,8 @@ window.PP = window.PP || {};
     s.eventos.push(reg);
     return reg;
   };
+  /** Anota los modos de juego usados en la sesión (Aventura, Gran Reto, Repaso…) para el informe */
+  E.marcarModo = function (nombre) { if (!E.sesion) return; E.sesion.modos = E.sesion.modos || []; if (!E.sesion.modos.includes(nombre)) E.sesion.modos.push(nombre); };
   E.produccion = function (p) { if (E.sesion) E.sesion.producciones.push(Object.assign({ t: Date.now() }, p)); };
   E.audio = function (a) { if (E.sesion) E.sesion.audios.push(Object.assign({ t: Date.now() }, a)); };
   E.misionCompletada = function (id, datos) { if (E.sesion) E.sesion.misiones[id] = Object.assign({ t: Date.now() }, datos); };
@@ -99,7 +101,7 @@ window.PP = window.PP || {};
     const prim = s.eventos.filter((e) => e.intento === 1);
     const aciertos = prim.reduce((a, e) => a + e.ok, 0);
     return {
-      juego: "Puerto Palabra", area: "Lengua Castellana y Literatura", curso: s.curso, ciclo: s.ciclo, codigo: s.codigo, alias: s.alias,
+      juego: "Puerto Palabra", modos: (s.modos || []).slice(), area: "Lengua Castellana y Literatura", curso: s.curso, ciclo: s.ciclo, codigo: s.codigo, alias: s.alias,
       sesion: s.id, inicio: s.inicio, fin: Date.now(), duracionMs: Date.now() - s.inicio,
       puntos: s.puntos, misiones: s.misiones, nMisiones: Object.keys(s.misiones).length,
       intentos: s.eventos.length, itemsPrimerIntento: prim.length, pctAciertos: prim.length ? aciertos / prim.length : null,

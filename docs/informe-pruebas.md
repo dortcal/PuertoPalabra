@@ -26,6 +26,18 @@ Fecha: 19/11/2026. Entorno: Google Chrome (sin interfaz gráfica) controlado con
 | Publicación en GitHub Pages | No verificado | Las rutas son relativas y el juego funciona abriendo el archivo directamente (probado con `file://`). No se ha publicado en un repositorio |
 | Validador estático de la skill | Ejecutado | 0 errores. Sus 4 avisos son falsos positivos porque el JS y el CSS están en archivos externos |
 
+## Ampliación: modos de juego, código de partida, radio y menú (19/11/2026)
+
+Ejecutado en Chrome (Playwright, modo sin pantalla):
+
+- Gran Reto completo (8 retos) en 1.º y 3.º; Repaso del criterio 9.1 en 1.º y 3.º; informe con el modo indicado; 0 errores de consola.
+- Aventura libre: 15 misiones completas en 4.º y pruebas de límites (misión final bloqueada, doble clic, abandono, pausa, modo tranquilo).
+- Código de partida: generación, copia, recuperación en un navegador sin datos, rechazo de códigos vacíos, incompletos o con un carácter cambiado, aceptación en minúsculas y con espacios, y recuperación idéntica (el código regenerado coincide).
+- Botón de menú del juego: diálogo, pausa, Esc, volver y salir; pestaña *Partida* del móvil.
+- Radio: ocho emisoras recorridas con la tecla R; cada una cambia de pista y de cartel.
+
+No verificado: que el audio de las emisoras suene bien en altavoces reales (solo se comprobó que las pistas se programan sin errores), la copia al portapapeles fuera de Chrome y el uso en tableta o pizarra digital reales.
+
 ## Errores encontrados y corregidos durante las pruebas
 
 1. **Autopista bloqueada al terminar**: un conflicto de nombres hacía que la misión no se cerrara. Corregido.
@@ -37,6 +49,9 @@ Fecha: 19/11/2026. Entorno: Google Chrome (sin interfaz gráfica) controlado con
    - una palabra mal formada en el taller de 5.º;
    - un ítem con una explicación de acentuación imprecisa en 4.º («cómics» no es esdrújula);
    - un ítem de rima confuso en 4.º, que se ha eliminado.
+
+- Con el código de jugador por defecto («anónimo») el progreso se guardaba bajo otro nombre al volver a jugar (se perdían las letras con tilde). Corregido.
+- Con los controles clásicos la moto arrancaba mirando a una pared. Ahora arranca orientada a la calle despejada.
 
 ## Pendiente de comprobar en el aula
 
