@@ -36,6 +36,16 @@ El informe docente muestra, dentro de cada criterio, el porcentaje por **tipo de
 
 Inspiración (sin copiar diseños ni contenidos): juegos de @soyprofehector, entre ellos *Tridino* (clase de palabra en contexto), *El Guardián de las Tildes* (agudas, llanas y esdrújulas) y *Código Lector* (comprensión lectora).
 
+## Criterio de diseño: solo actividades evaluables automáticamente (19/11/2026)
+
+Puerto Palabra solo incluye retos cuya respuesta el programa puede comprobar: elecciones, ordenaciones, clasificaciones, correcciones y emparejamientos. Se han retirado la escritura libre (titulares, versos, recomendaciones, portada), la grabación de voz y la elección libre de lectura sin respuesta correcta.
+
+Consecuencias para la cobertura curricular:
+
+- **3.1 (producción oral) y 7.2 (compartir la experiencia lectora)** no tienen ninguna actividad en el juego; el informe los muestra como «No trabajado en esta sesión» y deben valorarse en el aula.
+- **5.1 (producción escrita)** solo se observa mediante la ordenación de las partes de una noticia (misión F), por lo que su evidencia es limitada.
+- **8.2 (creación literaria)** solo se observa mediante el reconocimiento de rimas y recursos.
+
 ## Cómo se calcula el nivel observado
 
 - Solo cuenta el **primer intento** de cada reto; los reintentos se registran como aprendizaje («corrigió tras la retroalimentación»).
