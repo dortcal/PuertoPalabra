@@ -215,6 +215,9 @@ window.PP = window.PP || {};
       case "desbloqueo": [0, 7, 12, 16, 19, 24].forEach((s, i) => pluck(d, t + i * 0.07, mtof(67 + s), 0.6, 0.14, 5000)); break;
       case "salto": { const o = c.createOscillator(), g = c.createGain(); o.type = "square"; o.frequency.setValueAtTime(330, t); o.frequency.exponentialRampToValueAtTime(880, t + 0.14); const f = c.createBiquadFilter(); f.type = "lowpass"; f.frequency.value = 2400; o.connect(f); f.connect(g); g.connect(d); env(g, t, 0.005, 0.03, 0.12, 0.4, 0.05, 0.16); o.start(t); o.stop(t + 0.2); break; }
       case "golpe": ruidoGolpe(d, t, 0.45, "highpass", 1800, 0.05); pluck(d, t, mtof(84), 0.12, 0.1, 6000); break;
+      case "aro": [0, 0.07, 0.14].forEach((dd, i) => pluck(d, t + dd, mtof(86 - i * 5), 0.5, 0.1 - i * 0.025, 9000)); ruidoGolpe(d, t, 0.25, "highpass", 2500, 0.08); break;
+      case "ovacion": { const s = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain(); s.buffer = ruido; f.type = "bandpass"; f.frequency.value = 1100; f.Q.value = 0.6; g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.16, t + 0.25); g.gain.exponentialRampToValueAtTime(0.0001, t + 1.6); s.connect(f); f.connect(g); g.connect(d); s.start(t); s.stop(t + 1.7); break; }
+      case "aterriza": ruidoGolpe(d, t, 0.18, "lowpass", 600, 0.08); break;
       case "radio": ruidoGolpe(d, t, 0.15, "bandpass", 1200, 0.5); break;
       default: break;
     }

@@ -622,6 +622,12 @@ window.PP = window.PP || {};
     } else {
       g.font = "800 18px 'Trebuchet MS', sans-serif"; const w = Math.max(54, g.measureText(f.t).width + 26);
       g.translate(0, -16 + bob);
+      if (f.manual && !U.prefiereMenosMovimiento()) {
+        // sílaba «al viento»: se mece y deja remolinos
+        g.rotate(Math.sin(t * 2.2 + f.fase) * 0.12);
+        g.strokeStyle = "rgba(255,255,255,0.7)"; g.lineWidth = 2; g.lineCap = "round";
+        for (let k = 0; k < 2; k++) { const o = ((t * 40 + k * 30 + f.fase * 10) % 60) - 30; g.beginPath(); g.arc(-w / 2 - 14 + o * 0.2, -10 + k * 18, 8, Math.PI * 0.2, Math.PI * 1.3); g.stroke(); }
+      }
       g.fillStyle = "#fff"; D.redondeado(g, -w / 2, -18, w, 36, 10); g.fill();
       g.strokeStyle = f.color || "#7b6cf6"; g.lineWidth = 4; D.redondeado(g, -w / 2, -18, w, 36, 10); g.stroke();
       g.fillStyle = "#1b1b2f"; g.textAlign = "center"; g.textBaseline = "middle"; g.fillText(f.t, 0, 1);

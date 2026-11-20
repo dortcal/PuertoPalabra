@@ -66,7 +66,7 @@ index.html              Pantallas y capas de interfaz
 css/estilos.css         Dirección de arte, adaptación de pantalla, impresión del informe
 js/core/                Utilidades, guardado local, audio (Web Audio), voz (Web Speech), controles
 js/world/               Ciudad (generación y dibujo por trozos), mundo abierto (vehículo, tráfico, GPS)
-js/juegos/              minijuegos.js (golf, penaltis, canastas, Saltarrimas) · Escenas de misión (ampliacion.js: tildes, cinta clasificadora, guion secreto) (diálogo, radio, cazabulos, taller, corrector…) y autopista
+js/juegos/              minijuegos.js (golf, penaltis, canastas, Saltarrimas) y minijuegos-arte.js (personajes y fondos) · Escenas de misión (ampliacion.js: tildes, cinta clasificadora, guion secreto) (diálogo, radio, cazabulos, taller, corrector…) y autopista
 js/eval/                Registro de evidencias, informe docente, exportación CSV/JSON, historial
 js/modos.js             Gran Reto y Repaso por temáticas
 js/ui/                  HUD, móvil del juego, ajustes y retratos SVG de los personajes

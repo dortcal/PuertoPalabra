@@ -450,6 +450,16 @@ window.PP = window.PP || {};
     });
   }
 
+  /** Rótulo grande de celebración sobre la ciudad */
+  function bannerCiudad(txt, color) { const b = el("div", { class: "mj-banner mj-banner-ciudad", text: txt, "aria-hidden": "true" }); b.style.setProperty("--bc", color || "#ffd23f"); document.body.appendChild(b); setTimeout(() => b.remove(), 1500); }
+  /** Cuenta atrás 3, 2, 1, ¡YA! */
+  function cuentaAtras(fin) {
+    const c = el("div", { class: "mj-cuenta", "aria-hidden": "true" }); document.body.appendChild(c);
+    const pasos = ["3", "2", "1", "¡YA!"]; let i = 0;
+    const sig = () => { if (i >= pasos.length) { c.remove(); fin(); return; } c.innerHTML = '<span class="' + (i === 3 ? "ya" : "") + '">' + pasos[i] + "</span>"; PP.Audio.sfx(i === 3 ? "inicio" : "tecla"); i++; setTimeout(sig, U.prefiereMenosMovimiento() ? 350 : 700); };
+    UI.toast("¡Preparados!", "info", 1200); sig();
+  }
+
   // Minijuego «Carrera de pistas» (4.1): leer una pista, deducir el lugar y llegar antes que la furgoneta
   function pasoCarrera(ctx) {
     return new Promise(async (res) => {
@@ -461,7 +471,6 @@ window.PP = window.PP || {};
       let etapa = 0, ganadas = 0, reloj = null, arranque = null, cerrado = false;
       const limpiar = () => { cerrado = true; clearInterval(reloj); clearTimeout(arranque); M.limpiarObjetivos(); J.gpsActual = null; };
       const salir = () => { limpiar(); res({ abandonada: true }); };
-      volverAConducir();
       function nueva() {
         if (cerrado) return;
         if (etapa >= etapas) { limpiar(); J.modo = "escena"; M.activo = false; M.confeti(); PP.Audio.sfx("victoria"); return Esc.aviso({ titulo: "¡Meta!", texto: "Has ganado " + ganadas + " de " + etapas + " etapas a la furgoneta del Borrón.", icono: "trophy", boton: "Continuar" }, ctx).then(() => res({ hecho: true, ganadas })); }
@@ -497,6 +506,7 @@ window.PP = window.PP || {};
             clearInterval(reloj); clearTimeout(arranque); M.rival = null; M.destinos = []; M.gps(null);
             PP.Audio.sfx(gana ? "victoria" : "bien"); M.chispas(dest.x, dest.y, "#ffe066", 30);
             UI.toast(U.icon("check") + " ¡Es " + U.esc(dest.etiqueta) + "!" + (gana ? " Has ganado la etapa." : ""), "bien", 2600);
+            bannerCiudad(gana ? "¡ETAPA GANADA!" : "¡LLEGASTE!", gana ? "#ffd23f" : "#9ff0e0"); M.confeti();
             etapa++; setTimeout(nueva, 1400);
           } else {
             PP.Audio.sfx("mal"); UI.toast(U.icon("cross") + " Aquí no es. Vuelve a leer la pista: ¿qué se hace en " + U.esc(dest.etiqueta) + "?", "mal", 4200);
@@ -504,7 +514,7 @@ window.PP = window.PP || {};
           }
         });
       }
-      nueva();
+      cuentaAtras(() => { if (cerrado) return; volverAConducir(); nueva(); });
     });
   }
 
@@ -541,7 +551,7 @@ window.PP = window.PP || {};
             f.vivo = false; sig++; PP.Audio.sfx("recoger"); J.sumar(8); M.fichaCerca = null; UI.aviso(null);
             if (sig >= s.length) {
               E.registrar({ crit: ctx.crit || "9.1", ok: errores.length === 0, mecanica: "busqueda-silabas", subtipo: "separar sílabas", mision: ctx.id, item: "silabas-" + it.p, respuesta: errores.length ? errores.join(", ") : s.join("-"), correcta: s.join("-"), detalle: errores.length ? "Al separar «" + it.p + "» recogió: " + errores.join(", ") : "" });
-              UI.toast(U.icon("check") + " <b>" + U.esc(s.join("-")) + "</b>: ¡palabra completa!", "bien", 2400); M.fichas = []; w++; setTimeout(palabra, 1200);
+              UI.toast(U.icon("check") + " <b>" + U.esc(s.join("-")) + "</b>: ¡palabra completa!", "bien", 2400); bannerCiudad(it.p.toUpperCase() + "!", "#ff922b"); M.confeti(); PP.Audio.sfx("desbloqueo"); M.fichas = []; w++; setTimeout(palabra, 1200);
             } else { pintar(); UI.toast(U.icon("check") + " «" + U.esc(f.t) + "»", "bien", 1200); }
           } else if (f.falso) {
             f.vivo = false; errores.push(f.t); PP.Audio.sfx("mal"); M.fichaCerca = null; UI.aviso(null);

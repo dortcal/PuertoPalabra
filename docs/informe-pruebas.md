@@ -96,6 +96,13 @@ Ejecutado en Chrome (Playwright), con el autojugador de pruebas (`PP.MJ.auto` re
 
 No verificado: jugabilidad y dificultad con alumnado real (tiempos, frustración con el medidor), rendimiento en tabletas o pizarras antiguas, sonido real y pantallas táctiles físicas (solo emuladas).
 
+## Arte y animaciones de los minijuegos (20/11/2026)
+
+- Nuevo módulo `js/juegos/minijuegos-arte.js` (dibujo vectorial original): reportero/a animado de perfil y de espaldas, palmeras, tabaibas, volcán, focos, balones con giro.
+- Efectos comunes: presentación animada de cada minijuego, rótulos de celebración (¡GOOOL!, ¡CANASTA!, ¡HOYO EN UNO!, ¡RIMA!), puntos flotantes, sacudida de pantalla, confeti y estrellas, cuenta atrás en la Carrera de pistas. Con «reducir movimiento» se acortan o se quitan.
+- Comprobado en Chrome con capturas en 2.º, 3.º y 4.º: golf (swing, estela, banderas ondeando), penaltis (gradas que celebran, red que se deforma, parada), canastas (feria con noria, red que se estira, aro que vibra), Saltarrimas (paralaje, polvo, aplastamiento de enemigos). Los 6 minijuegos completos en 5.º, Gran Reto, Repaso del bloque III y la prueba completa de 3.º sin errores de consola.
+- No verificado: rendimiento en tabletas o pizarras antiguas (más dibujo por fotograma que antes).
+
 ## Pendiente de comprobar en el aula
 
 - Sonido, música y narración en los equipos del centro (Windows, iPad, Android, pizarra).
