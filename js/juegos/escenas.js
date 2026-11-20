@@ -282,6 +282,7 @@ window.PP = window.PP || {};
     fecha: "Es antiguo o no tiene fecha",
     datos: "Da datos concretos (fecha, lugar, hora)"
   };
+  const DISTR_PISTA = { fiable: ["sinfuente", "alarma", "cadena", "exagera", "opinion", "fecha"], bulo: ["fuente", "datos", "opinion"], opinion: ["fuente", "datos", "cadena", "alarma"] };
   S.chismografo = function (d, ctx) {
     return promesa((res) => {
       const m = marco({ tema: "onda", mision: ctx.titulo, titulo: "Chismógrafo", consigna: d.consigna || "Lee cada mensaje y decide: ¿es un dato fiable, un bulo o una opinión?", icono: "phone", clase: "esc-movil", alSalir: () => { m.cerrar(); res({ abandonada: true }); } });
@@ -317,7 +318,9 @@ window.PP = window.PP || {};
             if (ciclo() >= 2 && p.pistas && p.pistas.length) {
               m.fb("¡Bien visto! Ahora dime: ¿qué pista te lo indica?", "bien");
               const chips = el("div", { class: "chips" });
-              const opcionesPista = U.shuffle(Array.from(new Set(p.pistas.slice(0, 1).concat(U.shuffle(Object.keys(PISTAS).filter((x) => !p.pistas.includes(x))).slice(0, 3)))));
+              // Las pistas falsas se eligen entre las que apuntan a otro tipo de mensaje, para que no haya dos respuestas válidas
+              const distr = (DISTR_PISTA[p.tipo] || Object.keys(PISTAS)).filter((x) => !p.pistas.includes(x));
+              const opcionesPista = U.shuffle([p.pistas[0]].concat(U.shuffle(distr).slice(0, 3)));
               let reg2 = false;
               opcionesPista.forEach((pk) => {
                 const c = el("button", { class: "btn chip", type: "button", text: PISTAS[pk] });

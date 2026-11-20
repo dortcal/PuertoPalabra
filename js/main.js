@@ -56,7 +56,8 @@ window.PP = window.PP || {};
     M.modoAtraccion = true;
     PP.Input.montarJoystick($("#joystick"), $("#joystick .mando"));
     // Botones de la pantalla de inicio
-    $("#btn-jugar").addEventListener("click", () => { PP.Audio.init(); PP.Audio.sfx("inicio"); pantallaPerfil(); });
+    // Al pulsar «Jugar» primero se cuenta la historia (se puede saltar) y después se elige curso y reportero/a
+    $("#btn-jugar").addEventListener("click", () => { PP.Audio.init(); PP.Audio.sfx("inicio"); PP.Historia.mostrar(pantallaPerfil); });
     $("#btn-como").addEventListener("click", () => { PP.Audio.init(); PP.Audio.sfx("clic"); UI.mostrar("pantalla-como"); });
     $("#btn-ajustes-inicio").addEventListener("click", () => { PP.Audio.init(); PP.Audio.sfx("clic"); UI.panelAjustes($("#ajustes-inicio-cuerpo")); UI.mostrar("pantalla-ajustes"); });
     $("#btn-docente").addEventListener("click", () => { PP.Audio.init(); PP.Audio.sfx("clic"); UI.zonaDocente(); });
@@ -155,12 +156,12 @@ window.PP = window.PP || {};
     J.tipoModo = "aventura"; E.marcarModo("Aventura libre");
     const pr = PP.Store.progreso();
     M.prepararDoradas(pr.doradas);
-    if (!pr.introVista) { cinematica(() => { pr.introVista = true; PP.Store.guardar(); entrarAlMundo(true); }); }
+    if (!pr.introVista) { cinematica(() => { pr.introVista = true; PP.Store.guardar(); entrarAlMundo(true); }, J.historiaVista); }
     else entrarAlMundo(false);
   };
 
   // ---------------- Cinemática de introducción ----------------
-  function cinematica(fin) {
+  function cinematica(fin, soloFinal) {
     UI.mostrar("pantalla-intro");
     PP.Audio.musica("mision");
     const c = $("#intro-cuerpo"); c.innerHTML = "";
@@ -171,6 +172,8 @@ window.PP = window.PP || {};
       { r: { nombre: "Directora de El Eco", piel: "morena", pelo: "#ddd", peinado: "mono", ropa: "#264653", fondo: "#cde4e0", gafas: true, edad: "mayor", pendientes: true }, animo: "normal", fondo: "redaccion", t: "Soy Carmela, directora del periódico El Eco. Necesito a mi mejor reportero o reportera para recuperar las palabras de la ciudad." },
       { r: J.avatar, animo: "feliz", fondo: "ciudad", t: "¡Ese eres tú, " + J.alias + "! Recorre los cuatro barrios, completa misiones y devuelve el color a Puerto Palabra. ¡Y consigue la foto del Borrón para la portada!" }
     ];
+    // Si ya se ha visto la historia de presentación, solo queda la viñeta personalizada
+    if (soloFinal) vinetas.splice(0, vinetas.length - 1);
     let i = 0;
     const pintar = () => {
       const vi = vinetas[i];
@@ -326,9 +329,17 @@ window.PP = window.PP || {};
   }
 
   // ---------------- Misiones ----------------
-  function resolverRef(ref) {
+  function resolverRef(ref, ctx) {
     if (!ref) return null;
-    return ref.split(".").reduce((o, k) => (o == null ? o : o[k]), J.contenido);
+    let d = ref.split(".").reduce((o, k) => (o == null ? o : o[k]), J.contenido);
+    // Si el contenido tiene versiones alternativas (p. ej. varios boletines de radio), se elige una
+    // distinta en cada partida y se mantiene la misma en todos los pasos de esa misión.
+    if (d && ctx && Array.isArray(d.alternativas) && d.alternativas.length) {
+      ctx.variantes = ctx.variantes || {};
+      if (!ctx.variantes[ref]) ctx.variantes[ref] = U.muestra([d].concat(d.alternativas), 1, "var:" + ref + ":" + (J.curso || 0))[0];
+      d = ctx.variantes[ref];
+    }
+    return d;
   }
 
   async function empezarMision(mis) {
@@ -348,7 +359,7 @@ window.PP = window.PP || {};
   async function correrPasos(mis, ctx, pasos, sinMundo) {
     for (const paso of pasos) {
       ctx.crit = paso.crit || null;
-      const datos = resolverRef(paso.ref);
+      const datos = resolverRef(paso.ref, ctx);
       let r;
       switch (paso.tipo) {
         case "dialogo": r = await Esc.dialogo(datos, ctx); break;
@@ -395,6 +406,7 @@ window.PP = window.PP || {};
   function pasoIr(d, ctx, ref) {
     return new Promise((res) => {
       volverAConducir();
+      J._destinoOk = d.destino; J._carreraOk = null; // (referencias para las pruebas automáticas)
       const candidatos = U.shuffle([d.destino].concat(d.distractores || [])).map((k) => { const l = PP.Ciudad.lugares[k]; return { clave: k, x: l.x, y: l.y, etiqueta: l.nombre }; });
       let registrado = false;
       const botones = candidatos.map((c) => ({ t: c.etiqueta, icono: "gps", f: () => { M.gps({ x: c.x, y: c.y }); M.autopiloto = true; UI.toast("Conduciendo hacia " + U.esc(c.etiqueta) + "…", "info", 1800); } }));
@@ -405,7 +417,7 @@ window.PP = window.PP || {};
       J.gpsActual = () => UI.toast("En esta misión tienes que decidir tú el destino. Toca uno de los lugares del recuadro.", "info");
       M.fijarDestinos(candidatos, (dest) => {
         const ok = dest.clave === d.destino;
-        if (!registrado) { registrado = true; E.registrar({ crit: ctx.crit, ok, mecanica: ref === "radio" ? "radio-destino" : "cartel-destino", mision: ctx.id, item: "destino", respuesta: dest.etiqueta, correcta: PP.Ciudad.lugares[d.destino].nombre, ayuda: !!ctx.ayudaIr || (ref === "radio" && !!ctx.estado.subtitulos && PP.Voz.hayEspanol), detalle: ok ? "" : "Fue a «" + dest.etiqueta + "» en lugar de «" + PP.Ciudad.lugares[d.destino].nombre + "»" }); }
+        if (!registrado) { registrado = true; E.registrar({ crit: ctx.crit, ok, mecanica: ref === "radio" ? "radio-destino" : "cartel-destino", mision: ctx.id, item: "destino-" + d.destino, respuesta: dest.etiqueta, correcta: PP.Ciudad.lugares[d.destino].nombre, ayuda: !!ctx.ayudaIr || (ref === "radio" && !!ctx.estado.subtitulos && PP.Voz.hayEspanol), detalle: ok ? "" : "Fue a «" + dest.etiqueta + "» en lugar de «" + PP.Ciudad.lugares[d.destino].nombre + "»" }); }
         if (ok) {
           PP.Audio.sfx("bien"); M.chispas(dest.x, dest.y, "#ffe066", 30); J.sumar(registrado ? 30 : 10);
           UI.toast(U.icon("check") + " ¡Es aquí! " + U.esc(d.fbBien || ""), "bien", 3000);
@@ -480,7 +492,7 @@ window.PP = window.PP || {};
         const ok = U.shuffle(claves.filter((k) => !usados.has(k) && lejos(k, 500, 2600)))[0] || U.shuffle(claves.filter((k) => !usados.has(k)))[0];
         usados.add(ok);
         const distr = U.shuffle(claves.filter((k) => k !== ok && U.dist(L[k].x, L[k].y, L[ok].x, L[ok].y) > 450 && lejos(k, 300, 3200))).slice(0, 2);
-        const pista = PIS[ok][c === 1 ? "c1" : "c2"]; J._carreraOk = ok; // (referencia para las pruebas automáticas)
+        const pista = PIS[ok][c === 1 ? "c1" : "c2"]; J._carreraOk = ok; J._destinoOk = null; // (referencia para las pruebas automáticas)
         const cands = U.shuffle([ok].concat(distr)).map((k) => ({ clave: k, x: L[k].x, y: L[k].y, etiqueta: L[k].nombre }));
         let registrado = false, perdida = false;
         UI.objetivo({ titulo: "Etapa " + (etapa + 1) + " de " + etapas, icono: "gps", texto: "<b>Pista:</b> " + U.esc(pista), progreso: "La furgoneta del Borrón está calentando motores…",

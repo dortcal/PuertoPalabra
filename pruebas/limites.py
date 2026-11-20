@@ -16,8 +16,8 @@ async def main():
         await pg.click("#btn-docente"); await pg.wait_for_timeout(200)
         R.append(("Zona docente sin datos", await pg.locator("#docente-cuerpo td").first.inner_text()))
         await pg.click("#pantalla-docente [data-volver]")
-        await pg.click("#btn-jugar"); await pg.click("#perfil-cursos .curso:nth-child(3)"); await pg.click("#btn-perfil-ok"); await pg.click(".modo-aventura"); await pg.wait_for_timeout(300)
-        await pg.click("#intro-sig"); await pg.click("#intro-sig"); await pg.click("#intro-sig"); await pg.click("#intro-sig"); await pg.wait_for_timeout(700)
+        await pg.click("#btn-jugar"); await pg.click("#historia-saltar"); await pg.click("#perfil-cursos .curso:nth-child(3)"); await pg.click("#btn-perfil-ok"); await pg.click(".modo-aventura"); await pg.wait_for_timeout(300)
+        await pg.click("#intro-sig"); await pg.wait_for_timeout(700)  # tras la historia de «Jugar» solo queda la viñeta final
         await pg.click("#escena .esc-pie .btn"); await pg.wait_for_timeout(300)
         # joystick táctil
         x0 = await pg.evaluate("PP.Mundo.jugador.x"); y0 = await pg.evaluate("PP.Mundo.jugador.y")

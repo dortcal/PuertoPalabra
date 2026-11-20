@@ -155,8 +155,8 @@
   async function mundo() {
     const M = PP.Mundo;
     // destino
-    if (M.destinos.length && window.__destinoRef) {
-      const d = M.destinos.find((x) => x.clave === window.__destinoRef) || M.destinos[0];
+    if (M.destinos.length && (PP.juego._destinoOk || window.__destinoRef)) {
+      const d = M.destinos.find((x) => x.clave === (PP.juego._destinoOk || window.__destinoRef)) || M.destinos[0];
       M.jugador.x = d.x; M.jugador.y = d.y; M.jugador.v = 0; await sleep(250); return true;
     }
     if (M.destinos.length && PP.juego._carreraOk) {

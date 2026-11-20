@@ -772,3 +772,58 @@ body:not(.tactil) .mj-mandos { opacity: .8; }
   .inf-ident-campo i { height: 11mm; }
 }
 @page { size: A4; margin: 12mm; }
+
+/* ---- Historia de presentación ---- */
+.historia { width: min(1080px, 100%); }
+.hist-barra { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; color: #fff; }
+.hist-barra .logo-mini { font-size: 1.1rem; color: #fff; }
+.hist-puntos { display: flex; gap: 8px; }
+.hist-puntos i { width: 14px; height: 14px; border-radius: 50%; border: 3px solid #fff; background: transparent; transition: background .2s, transform .2s; }
+.hist-puntos i.hecho { background: rgba(255, 255, 255, .6); }
+.hist-puntos i.on { background: var(--oro); border-color: var(--oro); transform: scale(1.25); }
+.hist-vineta { grid-template-columns: minmax(150px, 38%) 1fr; grid-template-areas: "cap cap" "arte texto"; align-items: center; gap: 14px 22px; padding: 18px 22px 22px; animation: histEntra .45s ease-out both; }
+.hist-vineta.atras { animation-name: histVuelve; }
+.hist-vineta.hv-banda { grid-template-columns: 1fr; grid-template-areas: "cap" "texto"; }
+.hist-cap { grid-area: cap; }
+.hist-cap small { display: inline-block; padding: 2px 12px; border-radius: 999px; background: var(--noche); color: var(--oro); font-weight: 800; letter-spacing: .08em; text-transform: uppercase; font-size: .8rem; }
+.hist-cap h2 { margin: 6px 0 0; font-family: var(--f-titulo); font-size: clamp(1.6rem, 3.4vw, 2.4rem); color: var(--noche); text-shadow: 0 2px 0 rgba(255, 255, 255, .6); }
+.fondo-noche .hist-cap h2 { color: #fff; text-shadow: 0 3px 0 #000; }
+.hist-arte { grid-area: arte; position: relative; }
+.hist-arte > svg { width: 100%; height: auto; filter: drop-shadow(0 8px 10px rgba(0, 0, 0, .35)); }
+.hist-texto { grid-area: texto; display: flex; flex-direction: column; gap: 12px; }
+.hist-texto .vin-texto { margin: 0; animation: histTexto .5s .15s ease-out both; }
+.hv-banda .hist-texto .vin-texto::before { display: none; }
+.hist-letras span { position: absolute; top: 40%; font-family: var(--f-titulo); font-size: 2rem; color: #fff; text-shadow: 0 2px 0 var(--noche); animation: histLetra 4s ease-in-out infinite; }
+.hist-letras span:nth-child(1) { left: 8%; } .hist-letras span:nth-child(2) { left: 28%; animation-delay: .6s; } .hist-letras span:nth-child(3) { left: 52%; animation-delay: 1.2s; } .hist-letras span:nth-child(4) { left: 70%; animation-delay: 1.8s; } .hist-letras span:nth-child(5) { left: 88%; animation-delay: 2.4s; }
+.hist-borron > svg { animation: histFlota 3s ease-in-out infinite; }
+.hist-mancha { position: absolute; inset: 66% -2% -4% 58%; border-radius: 48% 52% 40% 60%; background: radial-gradient(circle at 40% 40%, #14101f, #3d2b63 70%, transparent 72%); opacity: .85; animation: histMancha 2.4s ease-in-out infinite alternate; }
+.hist-banda { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+.hist-miembro { display: grid; grid-template-columns: 76px 1fr; gap: 10px; align-items: center; background: #fff; border: 4px solid var(--noche); border-left: 12px solid var(--c); border-radius: 16px; padding: 8px 10px; animation: histTexto .45s ease-out both; }
+.hist-miembro:nth-child(2) { animation-delay: .12s; } .hist-miembro:nth-child(3) { animation-delay: .24s; } .hist-miembro:nth-child(4) { animation-delay: .36s; }
+.hist-mini svg { width: 76px; height: 76px; }
+.hist-miembro b { font-family: var(--f-titulo); font-size: 1.2rem; display: block; }
+.hist-miembro small { display: inline-block; font-weight: 800; padding: 0 8px; border-radius: 999px; background: var(--c); color: var(--noche); font-size: .75rem; }
+.hist-miembro p { margin: 4px 0 0; font-weight: 600; line-height: 1.3; font-size: .95rem; }
+.hist-reporteros { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.hist-rep svg { width: 100%; height: auto; filter: drop-shadow(0 5px 6px rgba(0, 0, 0, .3)); animation: histFlota 3s ease-in-out infinite; }
+.hist-rep:nth-child(2) svg { animation-delay: .4s; } .hist-rep:nth-child(3) svg { animation-delay: .8s; } .hist-rep:nth-child(4) svg { animation-delay: 1.2s; }
+.hist-carnet { position: absolute; right: -6px; bottom: -6px; transform: rotate(-8deg); background: #fff; border: 3px solid var(--noche); border-radius: 8px; padding: 2px 10px; text-align: center; box-shadow: 0 4px 0 var(--noche); }
+.hist-carnet b { display: block; color: #e63946; letter-spacing: .15em; } .hist-carnet span { font-weight: 800; font-size: .8rem; }
+.hist-botones { gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+.hist-botones .btn[disabled] { opacity: .45; }
+@keyframes histEntra { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: none; } }
+@keyframes histVuelve { from { opacity: 0; transform: translateX(-40px); } to { opacity: 1; transform: none; } }
+@keyframes histTexto { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@keyframes histFlota { 50% { transform: translateY(-6px); } }
+@keyframes histMancha { to { transform: scale(1.12) rotate(8deg); } }
+@keyframes histLetra { 0%, 100% { transform: translateY(0) rotate(-8deg); opacity: .9; } 50% { transform: translateY(-26px) rotate(8deg); opacity: .5; } }
+@media (max-width: 640px) {
+  .hist-vineta { grid-template-columns: 1fr; grid-template-areas: "cap" "arte" "texto"; padding: 12px; }
+  .hist-arte > svg { width: 150px; display: block; margin: auto; }
+  .hist-reporteros { grid-template-columns: repeat(4, 1fr); }
+  .hist-texto .vin-texto { font-size: 1.05em; }
+  .hist-barra .logo-mini { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hist-vineta, .hist-texto .vin-texto, .hist-miembro, .hist-letras span, .hist-borron > svg, .hist-mancha, .hist-rep svg { animation: none !important; }
+}

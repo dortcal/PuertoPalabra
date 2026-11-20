@@ -8,7 +8,7 @@ La estética de «ciudad abierta» se inspira en los juegos de mundo abierto, pe
 
 ## Modos de juego
 
-Tras elegir curso y reportero/a hay tres modos:
+Al pulsar «Jugar» se cuenta primero una breve historia (quién es El Borrón y su banda y cuál es la misión del reportero; se puede saltar). Después, tras elegir curso y reportero/a, hay estos modos:
 
 1. **Gran Reto:** diez retos que mezclan los cuatro bloques de Lengua (nueve misiones, al menos dos por bloque, y un minijuego), con racha y estrellas. No hay que conducir.
    **Evaluación por criterios:** el mínimo de misiones que cubre los 13 criterios del juego, más un minijuego.

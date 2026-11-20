@@ -16,6 +16,7 @@ Puerto Palabra es un videojuego de ciudad abierta en vista cenital. El alumnado 
 
 - **Gran Reto** (10 retos: 9 misiones de los cuatro bloques y 1 minijuego; duración orientativa de 30-45 min, aún sin medir con alumnado): útil como sesión de evaluación formativa.
 - **Evaluación por criterios** (10-12 retos con un minijuego, mismo orden de duración): recorrido que incluye al menos una misión por cada criterio del juego (incluida la edición final, la única con evidencias de 5.1) para obtener un informe completo. Se puede terminar antes desde la tarjeta de cada reto y el informe recoge lo jugado. Cada criterio suele tener pocas evidencias en una sola pasada; el informe indica cuándo son limitadas.
+- **Historia inicial:** al pulsar «Jugar» aparecen cinco pantallas cortas que sitúan al alumnado (la ciudad, El Borrón, su banda y la misión del reportero). Se pueden saltar con el botón o con la tecla Esc.
 - **Solo minijuegos:** se eligen uno, varios o los seis minijuegos y se juegan seguidos (los dos que se juegan conduciendo, la Carrera de pistas y Sílabas al viento, también están aquí). Cada uno queda recogido en el informe con su criterio.
 - **Repaso por temáticas:** el alumnado o el docente elige un bloque o un criterio y se trabaja solo eso. Útil para refuerzo o ampliación tras una unidad.
 - **Aventura libre:** exploración de la ciudad con misiones; mejor para varias sesiones.

@@ -112,6 +112,14 @@ No verificado: jugabilidad y dificultad con alumnado real (tiempos, frustración
 - No reproducido: la valoración de una Imprenta con 6 aciertos de 7. Con 6 aciertos a la primera y 1 sin detectar el cálculo da 86 % (2 estrellas); 1 estrella solo sale si varias correcciones se eligen mal a la primera (cuentan la mitad). Si vuelve a ocurrir, conviene anotar el curso y el texto.
 - Sigue con contenido fijo (no rota entre partidas): los diálogos P1, P2 y O3, el boletín de radio, el cartel, la leyenda y la noticia final. Las preguntas asociadas sí rotan.
 
+## Historia de presentación, más Chismógrafo y más Radio Volcán (20/11/2026)
+
+- **Historia al pulsar «Jugar»** (`js/ui/historia.js`): 5 pantallas con arte original (la ciudad, El Borrón, la Banda del Borrón con un miembro por barrio —Sordina, Bulín, Revoltijo y Tachón—, Carmela y El Eco, y la misión del reportero). Se puede narrar (botón Escuchar), moverse con Anterior/Siguiente o con las flechas, y saltar con el botón o con Esc. Respeta «reducir movimiento». Comprobado en Chrome a 1280 y 390 px de ancho, sin errores de consola. Si ya se ha visto, la cinemática de la Aventura libre se reduce a su viñeta final.
+- **Chismógrafo:** de 11-12 a 26-27 mensajes por curso (9-10 fiables, 9-10 bulos y 8 opiniones; `js/data/banco3.js`). Comprobado que en 3 partidas seguidas salen mensajes distintos. Además, las pistas falsas que se ofrecen ya no pueden coincidir con otra pista válida del mensaje.
+- **Radio Onda Volcán:** de 1 a 3 boletines por curso, cada uno con su destino y de 5 a 6 preguntas (criterio 2.1, con las inferenciales y de intención en 3.º–6.º). Cada partida elige un boletín distinto y mantiene el mismo en los tres pasos de la misión; comprobado en 2.º y 5.º con 3 partidas seguidas (3 destinos distintos). Los destinos y distractores existen en el mapa de la ciudad.
+- Pruebas automáticas adaptadas al paso nuevo de la historia; regresión en cursos 3 y 6, límites y «Solo minijuegos»: 0 errores.
+- No verificado: la narración de la historia con voz (depende de que el dispositivo tenga voz en español) y la revisión pedagógica de los textos nuevos por un docente.
+
 ## Pendiente de comprobar en el aula
 
 - Sonido, música y narración en los equipos del centro (Windows, iPad, Android, pizarra).
