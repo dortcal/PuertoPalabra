@@ -34,6 +34,19 @@ El informe docente muestra, dentro de cada criterio, el porcentaje por **tipo de
 
 Inspiración (sin copiar diseños ni contenidos): juegos de @soyprofehector, entre ellos *Tridino* (clase de palabra en contexto), *El Guardián de las Tildes* (agudas, llanas y esdrújulas) y *Código Lector* (comprensión lectora).
 
+## Minijuegos de la ciudad (20/11/2026)
+
+| Minijuego | Criterio | Mecánica | Acción observable | Evidencia (primer intento) | Indicador en el juego |
+|---|---|---|---|---|---|
+| **J1 Golf del Malpaís** | 1.1 | Golf con perspectiva: elegir bandera y fuerza del golpe | Apunta a la bandera con el significado de un canarismo o con la forma canaria de una palabra general | Bandera elegida en el primer golpe de cada hoyo | Relaciona variantes léxicas de Canarias con sus equivalentes |
+| **J2 Penaltis contra el Borrón** | 6.1 | Elegir zona de la portería y chutar | Clasifica un mensaje de red social como dato fiable, bulo u opinión | Zona elegida en el primer chut de cada mensaje | Distingue información fiable, desinformación y opinión |
+| **J3 Saltarrimas** | 8.2 | Plataformas: golpear bloques desde abajo | Elige la palabra que completa la rima de un pareado | Primer bloque golpeado en cada pareado | Reconoce la rima (el juego no evalúa la creación propia) |
+| **J4 Canastas de palabras** | 9.1 | Elegir canasta y lanzar | Clasifica una palabra según su función en la frase | Canasta elegida en el primer lanzamiento de cada palabra | Identifica la clase de palabra en contexto |
+| **J5 Carrera de pistas** | 4.1 | Carrera por la ciudad contra la furgoneta | Deduce de una pista escrita el lugar al que ir (1.er ciclo: literal; 2.º y 3.er: inferencial) | Primer lugar al que llega en cada etapa | Localiza información o infiere el referente de un texto breve |
+| **J6 Sílabas al viento** | 9.1 | Búsqueda de fichas por el mapa | Recoge en orden las sílabas de una palabra, evitando trozos que no son sílabas | Palabra completada sin errores de separación ni de orden | Segmenta palabras en sílabas |
+
+La habilidad motriz (puntería, fuerza, saltos, conducción) **no se evalúa**: fallarla permite repetir sin registrar error. En el Gran Reto, la Evaluación por criterios y el Repaso aparece un minijuego por partida; J5 y J6 solo están en la Aventura libre porque exigen conducir.
+
 ## Criterio de diseño: solo actividades evaluables automáticamente (19/11/2026)
 
 Puerto Palabra solo incluye retos cuya respuesta el programa puede comprobar: elecciones, ordenaciones, clasificaciones, correcciones y emparejamientos. Se han retirado la escritura libre (titulares, versos, recomendaciones, portada), la grabación de voz y la elección libre de lectura sin respuesta correcta.

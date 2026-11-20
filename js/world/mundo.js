@@ -144,7 +144,7 @@ window.PP = window.PP || {};
   };
   M.fijarMarcadores = function (lista) { M.marcadores = lista; };
   M.fijarDestinos = function (lista, alLlegar) { M.destinos = lista; M.cb.destino = alLlegar; };
-  M.limpiarObjetivos = function () { M.destinos = []; M.fichas = []; M.borron = null; M.cb.destino = M.cb.ficha = M.cb.foto = null; M.gps(null); };
+  M.limpiarObjetivos = function () { M.destinos = []; M.fichas = []; M.borron = null; M.rival = null; M.fichaCerca = null; M.cb.destino = M.cb.ficha = M.cb.foto = null; M.gps(null); };
 
   M.soltarFichas = function (barrio, items, alRecoger) {
     const calles = U.shuffle(C.callesDeBarrio(barrio)), j = M.jugador, usados = [];
@@ -174,6 +174,13 @@ window.PP = window.PP || {};
     M.cb.foto = alFoto; M.cb.finPersecucion = alFin;
     PP.Audio.musica("persecucion");
   };
+
+  /** Rival de la «Carrera de pistas»: sigue la ruta por las calles hasta el destino y avisa al llegar. */
+  M.iniciarRival = function (desde, destino, vel, alLlegar) {
+    const ruta = C.ruta(Math.floor(desde.x / T), Math.floor(desde.y / T), Math.floor(destino.x / T), Math.floor(destino.y / T)) || [];
+    M.rival = { x: desde.x, y: desde.y, ang: 0, v: vel, ruta, llegado: false, alLlegar, total: Math.max(1, ruta.length) };
+  };
+  M.longitudRuta = function (a, b) { const r = C.ruta(Math.floor(a.x / T), Math.floor(a.y / T), Math.floor(b.x / T), Math.floor(b.y / T)); return r ? r.length * T : Infinity; };
 
   M.gps = function (destino) {
     M.rutaObjetivo = destino; M.ruta = null; M._rutaT = 0;
@@ -347,7 +354,8 @@ window.PP = window.PP || {};
     const j = M.jugador, I = PP.Input;
     // marcadores de misión
     let cerca = null;
-    for (const m of M.marcadores) if (U.dist(m.x, m.y, j.x, j.y) < 52) { cerca = m; break; }
+    // durante una misión los marcadores no se pueden activar (evita que «roben» la pulsación de acción)
+    if (!(PP.juego && PP.juego.misionActiva)) for (const m of M.marcadores) if (U.dist(m.x, m.y, j.x, j.y) < 52) { cerca = m; break; }
     if (cerca !== M.avisoCerca) { M.avisoCerca = cerca; if (M.cb.aviso) M.cb.aviso(cerca); }
     if (cerca && I.tomar("accion") && M.cb.marcador) { M.cb.marcador(cerca); return; }
     // destinos (ir a un lugar)
@@ -357,8 +365,25 @@ window.PP = window.PP || {};
       } else d._dentro = false;
     }
     // fichas (palabras o páginas)
+    // fichas que se recogen a mano (pulsando acción cerca): decisiones deliberadas, no choques accidentales
+    let fc = null;
+    for (const f of M.fichas) if (f.vivo && f.manual && U.dist(f.x, f.y, j.x, j.y) < 72) { fc = f; break; }
+    if (fc !== M.fichaCerca) { M.fichaCerca = fc; if (!cerca && M.cb.aviso) M.cb.aviso(fc ? { titulo: "«" + fc.t + "»", color: fc.color || "#ff7a45", accion: "recogerla" } : null); }
+    if (fc && !cerca && I.tomar("accion") && M.cb.ficha) M.cb.ficha(fc);
+    // rival de la carrera
+    const rv = M.rival;
+    if (rv && !rv.llegado) {
+      let paso = rv.v * dt;
+      while (paso > 0 && rv.ruta.length) {
+        const p = rv.ruta[0], dd = U.dist(p.x, p.y, rv.x, rv.y);
+        if (dd <= paso) { rv.x = p.x; rv.y = p.y; rv.ruta.shift(); paso -= dd; }
+        else { rv.ang = Math.atan2(p.y - rv.y, p.x - rv.x); rv.x += (p.x - rv.x) / dd * paso; rv.y += (p.y - rv.y) / dd * paso; paso = 0; }
+      }
+      if (Math.random() < 0.3) humo(rv.x - Math.cos(rv.ang) * 26, rv.y - Math.sin(rv.ang) * 26, 1, "rgba(120,80,200,0.45)");
+      if (!rv.ruta.length) { rv.llegado = true; if (rv.alLlegar) rv.alLlegar(); }
+    }
     for (const f of M.fichas) {
-      if (!f.vivo) continue;
+      if (!f.vivo || f.manual) continue;
       if (U.dist(f.x, f.y, j.x, j.y) < 38) {
         f.vivo = false;
         chispas(f.x, f.y, f.ok === false ? "#ff6b6b" : "#ffe066", 18);
@@ -472,6 +497,7 @@ window.PP = window.PP || {};
     for (const c of M.coches) if (c.x > x0 - 60 && c.x < x1 + 60 && c.y > y0 - 60 && c.y < y1 + 60) D.vehiculo(g, c.tipo, c.color, c.x, c.y, Math.atan2(c.dy, c.dx), 1, { taxi: c.taxi, largo: 1 });
     // furgoneta del Borrón
     if (M.borron) { const b = M.borron; D.vehiculo(g, "coche", "#3d2b63", b.x, b.y, Math.atan2(b.dy, b.dx), 1.25, { borron: true, largo: 1.3 }); if (b.cerca) { g.strokeStyle = "rgba(255,255,255," + (0.5 + 0.5 * Math.sin(t * 10)) + ")"; g.lineWidth = 3; g.beginPath(); g.arc(b.x, b.y, 44, 0, 7); g.stroke(); } }
+    if (M.rival) { const rv = M.rival; D.vehiculo(g, "coche", "#3d2b63", rv.x, rv.y, rv.ang, 1.25, { borron: true, largo: 1.3 }); }
     // fichas (palabras/páginas)
     for (const f of M.fichas) if (f.vivo) dibujarFicha(g, f, t);
     for (const d of M.doradas) dibujarDorada(g, d, t);
@@ -520,7 +546,39 @@ window.PP = window.PP || {};
     g.beginPath(); g.moveTo(22, 0); g.lineTo(-12, -14); g.lineTo(-6, 0); g.lineTo(-12, 14); g.closePath(); g.fill(); g.stroke(); g.restore();
   }
 
+  function iconoMini(g, tipo, r) {
+    g.strokeStyle = "#1b1b2f"; g.fillStyle = "#1b1b2f"; g.lineWidth = 2.4; g.lineCap = "round"; g.lineJoin = "round";
+    if (tipo === "golf") { g.beginPath(); g.moveTo(-3, r * 0.65); g.lineTo(-3, -r * 0.7); g.stroke(); g.fillStyle = "#e03131"; g.beginPath(); g.moveTo(-3, -r * 0.7); g.lineTo(r * 0.6, -r * 0.45); g.lineTo(-3, -r * 0.2); g.fill(); g.fillStyle = "#fff"; g.beginPath(); g.arc(r * 0.35, r * 0.5, 3.5, 0, 7); g.fill(); g.stroke(); }
+    else if (tipo === "balon") { g.fillStyle = "#fff"; g.beginPath(); g.arc(0, 0, r * 0.62, 0, 7); g.fill(); g.stroke(); g.fillStyle = "#1b1b2f"; g.beginPath(); for (let k = 0; k < 5; k++) { const a = -Math.PI / 2 + k * Math.PI * 2 / 5; g.lineTo(Math.cos(a) * r * 0.25, Math.sin(a) * r * 0.25); } g.fill(); }
+    else if (tipo === "canasta") { g.fillStyle = "#ff922b"; g.beginPath(); g.arc(0, -2, r * 0.55, 0, 7); g.fill(); g.stroke(); g.beginPath(); g.moveTo(-r * 0.55, -2); g.lineTo(r * 0.55, -2); g.moveTo(0, -2 - r * 0.55); g.lineTo(0, -2 + r * 0.55); g.stroke(); }
+    else if (tipo === "salto") { g.fillStyle = "#ffd43b"; g.fillRect(-r * 0.55, -r * 0.55, r * 1.1, r * 0.8); g.strokeRect(-r * 0.55, -r * 0.55, r * 1.1, r * 0.8); g.font = "900 " + Math.round(r * 0.7) + "px sans-serif"; g.textAlign = "center"; g.textBaseline = "middle"; g.fillStyle = "#1b1b2f"; g.fillText("A", 0, -r * 0.13); g.fillRect(-r * 0.6, r * 0.45, r * 1.2, 3); }
+    else if (tipo === "carrera") { const q = r * 0.3; for (let y = 0; y < 3; y++) for (let x = 0; x < 3; x++) { g.fillStyle = (x + y) % 2 ? "#fff" : "#1b1b2f"; g.fillRect(-q * 1.5 + x * q, -q * 1.5 + y * q, q, q); } g.strokeRect(-q * 1.5, -q * 1.5, q * 3, q * 3); }
+    else if (tipo === "silabas") { g.fillStyle = "#fff"; g.fillRect(-r * 0.62, -r * 0.4, r * 0.58, r * 0.8); g.strokeRect(-r * 0.62, -r * 0.4, r * 0.58, r * 0.8); g.fillRect(r * 0.04, -r * 0.4, r * 0.58, r * 0.8); g.strokeRect(r * 0.04, -r * 0.4, r * 0.58, r * 0.8); g.font = "900 " + Math.round(r * 0.42) + "px sans-serif"; g.textAlign = "center"; g.textBaseline = "middle"; g.fillStyle = "#1b1b2f"; g.fillText("ca", -r * 0.33, 1); g.fillText("sa", r * 0.33, 1); }
+  }
+  function dibujarMarcadorMini(g, m, t) {
+    const pulso = U.prefiereMenosMovimiento() ? 0.5 : 0.5 + 0.5 * Math.sin(t * 3 + m.x);
+    g.save();
+    g.fillStyle = m.hecha ? "rgba(255,255,255,0.18)" : m.color + "44"; g.beginPath(); g.arc(m.x, m.y, 28 + pulso * 5, 0, 7); g.fill();
+    g.setLineDash([6, 6]); g.lineDashOffset = -t * 20; g.strokeStyle = m.hecha ? "#37b24d" : m.color; g.lineWidth = 4; g.beginPath(); g.arc(m.x, m.y, 25, 0, 7); g.stroke(); g.setLineDash([]);
+    const yy = m.y - 48 - pulso * 5, r = 17;
+    g.fillStyle = "rgba(0,0,0,0.3)"; g.beginPath(); g.ellipse(m.x, m.y + 2, 12, 5, 0, 0, 7); g.fill();
+    g.translate(m.x, yy);
+    g.fillStyle = m.color; g.strokeStyle = "#1b1b2f"; g.lineWidth = 3; g.beginPath(); g.arc(0, 0, r + 3, 0, 7); g.fill(); g.stroke();
+    g.fillStyle = "#fffaf0"; g.beginPath(); g.arc(0, 0, r - 2, 0, 7); g.fill();
+    iconoMini(g, m.icono, r);
+    g.restore();
+    g.save(); g.font = "900 12px 'Trebuchet MS', sans-serif"; g.textAlign = "center"; g.lineWidth = 3; g.strokeStyle = "#1b1b2f"; g.fillStyle = "#fff";
+    g.strokeText("MINIJUEGO", m.x, yy + r + 16); g.fillText("MINIJUEGO", m.x, yy + r + 16); g.restore();
+    if (m.hecha) {
+      const bx = m.x + 18, by = yy - 16;
+      g.save(); g.fillStyle = "#37b24d"; g.strokeStyle = "#ffffff"; g.lineWidth = 3; g.beginPath(); g.arc(bx, by, 10, 0, 7); g.fill(); g.stroke();
+      g.lineWidth = 3; g.lineCap = "round"; g.beginPath(); g.moveTo(bx - 4.5, by + 0.5); g.lineTo(bx - 1.3, by + 3.6); g.lineTo(bx + 5, by - 3.6); g.stroke();
+      if (m.estrellas) { g.fillStyle = "#ffd23f"; g.strokeStyle = "#1b1b2f"; g.font = "bold 15px sans-serif"; g.textAlign = "center"; const tx = "★".repeat(m.estrellas); g.strokeText(tx, m.x, yy - 24); g.fillText(tx, m.x, yy - 24); }
+      g.restore();
+    }
+  }
   function dibujarMarcador(g, m, t) {
+    if (m.mini) return dibujarMarcadorMini(g, m, t);
     const pulso = U.prefiereMenosMovimiento() ? 0.5 : 0.5 + 0.5 * Math.sin(t * 3 + m.x);
     g.save();
     g.fillStyle = m.hecha ? "rgba(255,255,255,0.18)" : m.color + "55"; g.beginPath(); g.arc(m.x, m.y, 30 + pulso * 6, 0, 7); g.fill();
@@ -567,6 +625,7 @@ window.PP = window.PP || {};
       g.fillStyle = "#fff"; D.redondeado(g, -w / 2, -18, w, 36, 10); g.fill();
       g.strokeStyle = f.color || "#7b6cf6"; g.lineWidth = 4; D.redondeado(g, -w / 2, -18, w, 36, 10); g.stroke();
       g.fillStyle = "#1b1b2f"; g.textAlign = "center"; g.textBaseline = "middle"; g.fillText(f.t, 0, 1);
+      if (f === M.fichaCerca) { g.strokeStyle = "rgba(255,255,255," + (0.6 + 0.4 * Math.sin(t * 8)) + ")"; g.lineWidth = 3; D.redondeado(g, -w / 2 - 6, -24, w + 12, 48, 14); g.stroke(); }
     }
     g.restore();
   }

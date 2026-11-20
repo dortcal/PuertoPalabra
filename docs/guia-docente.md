@@ -14,12 +14,21 @@ Puerto Palabra es un videojuego de ciudad abierta en vista cenital. El alumnado 
 
 ### Modos de juego
 
-- **Gran Reto** (10 retos de los cuatro bloques; duración orientativa de 30-45 min, aún sin medir con alumnado): útil como sesión de evaluación formativa.
-- **Evaluación por criterios** (10-11 retos, mismo orden de duración): recorrido que incluye al menos una misión por cada criterio del juego (incluida la edición final, la única con evidencias de 5.1) para obtener un informe completo. Se puede terminar antes desde la tarjeta de cada reto y el informe recoge lo jugado. Cada criterio suele tener pocas evidencias en una sola pasada; el informe indica cuándo son limitadas.
+- **Gran Reto** (10 retos: 9 misiones de los cuatro bloques y 1 minijuego; duración orientativa de 30-45 min, aún sin medir con alumnado): útil como sesión de evaluación formativa.
+- **Evaluación por criterios** (10-12 retos con un minijuego, mismo orden de duración): recorrido que incluye al menos una misión por cada criterio del juego (incluida la edición final, la única con evidencias de 5.1) para obtener un informe completo. Se puede terminar antes desde la tarjeta de cada reto y el informe recoge lo jugado. Cada criterio suele tener pocas evidencias en una sola pasada; el informe indica cuándo son limitadas.
 - **Repaso por temáticas:** el alumnado o el docente elige un bloque o un criterio y se trabaja solo eso. Útil para refuerzo o ampliación tras una unidad.
 - **Aventura libre:** exploración de la ciudad con misiones; mejor para varias sesiones.
 
 Los tres generan el mismo informe y este indica el modo usado. En los modos de reto no se trabaja la conducción, pero sí las mismas pruebas de lengua. Para retomar una partida en otro dispositivo se usa el **código de partida** (botón de la casa → copiar código); recupera el progreso, no las evidencias del informe.
+
+### Minijuegos
+
+Seis atracciones de la ciudad que unen las misiones con un componente arcade: golf (1.1), penaltis (6.1), plataformas «Saltarrimas» (8.2), canastas (9.1), carrera de pistas (4.1) y búsqueda de sílabas por el mapa (9.1). Duran 1-4 minutos.
+
+- Solo se evalúa la **decisión de Lengua** del primer intento (qué bandera, qué zona, qué bloque, qué canasta, qué lugar, qué sílaba). La puntería, la fuerza o los saltos no cuentan: si se falla, se repite sin penalización. Por eso el informe no mide habilidad motriz.
+- En el Gran Reto, la Evaluación por criterios y el Repaso sale **un** minijuego por partida (solo los que no requieren conducir).
+- Para alumnado con dificultades motrices o de atención, activar «sin límite de tiempo»: desaparece el medidor de fuerza y los rivales van más despacio.
+- La Carrera de pistas en 1.er ciclo usa pistas literales («Ve al sitio donde se cogen las guaguas»); en 2.º y 3.er ciclo, pistas que exigen inferir el lugar a partir de una situación.
 
 ### Nuevas misiones (ampliación)
 

@@ -79,7 +79,7 @@ window.PP = window.PP || {};
     $("#btn-modos-volver").addEventListener("click", () => { PP.Audio.sfx("clic"); UI.mostrar("pantalla-inicio"); });
     $("#btn-tema-volver").addEventListener("click", () => { PP.Audio.sfx("clic"); PP.Modos.abrir(); });
     $("#btn-fin-sesion").addEventListener("click", () => { UI.cerrarMovil(false); UI.informe(); });
-    M.cb.marcador = (m) => { if (J.modo !== "mundo" || J.misionActiva) return; if (m.bloqueada) { UI.toast("Esta misión se desbloquea al completar " + m.requiere + " misiones.", "info"); return; } empezarMision(PP.MISIONES.find((x) => x.id === m.id)); };
+    M.cb.marcador = (m) => { if (J.modo !== "mundo" || J.misionActiva) return; if (m.bloqueada) { UI.toast("Esta misión se desbloquea al completar " + m.requiere + " misiones.", "info"); return; } empezarMision(PP.buscarReto(m.id)); };
     M.cb.aviso = (m) => UI.aviso(m);
     M.cb.dorada = (i) => palabraDorada(i);
     document.addEventListener("keydown", (e) => {
@@ -280,6 +280,12 @@ window.PP = window.PP || {};
       const off = m.final ? 1.4 * PP.Ciudad.T : 0;
       return { id: m.id, x: l.x + off, y: l.y, color: m.final ? "#ffffff" : PP.BARRIOS[m.barrio].color, etiqueta: m.final ? "★" : m.id, titulo: m.titulo, hecha: !!st, estrellas: st ? st.estrellas : 0, bloqueada: m.requiere && hechas < m.requiere, requiere: m.requiere };
     }));
+    // minijuegos (atracciones): se guardan aparte y no cuentan para el desbloqueo de la edición final
+    const mj = pr.minijuegos || {};
+    M.marcadores = M.marcadores.concat((PP.MINIJUEGOS || []).map((m) => {
+      const l = PP.Ciudad.lugares[m.lugar], st = mj[m.id], T = PP.Ciudad.T;
+      return { id: m.id, mini: true, icono: m.icono, x: l.x + (m.off ? m.off[0] : 0) * T, y: l.y + (m.off ? m.off[1] : 0) * T, color: PP.BARRIOS[m.barrio].color, etiqueta: m.id, titulo: "Minijuego: " + m.titulo, hecha: !!st, estrellas: st ? st.estrellas : 0 };
+    }));
     // restauración de barrios
     Object.keys(PP.BARRIOS).forEach((b) => { const ms = PP.MISIONES.filter((m) => m.barrio === b && !m.final); M.restauracion[b] = ms.filter((m) => pr.misiones[m.id]).length / ms.length; });
     UI.actualizarHUD();
@@ -371,6 +377,9 @@ window.PP = window.PP || {};
         case "caza": r = sinMundo ? await Esc.caza(datos, ctx) : await pasoCaza(datos, ctx); break;
         case "paginas": r = await pasoPaginas(datos, ctx); break;
         case "persecucion": r = await pasoPersecucion(ctx); break;
+        case "golf": case "penaltis": case "canastas": case "plataformas": r = await PP.Minijuegos[paso.tipo](datos, ctx); break;
+        case "carrera": r = await pasoCarrera(ctx); break;
+        case "busqueda": r = await pasoBusqueda(datos, ctx); break;
         default: r = { hecho: true };
       }
       if (!r || r.abandonada) return false;
@@ -441,6 +450,112 @@ window.PP = window.PP || {};
     });
   }
 
+  // Minijuego «Carrera de pistas» (4.1): leer una pista, deducir el lugar y llegar antes que la furgoneta
+  function pasoCarrera(ctx) {
+    return new Promise(async (res) => {
+      const c = J.ciclo, PIS = PP.PISTAS_LUGARES, L = PP.Ciudad.lugares, tranq = !!PP.ajustes.sinTiempo;
+      const r0 = await Esc.aviso({ titulo: "Carrera de pistas", texto: "La furgoneta del Borrón también busca esos lugares. Lee cada pista, deduce adónde hay que ir y llega antes que él.", retrato: PP.BORRON, animo: "enfadado",
+        lista: ["La furgoneta sale de otra parte de la ciudad: no sirve de nada seguirla.", "Puedes tocar el nombre de un lugar para que el GPS te guíe. Elegir el lugar correcto es cosa tuya.", tranq ? "Modo tranquilo: la furgoneta va despacio." : "Si la furgoneta llega antes, no pasa nada: sigue buscando el lugar correcto."], icono: "gps", boton: "¡Salida!" }, ctx);
+      if (r0.abandonada) return res({ abandonada: true });
+      const etapas = c === 1 ? 2 : 3, claves = Object.keys(PIS).filter((k) => L[k]), usados = new Set();
+      let etapa = 0, ganadas = 0, reloj = null, arranque = null, cerrado = false;
+      const limpiar = () => { cerrado = true; clearInterval(reloj); clearTimeout(arranque); M.limpiarObjetivos(); J.gpsActual = null; };
+      const salir = () => { limpiar(); res({ abandonada: true }); };
+      volverAConducir();
+      function nueva() {
+        if (cerrado) return;
+        if (etapa >= etapas) { limpiar(); J.modo = "escena"; M.activo = false; M.confeti(); PP.Audio.sfx("victoria"); return Esc.aviso({ titulo: "¡Meta!", texto: "Has ganado " + ganadas + " de " + etapas + " etapas a la furgoneta del Borrón.", icono: "trophy", boton: "Continuar" }, ctx).then(() => res({ hecho: true, ganadas })); }
+        const j = M.jugador;
+        const lejos = (k, d0, d1) => { const dd = U.dist(L[k].x, L[k].y, j.x, j.y); return dd > d0 && dd < d1; };
+        const ok = U.shuffle(claves.filter((k) => !usados.has(k) && lejos(k, 500, 2600)))[0] || U.shuffle(claves.filter((k) => !usados.has(k)))[0];
+        usados.add(ok);
+        const distr = U.shuffle(claves.filter((k) => k !== ok && U.dist(L[k].x, L[k].y, L[ok].x, L[ok].y) > 450 && lejos(k, 300, 3200))).slice(0, 2);
+        const pista = PIS[ok][c === 1 ? "c1" : "c2"]; J._carreraOk = ok; // (referencia para las pruebas automáticas)
+        const cands = U.shuffle([ok].concat(distr)).map((k) => ({ clave: k, x: L[k].x, y: L[k].y, etiqueta: L[k].nombre }));
+        let registrado = false, perdida = false;
+        UI.objetivo({ titulo: "Etapa " + (etapa + 1) + " de " + etapas, icono: "gps", texto: "<b>Pista:</b> " + U.esc(pista), progreso: "La furgoneta del Borrón está calentando motores…",
+          botones: cands.map((cd) => ({ t: cd.etiqueta, icono: "gps", f: () => { M.gps({ x: cd.x, y: cd.y }); UI.toast("GPS hacia " + U.esc(cd.etiqueta) + ". ¿Seguro que es ahí?", "info", 1800); } }))
+            .concat([{ t: "Leer la pista", icono: "speaker", clase: "btn-terc", f: () => PP.Voz.decir(pista, { forzar: true }) }, { t: "Salir", icono: "exit", clase: "btn-terc", f: salir }]) });
+        J.gpsActual = () => UI.toast("En esta carrera decides tú el destino: toca uno de los lugares del recuadro.", "info");
+        PP.Voz.decir(pista);
+        // la furgoneta sale de un lugar a distancia parecida, pero no desde donde estás tú
+        const dJ = U.dist(L[ok].x, L[ok].y, j.x, j.y);
+        const salida = U.shuffle(claves.filter((k) => k !== ok && !cands.some((x) => x.clave === k)).filter((k) => { const dd = U.dist(L[k].x, L[k].y, L[ok].x, L[ok].y); return dd > dJ * 0.8 && dd < dJ * 1.4 && U.dist(L[k].x, L[k].y, j.x, j.y) > 600; }))[0]
+          || U.shuffle(claves.filter((k) => k !== ok))[0];
+        const vel = j.vmax * (tranq ? 0.38 : c === 1 ? 0.5 : c === 2 ? 0.58 : 0.64);
+        arranque = setTimeout(() => {
+          if (cerrado) return;
+          M.iniciarRival(L[salida], L[ok], vel, () => { if (cerrado) return; perdida = true; PP.Audio.sfx("mal"); UI.toast("La furgoneta del Borrón ha llegado antes. ¡Sigue: todavía tienes que encontrar el lugar!", "mal", 3800); });
+          clearInterval(reloj);
+          reloj = setInterval(() => { const rv = M.rival; if (!rv) return; UI.progresoObjetivo(rv.llegado ? "La furgoneta ya ha llegado" : "Furgoneta del Borrón: " + Math.round(100 * (1 - rv.ruta.length / rv.total)) + " % del camino"); }, 400);
+        }, (c === 1 ? 6000 : 4500));
+        M.fijarDestinos(cands, (dest) => {
+          const bien = dest.clave === ok;
+          if (!registrado) { registrado = true; E.registrar({ crit: ctx.crit || "4.1", ok: bien, mecanica: "carrera-pista", subtipo: c === 1 ? "literal" : "inferencial", mision: ctx.id, item: "pista-" + ok, respuesta: dest.etiqueta, correcta: L[ok].nombre, detalle: bien ? "" : "Con la pista «" + pista + "» fue a " + dest.etiqueta }); }
+          if (bien) {
+            const gana = !perdida; if (gana) { ganadas++; J.sumar(40); }
+            clearInterval(reloj); clearTimeout(arranque); M.rival = null; M.destinos = []; M.gps(null);
+            PP.Audio.sfx(gana ? "victoria" : "bien"); M.chispas(dest.x, dest.y, "#ffe066", 30);
+            UI.toast(U.icon("check") + " ¡Es " + U.esc(dest.etiqueta) + "!" + (gana ? " Has ganado la etapa." : ""), "bien", 2600);
+            etapa++; setTimeout(nueva, 1400);
+          } else {
+            PP.Audio.sfx("mal"); UI.toast(U.icon("cross") + " Aquí no es. Vuelve a leer la pista: ¿qué se hace en " + U.esc(dest.etiqueta) + "?", "mal", 4200);
+            M.destinos = M.destinos.filter((x) => x !== dest); M.gps(null);
+          }
+        });
+      }
+      nueva();
+    });
+  }
+
+  // Minijuego «Sílabas al viento» (9.1): recoger las sílabas de una palabra en orden por las calles
+  function senuelos(s) {
+    const reales = new Set(s), out = new Set();
+    for (let i = 0; i < s.length - 1; i++) { out.add(s[i] + s[i + 1][0]); out.add(s[i].slice(-1) + s[i + 1]); if (s[i].length > 2) out.add(s[i].slice(0, -1)); }
+    return U.shuffle([...out].filter((x) => x.length >= 2 && !reales.has(x))).slice(0, 2);
+  }
+  function pasoBusqueda(d, ctx) {
+    return new Promise(async (res) => {
+      const c = J.ciclo, col = PP.BARRIOS.taller.color;
+      const palabras = U.muestra(d.items.filter((it) => it.s && it.s.length >= 2 && it.s.length <= 4), c === 1 ? 2 : 3, "busq:" + (J.curso || 0));
+      const r0 = await Esc.aviso({ titulo: "Sílabas al viento", texto: "El Borrón ha soplado y las sílabas de " + palabras.length + " palabras vuelan por el Taller de la Lengua. Recoge las sílabas de cada palabra en orden.", icono: "star", boton: "¡A recoger!",
+        lista: ["Acércate a una sílaba y pulsa " + (PP.Input.tactil ? "el botón ▶" : "ESPACIO o ENTER") + " para recogerla.", "Cuidado: hay trozos que no son sílabas de la palabra."] }, ctx);
+      if (r0.abandonada) return res({ abandonada: true });
+      let w = 0, cerrado = false;
+      const salir = () => { cerrado = true; M.limpiarObjetivos(); J.gpsActual = null; res({ abandonada: true }); };
+      volverAConducir();
+      J.gpsActual = () => { M.gps(() => { const j = M.jugador; let b = null, bd = 1e9; M.fichas.forEach((f) => { if (!f.vivo) return; const dd = U.dist(f.x, f.y, j.x, j.y); if (dd < bd) { bd = dd; b = f; } }); return b; }); M.autopiloto = false; UI.toast("GPS hacia la ficha más cercana (puede que no sea la que toca).", "info", 2000); };
+      function palabra() {
+        if (cerrado) return;
+        const it = palabras[w];
+        if (!it) { M.limpiarObjetivos(); J.gpsActual = null; J.modo = "escena"; M.activo = false; M.confeti(); PP.Audio.sfx("victoria"); return setTimeout(() => res({ hecho: true }), 700); }
+        const s = it.s, falsos = senuelos(s); let sig = 0; const errores = [];
+        const pintar = () => UI.objetivo({ titulo: "Palabra " + (w + 1) + " de " + palabras.length, icono: "star",
+          texto: "Palabra: <b>" + U.esc(it.p) + "</b><br>" + s.map((x, k) => '<span class="silaba-hueco' + (k < sig ? " llena" : "") + '">' + (k < sig ? U.esc(x) : "?") + "</span>").join(" "),
+          progreso: "Sílabas: " + sig + " / " + s.length,
+          botones: [{ t: "GPS a una ficha", icono: "gps", f: () => J.gpsActual() }, { t: "Oír la palabra", icono: "speaker", clase: "btn-terc", f: () => PP.Voz.decir(it.p, { forzar: true }) }, { t: "Salir", icono: "exit", clase: "btn-terc", f: salir }] });
+        pintar(); PP.Voz.decir(it.p);
+        const fichas = s.map((t, k) => ({ t, k, manual: true, color: col })).concat(falsos.map((t) => ({ t, falso: true, manual: true, color: col })));
+        M.soltarFichas("taller", U.shuffle(fichas), (f) => {
+          if (!f.falso && f.k === sig) {
+            f.vivo = false; sig++; PP.Audio.sfx("recoger"); J.sumar(8); M.fichaCerca = null; UI.aviso(null);
+            if (sig >= s.length) {
+              E.registrar({ crit: ctx.crit || "9.1", ok: errores.length === 0, mecanica: "busqueda-silabas", subtipo: "separar sílabas", mision: ctx.id, item: "silabas-" + it.p, respuesta: errores.length ? errores.join(", ") : s.join("-"), correcta: s.join("-"), detalle: errores.length ? "Al separar «" + it.p + "» recogió: " + errores.join(", ") : "" });
+              UI.toast(U.icon("check") + " <b>" + U.esc(s.join("-")) + "</b>: ¡palabra completa!", "bien", 2400); M.fichas = []; w++; setTimeout(palabra, 1200);
+            } else { pintar(); UI.toast(U.icon("check") + " «" + U.esc(f.t) + "»", "bien", 1200); }
+          } else if (f.falso) {
+            f.vivo = false; errores.push(f.t); PP.Audio.sfx("mal"); M.fichaCerca = null; UI.aviso(null);
+            UI.toast(U.icon("cross") + " «" + U.esc(f.t) + "» no es una sílaba de «" + U.esc(it.p) + "». Se separa así: " + U.esc(s.slice(0, sig + 1).join("-")) + (sig + 1 < s.length ? "…" : "") + " Pista: da una palmada por sílaba.", "mal", 4500);
+          } else {
+            errores.push(f.t + " (antes de tiempo)"); PP.Audio.sfx("mal");
+            UI.toast(U.icon("cross") + " «" + U.esc(f.t) + "» es de la palabra, pero todavía no toca. Piensa: ¿cómo empieza la parte que falta?", "mal", 3800);
+          }
+        });
+      }
+      palabra();
+    });
+  }
+
   // Paso: recoger las páginas de la leyenda
   function pasoPaginas(d, ctx) {
     return new Promise(async (res) => {
@@ -477,14 +592,16 @@ window.PP = window.PP || {};
   function terminarMision(mis, ctx, abandonada) {
     M.limpiarObjetivos(); J.gpsActual = null; J.misionActiva = null;
     const esc = document.getElementById("escena"); esc.hidden = true; esc.innerHTML = "";
-    if (abandonada) { UI.toast("Has salido de la misión. Puedes volver a intentarlo cuando quieras.", "info"); volverAConducir(); objetivoLibre(); musicaBarrio(true); return; }
+    if (abandonada) { UI.toast("Has salido " + (mis.mini ? "del minijuego" : "de la misión") + ". Puedes volver a intentarlo cuando quieras.", "info"); volverAConducir(); objetivoLibre(); musicaBarrio(true); return; }
     const v = E.valorMision(mis.id);
     const estrellas = v.pct >= 0.9 ? 3 : v.pct >= 0.6 ? 2 : 1;
     const pr = PP.Store.progreso();
-    const antes = pr.misiones[mis.id];
+    if (mis.mini) pr.minijuegos = pr.minijuegos || {};
+    const almacen = mis.mini ? pr.minijuegos : pr.misiones;
+    const antes = almacen[mis.id];
     const bonus = 50 + estrellas * 25;
     J.sumar(bonus);
-    pr.misiones[mis.id] = { estrellas: Math.max(estrellas, antes ? antes.estrellas : 0), ultima: Date.now(), veces: (antes ? antes.veces : 0) + 1 };
+    almacen[mis.id] = { estrellas: Math.max(estrellas, antes ? antes.estrellas : 0), ultima: Date.now(), veces: (antes ? antes.veces : 0) + 1 };
     E.misionCompletada(mis.id, { estrellas, pct: v.pct, n: v.n });
     PP.Store.guardar();
     // logros
@@ -493,14 +610,14 @@ window.PP = window.PP || {};
     if (v.n >= 4 && v.pct === 1) J.logro("sinborrones");
     const restAntes = Object.assign({}, M.restauracion);
     refrescarMarcadores(); objetivoLibre();
-    const barrioCompleto = !mis.final && M.restauracion[mis.barrio] >= 1 && restAntes[mis.barrio] < 1;
+    const barrioCompleto = !mis.final && !mis.mini && M.restauracion[mis.barrio] >= 1 && restAntes[mis.barrio] < 1;
     if (barrioCompleto) J.logro("barrio");
     if (Object.values(M.restauracion).every((x) => x >= 1)) J.logro("ciudad");
     // pantalla de resultado
     PP.Audio.sfx("victoria"); PP.Audio.musica("mision");
     const r = $("#resultado"); r.hidden = false; r.innerHTML = "";
     const caja = el("div", { class: "res-caja", role: "dialog", "aria-modal": "true", "aria-labelledby": "res-tit" }, [
-      el("div", { class: "res-cinta", text: mis.final ? "¡EDICIÓN ESPECIAL!" : "¡MISIÓN CUMPLIDA!" }),
+      el("div", { class: "res-cinta", text: mis.final ? "¡EDICIÓN ESPECIAL!" : mis.mini ? "¡MINIJUEGO SUPERADO!" : "¡MISIÓN CUMPLIDA!" }),
       el("h2", { id: "res-tit", text: mis.titulo }),
       el("div", { class: "res-estrellas", "aria-label": estrellas + " de 3 estrellas", html: [1, 2, 3].map((k) => '<span class="est' + (k <= estrellas ? " on" : "") + '" style="animation-delay:' + (k * 0.25) + 's">★</span>').join("") }),
       el("p", { class: "res-txt", text: v.n ? "Acertaste a la primera " + Math.round(v.pct * 100) + " % de los retos (" + v.n + " retos)." : "¡Misión completada!" }),

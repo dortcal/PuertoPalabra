@@ -42,7 +42,7 @@ window.PP = window.PP || {};
     clave() { const p = PP.datos.perfil; return p ? (p.codigo || "anonimo") + "|" + p.curso : "anonimo|0"; },
     progreso() {
       const k = this.clave();
-      if (!PP.datos.progreso[k]) PP.datos.progreso[k] = { misiones: {}, doradas: [], logros: [], vehiculo: "moto", color: "#ff4f7b", fotos: 0 };
+      if (!PP.datos.progreso[k]) PP.datos.progreso[k] = { misiones: {}, minijuegos: {}, doradas: [], logros: [], vehiculo: "moto", color: "#ff4f7b", fotos: 0 };
       return PP.datos.progreso[k];
     },
     borrarProgresoActual() { delete PP.datos.progreso[this.clave()]; this.guardar(); },

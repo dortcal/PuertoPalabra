@@ -80,6 +80,22 @@ Comprobado en Chrome automatizado:
 - Los criterios 3.1 y 7.2 ya no figuran en el juego, el informe, el CSV ni el JSON (13 criterios).
 - Variedad de actividades: los bancos de cada curso se mezclan al cargar y cada misión elige un subconjunto distinto sin repetir lo ya visto hasta agotar el banco. Verificado en Chrome: 6 cursos × 18 misiones, Gran Reto, Repaso y pruebas de límites sin errores de consola. En una ejecución puntual del Gran Reto el guion de prueba agotó su tiempo límite; repetido, llegó a la pantalla final (3 de 4 repeticiones completadas dentro del tiempo).
 
+## Minijuegos (20/11/2026)
+
+Ejecutado en Chrome (Playwright), con el autojugador de pruebas (`PP.MJ.auto` resuelve la decisión correcta) y un primer intento manual con teclado:
+
+- Los 6 minijuegos jugados hasta el final en la Aventura libre en 1.º, 2.º (penaltis y canastas), 3.º y 6.º: 0 errores de consola; evidencias registradas con su criterio (1.1, 6.1, 8.2, 9.1, 4.1, 9.1) y solo un evento por ítem.
+- Un primer intento manual erróneo (medidor de fuerza con ESPACIO) queda registrado como error y los siguientes no cuentan como primer intento.
+- Tras terminar: insignia ✔ y estrellas en el marcador; el contador «Misiones: x / 18» no cambia (los minijuegos se guardan aparte).
+- Gran Reto (10 retos, uno de ellos minijuego), Evaluación por criterios (10-12 con un minijuego) y Repaso del bloque III («3 retos + 1 minijuego») jugados hasta la pantalla final en 4.º.
+- Botón Salir de cada minijuego en vertical 768×1024 con pantalla táctil: vuelve a la ciudad sin dejar la capa abierta. Mantener pulsado el botón táctil ▶ en Saltarrimas.
+- Modo tranquilo: la primera pulsación de ESPACIO lanza sin medidor.
+- Informe: los minijuegos aparecen como «(minijuego)» en «Trabajado en», el contador pasa a «x / 24 misiones y minijuegos» y el CSV incluye sus filas.
+- Regresión: prueba completa de 2.º y 5.º (18 misiones) y pruebas de límites sin errores.
+- Corregido durante las pruebas: los marcadores de misión «robaban» la pulsación de acción cuando una ficha caía junto a ellos (ahora no se activan durante una misión); error al dibujar el golf antes del primer hoyo; la bola de canastas no reaparecía tras fallar.
+
+No verificado: jugabilidad y dificultad con alumnado real (tiempos, frustración con el medidor), rendimiento en tabletas o pizarras antiguas, sonido real y pantallas táctiles físicas (solo emuladas).
+
 ## Pendiente de comprobar en el aula
 
 - Sonido, música y narración en los equipos del centro (Windows, iPad, Android, pizarra).

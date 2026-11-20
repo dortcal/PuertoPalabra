@@ -10,7 +10,8 @@ La estética de «ciudad abierta» se inspira en los juegos de mundo abierto, pe
 
 Tras elegir curso y reportero/a hay tres modos:
 
-1. **Gran Reto:** diez retos que mezclan los cuatro bloques de Lengua (al menos dos por bloque, en orden alterno), con racha y estrellas. No hay que conducir.
+1. **Gran Reto:** diez retos que mezclan los cuatro bloques de Lengua (nueve misiones, al menos dos por bloque, y un minijuego), con racha y estrellas. No hay que conducir.
+   **Evaluación por criterios:** el mínimo de misiones que cubre los 13 criterios del juego, más un minijuego.
 2. **Repaso por temáticas:** se elige un bloque o un criterio de evaluación y se practican solo sus retos.
 3. **Aventura libre:** la ciudad abierta con misiones, barrios que recuperan el color, radio y palabras doradas.
 
@@ -23,6 +24,24 @@ Los modos 1 y 2 reutilizan las pruebas de las misiones (mismas mecánicas y mism
 - **Sílabas y tildes** (Academia de las Tildes): sílabas en 1.er ciclo; sílaba tónica, agudas, llanas y esdrújulas y tilde en 2.º y 3.er ciclo; hiatos, sobresdrújulas y tilde diacrítica en 3.er ciclo.
 - **La cinta clasificadora** (Almacén de Palabras): clases de palabras en su frase, con palabras de «doble cara» y racha.
 - **El guion secreto** (Cine Atlántico): lectura de un texto original; cada respuesta abre una cifra de la caja fuerte. Preguntas literales, inferenciales y críticas.
+
+## Minijuegos
+
+Seis atracciones repartidas por la ciudad (círculos con el rótulo «MINIJUEGO»). Cada una integra una decisión de Lengua en la mecánica; **solo se evalúa esa decisión en el primer intento**. Fallar la fuerza, la puntería o un salto se repite sin penalización y no cuenta como error.
+
+| Minijuego | Dónde | Mecánica | Decisión evaluada | Criterio |
+|---|---|---|---|---|
+| Golf del Malpaís | Museo del Mar | Vista trasera con perspectiva, swing con medidor de fuerza | Apuntar a la bandera con el significado o la forma canaria correcta | 1.1 |
+| Penaltis contra el Borrón | Radio Onda Volcán | Elegir zona de la portería y chutar | Clasificar un mensaje como dato fiable, bulo u opinión | 6.1 |
+| Saltarrimas | Teatro de la Luna | Plataformas de desplazamiento lateral (correr, saltar, esquivar) | Golpear el bloque con la palabra que completa la rima | 8.2 |
+| Canastas de palabras | Colegio La Laja | Feria de canastas con medidor de fuerza | Lanzar la palabra a la canasta de su clase en la frase | 9.1 |
+| Carrera de pistas | Plaza Mayor | Carrera por la ciudad contra la furgoneta del Borrón | Deducir de una pista escrita a qué lugar ir | 4.1 |
+| Sílabas al viento | Almacén de Palabras | Búsqueda por el mapa (como Páginas al viento) | Recoger en orden las sílabas de una palabra, sin coger trozos que no son sílabas | 9.1 |
+
+- En la **Aventura libre** están los seis. Se guardan aparte de las misiones: no cambian el contador de 18 misiones, ni el desbloqueo de la edición final, ni el código de partida.
+- En el **Gran Reto** y la **Evaluación por criterios** aparece **un** minijuego al azar en cada partida, y en el **Repaso por temáticas** aparece uno si hay alguno del bloque o del criterio elegido. En estos modos solo salen los cuatro que no requieren conducir (golf, penaltis, Saltarrimas y canastas).
+- Modo tranquilo («sin límite de tiempo»): sin medidor de fuerza, enemigos lentos y una furgoneta rival más lenta.
+- Controles: teclado (flechas, números, ESPACIO), ratón y botones táctiles grandes para tableta y pizarra digital.
 
 ## Guardar y retomar (código de partida)
 
@@ -47,12 +66,13 @@ index.html              Pantallas y capas de interfaz
 css/estilos.css         Dirección de arte, adaptación de pantalla, impresión del informe
 js/core/                Utilidades, guardado local, audio (Web Audio), voz (Web Speech), controles
 js/world/               Ciudad (generación y dibujo por trozos), mundo abierto (vehículo, tráfico, GPS)
-js/juegos/              Escenas de misión (ampliacion.js: tildes, cinta clasificadora, guion secreto) (diálogo, radio, cazabulos, taller, corrector…) y autopista
+js/juegos/              minijuegos.js (golf, penaltis, canastas, Saltarrimas) · Escenas de misión (ampliacion.js: tildes, cinta clasificadora, guion secreto) (diálogo, radio, cazabulos, taller, corrector…) y autopista
 js/eval/                Registro de evidencias, informe docente, exportación CSV/JSON, historial
 js/modos.js             Gran Reto y Repaso por temáticas
 js/ui/                  HUD, móvil del juego, ajustes y retratos SVG de los personajes
 js/data/curriculo.js    Criterios oficiales (texto literal por ciclo)
 js/data/misiones.js     Plantilla de 18 misiones (común a todos los cursos)
+js/data/minijuegos.js   Definición de los 6 minijuegos y pistas de la Carrera de pistas
 js/data/ampliacion.js   Contenidos de las misiones T5, T6 y O5 para cada curso
 js/data/cursoN.js       Contenidos de cada curso (1.º a 6.º)
 docs/                   Matriz de trazabilidad, guía docente e informe de pruebas

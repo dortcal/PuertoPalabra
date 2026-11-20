@@ -213,6 +213,8 @@ window.PP = window.PP || {};
       case "turbo": { const o = c.createOscillator(), g = c.createGain(); o.type = "sawtooth"; o.frequency.setValueAtTime(120, t); o.frequency.exponentialRampToValueAtTime(600, t + 0.4); const f = c.createBiquadFilter(); f.type = "lowpass"; f.frequency.value = 1500; o.connect(f); f.connect(g); g.connect(d); env(g, t, 0.02, 0.12, 0.2, 0.5, 0.15, 0.35); o.start(t); o.stop(t + 0.6); break; }
       case "frenazo": ruidoGolpe(d, t, 0.25, "bandpass", 900, 0.45); break;
       case "desbloqueo": [0, 7, 12, 16, 19, 24].forEach((s, i) => pluck(d, t + i * 0.07, mtof(67 + s), 0.6, 0.14, 5000)); break;
+      case "salto": { const o = c.createOscillator(), g = c.createGain(); o.type = "square"; o.frequency.setValueAtTime(330, t); o.frequency.exponentialRampToValueAtTime(880, t + 0.14); const f = c.createBiquadFilter(); f.type = "lowpass"; f.frequency.value = 2400; o.connect(f); f.connect(g); g.connect(d); env(g, t, 0.005, 0.03, 0.12, 0.4, 0.05, 0.16); o.start(t); o.stop(t + 0.2); break; }
+      case "golpe": ruidoGolpe(d, t, 0.45, "highpass", 1800, 0.05); pluck(d, t, mtof(84), 0.12, 0.1, 6000); break;
       case "radio": ruidoGolpe(d, t, 0.15, "bandpass", 1200, 0.5); break;
       default: break;
     }

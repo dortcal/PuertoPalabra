@@ -97,8 +97,8 @@ window.PP = window.PP || {};
   UI.aviso = function (m) {
     const a = $("#aviso-cerca"), b = $("#btn-accion");
     if (m) {
-      a.hidden = false; a.innerHTML = '<span class="mini-rombo" style="background:' + m.color + '"></span><div><b>' + U.esc(m.titulo) + "</b><small>" + (m.bloqueada ? "Completa " + m.requiere + " misiones para desbloquearla" : (m.hecha ? "✔ Completada " + "★".repeat(m.estrellas || 0) + " · " : "") + (PP.Input.tactil ? "Toca el botón ▶" : "Pulsa ESPACIO o ENTER") + (m.hecha ? " para repetirla" : " para empezar")) + "</small></div>";
-      b.classList.add("listo"); b.innerHTML = U.icon(m.bloqueada ? "lock" : "play"); b.setAttribute("aria-label", "Empezar misión " + m.titulo);
+      a.hidden = false; a.innerHTML = '<span class="mini-rombo" style="background:' + m.color + '"></span><div><b>' + U.esc(m.titulo) + "</b><small>" + (m.accion ? (PP.Input.tactil ? "Toca el botón ▶" : "Pulsa ESPACIO o ENTER") + " para " + m.accion : m.bloqueada ? "Completa " + m.requiere + " misiones para desbloquearla" : (m.hecha ? "✔ Completada " + "★".repeat(m.estrellas || 0) + " · " : "") + (PP.Input.tactil ? "Toca el botón ▶" : "Pulsa ESPACIO o ENTER") + (m.hecha ? " para repetirla" : " para empezar")) + "</small></div>";
+      b.classList.add("listo"); b.innerHTML = U.icon(m.bloqueada ? "lock" : "play"); b.setAttribute("aria-label", m.accion ? "Recoger " + m.titulo : (m.mini ? "Empezar minijuego " : "Empezar misión ") + m.titulo);
     } else {
       a.hidden = true; b.classList.remove("listo");
       const enPers = !!PP.Mundo.borron;
@@ -239,6 +239,18 @@ window.PP = window.PP || {};
       });
       c.appendChild(grupo);
     });
+    // minijuegos (atracciones de la ciudad)
+    const mj = pr.minijuegos || {};
+    const gm = el("section", { class: "grupo-mis" }, [el("h3", { html: '<span class="punto" style="background:#fff"></span>Minijuegos <small>Atracciones de la ciudad · cuentan para el informe</small>' })]);
+    (PP.MINIJUEGOS || []).forEach((m) => {
+      const st = mj[m.id], lugar = PP.Ciudad.lugares[m.lugar], T = PP.Ciudad.T, pos = { x: lugar.x + (m.off ? m.off[0] : 0) * T, y: lugar.y + (m.off ? m.off[1] : 0) * T };
+      gm.appendChild(el("div", { class: "fila-mis" + (st ? " hecha" : "") }, [
+        el("div", { class: "fm-info", html: "<b>" + U.esc(m.titulo) + "</b><small>" + U.esc(lugar ? lugar.nombre : "") + " · Criterio " + m.criterios.join(", ") + "</small>" }),
+        el("div", { class: "fm-est", "aria-label": (st ? st.estrellas : 0) + " estrellas", html: [1, 2, 3].map((k2) => '<span class="' + (st && st.estrellas >= k2 ? "on" : "") + '">★</span>').join("") }),
+        el("div", { class: "fm-btns" }, [el("button", { class: "btn btn-sec btn-peq", type: "button", html: U.icon("gps") + "GPS", onclick: () => { UI.cerrarMovil(); J.gpsA(pos); } })])
+      ]));
+    });
+    c.appendChild(gm);
   }
 
   function pintarColeccion(c) {

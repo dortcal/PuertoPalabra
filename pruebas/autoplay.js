@@ -12,6 +12,12 @@
   function correctos(opts) { return opts.filter((b) => !b.disabled); }
 
   async function escena() {
+    // minijuegos de pantalla completa
+    if ($(".mj")) {
+      const fin = $(".mj-final button"); if (fin) { fin.click(); await sleep(80); return true; }
+      if (PP.MJ && PP.MJ.auto) PP.MJ.auto();
+      await sleep(150); return true;
+    }
     const esc = $("#escena");
     if (esc.hidden) return false;
     const titulo = ($(".esc-titulo") || {}).textContent || "";
@@ -152,6 +158,14 @@
     if (M.destinos.length && window.__destinoRef) {
       const d = M.destinos.find((x) => x.clave === window.__destinoRef) || M.destinos[0];
       M.jugador.x = d.x; M.jugador.y = d.y; M.jugador.v = 0; await sleep(250); return true;
+    }
+    if (M.destinos.length && PP.juego._carreraOk) {
+      const d = M.destinos.find((x) => x.clave === PP.juego._carreraOk) || M.destinos[0];
+      M.jugador.x = d.x; M.jugador.y = d.y; M.jugador.v = 0; await sleep(250); return true;
+    }
+    if (M.fichas.some((f) => f.vivo && f.manual)) {
+      const vivas = M.fichas.filter((x) => x.vivo && x.manual && !x.falso).sort((a, b) => a.k - b.k);
+      const f = vivas[0]; if (f) { M.jugador.x = f.x; M.jugador.y = f.y; M.jugador.v = 0; await sleep(120); PP.Input.pulsado.accion = true; await sleep(150); return true; }
     }
     if (M.fichas.some((f) => f.vivo)) {
       const f = M.fichas.find((x) => x.vivo && x.ok !== false);
