@@ -1,6 +1,7 @@
 /* Puerto Palabra · Modos de juego.
    Tras elegir curso y reportero/a hay tres modos:
-     1. Gran Reto: 8 retos que mezclan los cuatro bloques de Lengua (sin conducir).
+     1. Gran Reto: 10 retos que mezclan los cuatro bloques de Lengua (sin conducir).
+     1b. Evaluación por criterios: el mínimo de retos que cubre los 13 criterios del juego.
      2. Repaso por temáticas: se elige un bloque o un criterio y se practica solo eso.
      3. Aventura en la ciudad: el mundo abierto (ver main.js).
    Los retos reutilizan las pruebas de las misiones (mismas mecánicas, mismos contenidos y misma
@@ -28,7 +29,8 @@ window.PP = window.PP || {};
     const tarjeta = (clase, icono, titulo, texto, etiqueta, f) => el("button", { class: "modo-tarjeta " + clase, type: "button", onclick: () => { PP.Audio.sfx("inicio"); f(); }, html:
       '<span class="modo-ico">' + U.icon(icono) + '</span><span class="modo-tit">' + U.esc(titulo) + '</span><span class="modo-txt">' + U.esc(texto) + '</span><span class="modo-etq">' + U.esc(etiqueta) + "</span>" });
     r.append(
-      tarjeta("modo-reto", "trophy", "Gran Reto", "Ocho retos que mezclan los cuatro bloques de Lengua: lenguas, comunicación, literatura y reflexión sobre la lengua.", "Todos los bloques · sin conducir", () => Modos.empezarGranReto()),
+      tarjeta("modo-reto", "trophy", "Gran Reto", "Diez retos que mezclan los cuatro bloques de Lengua: lenguas, comunicación, literatura y reflexión sobre la lengua.", "Todos los bloques · sin conducir", () => Modos.empezarGranReto()),
+      tarjeta("modo-eval", "doc", "Evaluación por criterios", "Un recorrido que cubre todos los criterios del juego, para obtener un informe completo. Se puede dejar a medias.", "Informe completo · sin conducir", () => Modos.empezarEvaluacion()),
       tarjeta("modo-tema", "book", "Repaso por temáticas", "Elige un bloque o un criterio concreto y practica solo eso hasta dominarlo.", "Tú eliges el tema", () => Modos.abrirTematica()),
       tarjeta("modo-aventura", "map", "Aventura libre", "Conduce por la ciudad abierta, entra en las misiones y devuelve el color a los cuatro barrios.", "Mundo abierto", () => PP.juego.iniciarAventura())
     );
@@ -70,9 +72,29 @@ window.PP = window.PP || {};
 
   // ---------------- Secuencias de retos ----------------
   Modos.empezarGranReto = function () {
-    const por = {}; BLOQUES.forEach((b) => { por[b] = U.shuffle(retosDisponibles().filter((m) => bloqueDe(m) === b)).slice(0, 2); });
-    const orden = []; for (let k = 0; k < 2; k++) BLOQUES.forEach((b) => { if (por[b][k]) orden.push(por[b][k]); });
+    const por = {}; BLOQUES.forEach((b) => { por[b] = U.shuffle(retosDisponibles().filter((m) => bloqueDe(m) === b)); });
+    // Dos retos por bloque y dos más (de bloques distintos al azar) hasta completar 10.
+    const cuota = {}; BLOQUES.forEach((b) => { cuota[b] = Math.min(2, por[b].length); });
+    let extra = 2;
+    U.shuffle(BLOQUES.slice()).forEach((b) => { if (extra > 0 && por[b].length > cuota[b]) { cuota[b]++; extra--; } });
+    const orden = [];
+    for (let k = 0; k < 3; k++) BLOQUES.forEach((b) => { if (k < cuota[b]) orden.push(por[b][k]); });
     jugar({ tipo: "reto", nombre: "Gran Reto", titulo: "Gran Reto", subtitulo: "Las cuatro ediciones de El Eco", retos: orden, repetir: Modos.empezarGranReto });
+  };
+  /** Cobertura mínima: elige, al azar entre las mejores, las misiones que cubren todos los criterios disponibles. */
+  Modos.empezarEvaluacion = function () {
+    const todos = PP.MISIONES.filter((m) => pasosSinMundo(m).length); // incluye la edición final (única con evidencias de 5.1)
+    const faltan = new Set(); todos.forEach((m) => m.criterios.forEach((c) => faltan.add(c)));
+    const elegidos = [];
+    while (faltan.size) {
+      const pts = todos.filter((m) => !elegidos.includes(m)).map((m) => ({ m, n: m.criterios.filter((c) => faltan.has(c)).length })).filter((x) => x.n);
+      if (!pts.length) break;
+      const top = Math.max.apply(null, pts.map((x) => x.n));
+      const mejor = U.shuffle(pts.filter((x) => x.n === top))[0].m;
+      elegidos.push(mejor); mejor.criterios.forEach((c) => faltan.delete(c));
+    }
+    const orden = elegidos.sort((a, b) => BLOQUES.indexOf(bloqueDe(a)) - BLOQUES.indexOf(bloqueDe(b)));
+    jugar({ tipo: "reto", nombre: "Evaluación por criterios", titulo: "Evaluación por criterios", subtitulo: "Recorrido que cubre todos los criterios del juego", retos: orden, repetir: Modos.empezarEvaluacion });
   };
   Modos.empezarTema = function (sel) {
     const C = PP.CURRICULO;

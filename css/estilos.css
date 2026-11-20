@@ -508,6 +508,7 @@ body.reducir-movimiento *, body.reducir-movimiento *::before, body.reducir-movim
 .modo-tarjeta:active { transform: translateY(3px); box-shadow: 0 2px 0 var(--noche); }
 .modo-reto { --c1: #ffe066; --c2: #ff9f43; }
 .modo-tema { --c1: #9ff0e0; --c2: #3bceac; }
+.modo-eval { --c1: #bcd0ff; --c2: #6c8cff; }
 .modo-aventura { --c1: #ffb3c7; --c2: #c48cff; }
 .modo-ico { display: grid; place-items: center; width: 64px; height: 64px; border-radius: 18px; background: var(--noche); color: var(--oro); }
 .modo-ico .ico { width: 38px; height: 38px; }

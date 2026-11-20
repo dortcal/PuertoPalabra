@@ -14,7 +14,8 @@ Puerto Palabra es un videojuego de ciudad abierta en vista cenital. El alumnado 
 
 ### Modos de juego
 
-- **Gran Reto** (unos 15-25 min): 8 retos de los cuatro bloques. Útil como sesión de evaluación formativa completa.
+- **Gran Reto** (10 retos de los cuatro bloques; duración orientativa de 30-45 min, aún sin medir con alumnado): útil como sesión de evaluación formativa.
+- **Evaluación por criterios** (10-11 retos, mismo orden de duración): recorrido que incluye al menos una misión por cada criterio del juego (incluida la edición final, la única con evidencias de 5.1) para obtener un informe completo. Se puede terminar antes desde la tarjeta de cada reto y el informe recoge lo jugado. Cada criterio suele tener pocas evidencias en una sola pasada; el informe indica cuándo son limitadas.
 - **Repaso por temáticas:** el alumnado o el docente elige un bloque o un criterio y se trabaja solo eso. Útil para refuerzo o ampliación tras una unidad.
 - **Aventura libre:** exploración de la ciudad con misiones; mejor para varias sesiones.
 

@@ -10,7 +10,7 @@ La estética de «ciudad abierta» se inspira en los juegos de mundo abierto, pe
 
 Tras elegir curso y reportero/a hay tres modos:
 
-1. **Gran Reto:** ocho retos que mezclan los cuatro bloques de Lengua (dos por bloque, en orden alterno), con racha y estrellas. No hay que conducir.
+1. **Gran Reto:** diez retos que mezclan los cuatro bloques de Lengua (al menos dos por bloque, en orden alterno), con racha y estrellas. No hay que conducir.
 2. **Repaso por temáticas:** se elige un bloque o un criterio de evaluación y se practican solo sus retos.
 3. **Aventura libre:** la ciudad abierta con misiones, barrios que recuperan el color, radio y palabras doradas.
 
