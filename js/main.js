@@ -492,7 +492,7 @@ window.PP = window.PP || {};
     if (estrellas === 3) ({ P1: "poliglota", P2: "mediador", O2: "cazabulos", L2: "poeta", T5: "guardian" })[mis.id] && J.logro({ P1: "poliglota", P2: "mediador", O2: "cazabulos", L2: "poeta", T5: "guardian" }[mis.id]);
     if (v.n >= 4 && v.pct === 1) J.logro("sinborrones");
     const restAntes = Object.assign({}, M.restauracion);
-    refrescarMarcadores();
+    refrescarMarcadores(); objetivoLibre();
     const barrioCompleto = !mis.final && M.restauracion[mis.barrio] >= 1 && restAntes[mis.barrio] < 1;
     if (barrioCompleto) J.logro("barrio");
     if (Object.values(M.restauracion).every((x) => x >= 1)) J.logro("ciudad");

@@ -524,14 +524,21 @@ window.PP = window.PP || {};
     const pulso = U.prefiereMenosMovimiento() ? 0.5 : 0.5 + 0.5 * Math.sin(t * 3 + m.x);
     g.save();
     g.fillStyle = m.hecha ? "rgba(255,255,255,0.18)" : m.color + "55"; g.beginPath(); g.arc(m.x, m.y, 30 + pulso * 6, 0, 7); g.fill();
-    g.strokeStyle = m.color; g.lineWidth = 4; g.beginPath(); g.arc(m.x, m.y, 26, 0, 7); g.stroke();
+    g.strokeStyle = m.hecha ? "#37b24d" : m.color; g.lineWidth = 4; g.beginPath(); g.arc(m.x, m.y, 26, 0, 7); g.stroke();
     const yy = m.y - 46 - pulso * 6;
     g.fillStyle = "rgba(0,0,0,0.3)"; g.beginPath(); g.ellipse(m.x, m.y + 2, 12, 5, 0, 0, 7); g.fill();
     g.translate(m.x, yy); g.rotate(Math.PI / 4);
     g.fillStyle = m.hecha ? "#e8e8e8" : m.color; g.strokeStyle = "#1b1b2f"; g.lineWidth = 3; g.fillRect(-14, -14, 28, 28); g.strokeRect(-14, -14, 28, 28);
     g.rotate(-Math.PI / 4); g.fillStyle = "#1b1b2f"; g.font = "900 15px 'Trebuchet MS', sans-serif"; g.textAlign = "center"; g.textBaseline = "middle"; g.fillText(m.etiqueta, 0, 1);
     g.restore();
-    if (m.hecha && m.estrellas) { g.fillStyle = "#ffd23f"; g.font = "bold 14px sans-serif"; g.textAlign = "center"; g.fillText("★".repeat(m.estrellas), m.x, m.y + 44); }
+    if (m.hecha) {
+      // insignia verde con ✔ junto al rombo y estrellas encima: se ve de lejos que la misión está completada
+      const bx = m.x + 20, by = yy - 18;
+      g.save(); g.fillStyle = "#37b24d"; g.strokeStyle = "#ffffff"; g.lineWidth = 3; g.beginPath(); g.arc(bx, by, 11, 0, 7); g.fill(); g.stroke();
+      g.strokeStyle = "#ffffff"; g.lineWidth = 3.2; g.lineCap = "round"; g.lineJoin = "round"; g.beginPath(); g.moveTo(bx - 5, by + 0.5); g.lineTo(bx - 1.5, by + 4); g.lineTo(bx + 5.5, by - 4); g.stroke();
+      if (m.estrellas) { g.fillStyle = "#ffd23f"; g.strokeStyle = "#1b1b2f"; g.lineWidth = 3; g.font = "bold 15px sans-serif"; g.textAlign = "center"; g.textBaseline = "alphabetic"; const t = "★".repeat(m.estrellas); g.strokeText(t, m.x, yy - 24); g.fillText(t, m.x, yy - 24); }
+      g.restore();
+    }
   }
   function dibujarDestino(g, d, t) {
     const p = 0.5 + 0.5 * Math.sin(t * 4);
@@ -585,7 +592,7 @@ window.PP = window.PP || {};
     // barrios borrados (grisáceo)
     for (const b in C.rectBarrio) { const rest = M.restauracion[b] || 0; if (rest >= 1) continue; const r = C.rectBarrio[b]; g.fillStyle = "rgba(60,60,70," + (0.35 * (1 - rest)) + ")"; g.fillRect(r[0] * k, r[1] * k, r[2] * k, r[3] * k); }
     if (M.ruta && M.ruta.length) { g.strokeStyle = "#c77dff"; g.lineWidth = 2.4; g.beginPath(); g.moveTo(px, py); M.ruta.forEach((p) => g.lineTo(p.x / T * k, p.y / T * k)); g.stroke(); }
-    for (const m of M.marcadores) { g.fillStyle = m.hecha ? "#ddd" : m.color; g.strokeStyle = "#111"; g.lineWidth = 1; g.beginPath(); g.arc(m.x / T * k, m.y / T * k, 4.5, 0, 7); g.fill(); g.stroke(); }
+    for (const m of M.marcadores) { g.fillStyle = m.hecha ? "#37b24d" : m.color; g.strokeStyle = "#111"; g.lineWidth = 1; g.beginPath(); g.arc(m.x / T * k, m.y / T * k, 4.5, 0, 7); g.fill(); g.stroke(); }
     for (const d of M.destinos) { g.fillStyle = "#ffe066"; g.beginPath(); g.arc(d.x / T * k, d.y / T * k, 5, 0, 7); g.fill(); g.strokeStyle = "#111"; g.stroke(); }
     for (const f of M.fichas) if (f.vivo) { g.fillStyle = f.pagina ? "#c48cff" : "#fff"; g.fillRect(f.x / T * k - 2, f.y / T * k - 2, 4, 4); }
     if (M.borron) { g.fillStyle = "#b388ff"; g.beginPath(); g.arc(M.borron.x / T * k, M.borron.y / T * k, 5, 0, 7); g.fill(); }
@@ -609,7 +616,7 @@ window.PP = window.PP || {};
     const usados = new Set(PP.MISIONES.map((m) => m.lugar));
     for (const kk in C.lugares) { if (!usados.has(kk)) continue; const l = C.lugares[kk]; g.fillStyle = "#fff"; g.beginPath(); g.arc(ox + l.x / T * tk, oy + l.y / T * tk, 3 * f, 0, 7); g.fill(); rotulo(l.nombre, ox + l.x / T * tk + 7 * f, oy + l.y / T * tk - 6 * f, 10, "#fff"); }
     for (const b in C.rectBarrio) { const r = C.rectBarrio[b]; rotulo(PP.BARRIOS[b].nombre + " (" + PP.BARRIOS[b].bloque + ")", ox + r[0] * tk + 8 * f, oy + r[1] * tk + 20 * f, 14, PP.BARRIOS[b].color); }
-    for (const m of M.marcadores) { g.fillStyle = m.hecha ? "#ccc" : m.color; g.beginPath(); g.arc(ox + m.x / T * tk, oy + m.y / T * tk, 6, 0, 7); g.fill(); g.strokeStyle = "#111"; g.lineWidth = 1.5; g.stroke(); }
+    for (const m of M.marcadores) { g.fillStyle = m.hecha ? "#37b24d" : m.color; g.beginPath(); g.arc(ox + m.x / T * tk, oy + m.y / T * tk, 6, 0, 7); g.fill(); g.strokeStyle = "#111"; g.lineWidth = 1.5; g.stroke(); }
     const j = M.jugador; g.fillStyle = "#ff4f7b"; g.beginPath(); g.arc(ox + j.x / T * tk, oy + j.y / T * tk, 6, 0, 7); g.fill(); g.strokeStyle = "#fff"; g.lineWidth = 2; g.stroke();
   };
 

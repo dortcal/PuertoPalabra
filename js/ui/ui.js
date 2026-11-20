@@ -97,7 +97,7 @@ window.PP = window.PP || {};
   UI.aviso = function (m) {
     const a = $("#aviso-cerca"), b = $("#btn-accion");
     if (m) {
-      a.hidden = false; a.innerHTML = '<span class="mini-rombo" style="background:' + m.color + '"></span><div><b>' + U.esc(m.titulo) + "</b><small>" + (m.bloqueada ? "Completa " + m.requiere + " misiones para desbloquearla" : (PP.Input.tactil ? "Toca el botón ▶" : "Pulsa ESPACIO o ENTER") + " para empezar") + "</small></div>";
+      a.hidden = false; a.innerHTML = '<span class="mini-rombo" style="background:' + m.color + '"></span><div><b>' + U.esc(m.titulo) + "</b><small>" + (m.bloqueada ? "Completa " + m.requiere + " misiones para desbloquearla" : (m.hecha ? "✔ Completada " + "★".repeat(m.estrellas || 0) + " · " : "") + (PP.Input.tactil ? "Toca el botón ▶" : "Pulsa ESPACIO o ENTER") + (m.hecha ? " para repetirla" : " para empezar")) + "</small></div>";
       b.classList.add("listo"); b.innerHTML = U.icon(m.bloqueada ? "lock" : "play"); b.setAttribute("aria-label", "Empezar misión " + m.titulo);
     } else {
       a.hidden = true; b.classList.remove("listo");
