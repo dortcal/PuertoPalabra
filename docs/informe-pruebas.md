@@ -103,6 +103,15 @@ No verificado: jugabilidad y dificultad con alumnado real (tiempos, frustración
 - Comprobado en Chrome con capturas en 2.º, 3.º y 4.º: golf (swing, estela, banderas ondeando), penaltis (gradas que celebran, red que se deforma, parada), canastas (feria con noria, red que se estira, aro que vibra), Saltarrimas (paralaje, polvo, aplastamiento de enemigos). Los 6 minijuegos completos en 5.º, Gran Reto, Repaso del bloque III y la prueba completa de 3.º sin errores de consola.
 - No verificado: rendimiento en tabletas o pizarras antiguas (más dibujo por fotograma que antes).
 
+## Solo minijuegos, informe solo en PDF y más variedad (20/11/2026)
+
+- **Modo «Solo minijuegos»** (menú de jugar): pantalla con los seis minijuegos para elegir uno, varios o todos. Ejecutado ✔ en Chrome: los seis seguidos (también Carrera de pistas y Sílabas al viento, conduciendo) en 4.º, y solo J5+J6 en 2.º con emulación táctil; pantalla final, informe y «Elegir otros minijuegos» correctos, 0 errores de consola. Vistas revisadas a 1280, 820 y 390 px de ancho.
+- **Informe:** se eliminan los botones y las funciones de CSV de resumen, CSV de registro, copiar resumen y JSON. Queda «Descargar informe en PDF» (impresión del navegador) con un recuadro superior en blanco para nombre y curso/grupo; se fijan márgenes A4 de 12 mm (`@page`). PDF generado y revisado visualmente. La exportación del historial CSV de la «Zona docente» se mantiene aparte.
+- **Imprenta sin borrones:** antes cada curso tenía un solo texto. Ahora hay 4 por curso (el original y 3 nuevos, `js/data/banco2.js`) y se elige uno distinto cada vez: comprobado que en 4 partidas seguidas salen 4 textos distintos (cursos 1 y 4). Tocar 1 o 2 palabras bien escritas ya no cuenta como error; solo se registra si se marcan 3 o más.
+- **Más variedad:** «Operación Tilde» y «Sílabas al viento» pasan de 21-27 a 41-47 palabras por curso (sílabas y acentos validados con una comprobación automática de las reglas de acentuación) y «Rimas del teatro» de 8 a 12 versos por curso.
+- No reproducido: la valoración de una Imprenta con 6 aciertos de 7. Con 6 aciertos a la primera y 1 sin detectar el cálculo da 86 % (2 estrellas); 1 estrella solo sale si varias correcciones se eligen mal a la primera (cuentan la mitad). Si vuelve a ocurrir, conviene anotar el curso y el texto.
+- Sigue con contenido fijo (no rota entre partidas): los diálogos P1, P2 y O3, el boletín de radio, el cartel, la leyenda y la noticia final. Las preguntas asociadas sí rotan.
+
 ## Pendiente de comprobar en el aula
 
 - Sonido, música y narración en los equipos del centro (Windows, iPad, Android, pizarra).

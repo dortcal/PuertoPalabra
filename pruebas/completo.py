@@ -34,10 +34,10 @@ async def main():
             print(json.dumps(info, ensure_ascii=False, indent=0)[:2500])
             await pg.evaluate("PP.UI.informe()"); await pg.wait_for_timeout(400)
             if SHOTS: await pg.screenshot(path=str(SALIDA) + f"/c{curso}_informe.png", full_page=False)
-            csv = await pg.evaluate("PP.Eval.csvResumen().split('\\n').length")
-            csv2 = await pg.evaluate("PP.Eval.csvRegistro().split('\\n').length")
-            js = await pg.evaluate("JSON.parse(PP.Eval.json()).criterios.length")
-            print("CSV resumen filas", csv, "registro filas", csv2, "JSON criterios", js)
+            # el informe ya no ofrece CSV ni JSON: solo PDF (impresión) con espacio para nombre y curso
+            ident = await pg.evaluate("[!!document.querySelector('.inf-ident'), [...document.querySelectorAll('#informe-cuerpo button')].map(b=>b.textContent.trim()).join(' | ')]")
+            print("Cabecera nombre/curso:", ident[0], "| botones:", ident[1])
+            assert ident[0] and "CSV" not in ident[1] and "JSON" not in ident[1], "el informe debe tener solo PDF"
             # recarga: persistencia
             await pg.reload(); await pg.wait_for_timeout(700)
             per = await pg.evaluate("(()=>{const d=JSON.parse(localStorage.getItem('puertoPalabra.v1'));return {perfil:d.perfil, hist:d.historial.length, mis:Object.keys(d.progreso[d.perfil.codigo+'|'+d.perfil.curso].misiones).length}})()")

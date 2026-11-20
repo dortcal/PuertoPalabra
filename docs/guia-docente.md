@@ -16,6 +16,7 @@ Puerto Palabra es un videojuego de ciudad abierta en vista cenital. El alumnado 
 
 - **Gran Reto** (10 retos: 9 misiones de los cuatro bloques y 1 minijuego; duración orientativa de 30-45 min, aún sin medir con alumnado): útil como sesión de evaluación formativa.
 - **Evaluación por criterios** (10-12 retos con un minijuego, mismo orden de duración): recorrido que incluye al menos una misión por cada criterio del juego (incluida la edición final, la única con evidencias de 5.1) para obtener un informe completo. Se puede terminar antes desde la tarjeta de cada reto y el informe recoge lo jugado. Cada criterio suele tener pocas evidencias en una sola pasada; el informe indica cuándo son limitadas.
+- **Solo minijuegos:** se eligen uno, varios o los seis minijuegos y se juegan seguidos (los dos que se juegan conduciendo, la Carrera de pistas y Sílabas al viento, también están aquí). Cada uno queda recogido en el informe con su criterio.
 - **Repaso por temáticas:** el alumnado o el docente elige un bloque o un criterio y se trabaja solo eso. Útil para refuerzo o ampliación tras una unidad.
 - **Aventura libre:** exploración de la ciudad con misiones; mejor para varias sesiones.
 
@@ -79,11 +80,7 @@ Los criterios 3.1 (producción oral) y 7.2 (compartir la experiencia lectora) no
 - Se valora el **primer intento** de cada reto. Los aciertos con pista valen menos y los reintentos aparecen como «aprendizaje durante el juego».
 - **Estado de la evidencia:** el informe distingue si un criterio solo se ha trabajado, si hay evidencias (limitadas o parciales) o si las evidencias son consistentes dentro del juego. Nunca afirma que un criterio esté dominado.
 - Los niveles (En inicio, En desarrollo, Logrado en el juego, Destacado en el juego) son orientativos. No sustituyen las rúbricas oficiales de Canarias.
-- Exportaciones:
-  - **Resumen CSV:** una fila por criterio, útil para la hoja de seguimiento.
-  - **Registro CSV:** cada respuesta, útil para analizar errores.
-  - **JSON:** sesión completa.
-  - **Imprimir/PDF.**
+- El informe se descarga **solo en PDF** (botón «Descargar informe en PDF»: en el cuadro de impresión se elige «Guardar como PDF»). El PDF deja arriba un recuadro en blanco para escribir a mano el **nombre del alumno o la alumna y su curso y grupo**, porque el juego solo guarda un código anónimo.
 - La **Zona docente** guarda en el navegador el historial por código y compara cada sesión con la anterior. Si se usa en tabletas compartidas, conviene exportar el historial antes de borrar los datos.
 
 ## 6. Ajustes recomendados

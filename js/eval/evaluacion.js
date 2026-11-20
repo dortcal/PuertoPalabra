@@ -104,21 +104,6 @@ window.PP = window.PP || {};
     };
   };
 
-  function csvCelda(v) { const t = v == null ? "" : String(v); return /[;"\n]/.test(t) ? '"' + t.replace(/"/g, '""') + '"' : t; }
-  E.csvResumen = function () {
-    const inf = E.informe(); if (!inf) return "";
-    const filas = [["sesion", "codigo", "curso", "fecha", "criterio", "descripcion_corta", "bloque_en_juego", "evidencias_primer_intento", "porcentaje", "nivel_observado", "estado_evidencia", "ayudas", "misiones"]];
-    const fecha = new Date(inf.inicio).toISOString().slice(0, 16).replace("T", " ");
-    inf.criterios.forEach((c) => filas.push([inf.sesion, inf.codigo, inf.curso + "º", fecha, c.code, PP.CURRICULO.etiquetas[c.code], PP.CURRICULO.bloqueEnJuego[c.code], c.n, c.pct === null ? "" : Math.round(c.pct * 100), c.nivel || "No valorable", c.estado, c.ayudas, c.misiones.join(" ")]));
-    return "﻿" + filas.map((f) => f.map(csvCelda).join(";")).join("\n");
-  };
-  E.csvRegistro = function () {
-    const s = E.sesion; if (!s) return "";
-    const filas = [["sesion", "codigo", "curso", "hora", "mision", "mecanica", "criterio", "item", "respuesta", "correcta", "resultado", "intento", "ayuda", "tipo_de_reto"]];
-    s.eventos.forEach((e) => filas.push([s.id, s.codigo, s.curso + "º", new Date(e.t).toLocaleTimeString("es-ES"), e.mision, e.mecanica, e.crit, e.item, e.respuesta, e.correcta, e.ok, e.intento, e.ayuda ? "sí" : "no", e.subtipo || ""]));
-    return "﻿" + filas.map((f) => f.map(csvCelda).join(";")).join("\n");
-  };
-  E.json = function () { return JSON.stringify(E.informe(), null, 2); };
 
   E.descargar = function (nombre, contenido, tipo) {
     try {

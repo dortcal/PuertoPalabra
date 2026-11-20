@@ -205,7 +205,7 @@
     if (id === "L1") window.__ordenRef = C.historia.piezas;
     if (id === "F") window.__ordenRef = C.noticia.piezas;
     window.__tallerRef = C.taller.items; window.__biblioRef = C.biblioteca;
-    const re = /\{([^|}]+)\|([^|}]+)\|([^}]*)\}/g; let mm; window.__erroresRef = []; while ((mm = re.exec(C.corrector.texto))) window.__erroresRef.push({ mal: mm[1], bien: mm[2] });
+    const re = /\{([^|}]+)\|([^|}]+)\|([^}]*)\}/g; let mm; window.__erroresRef = []; [C.corrector].concat(C.corrector.alternativas || []).forEach((v) => { re.lastIndex = 0; while ((mm = re.exec(v.texto))) window.__erroresRef.push({ mal: mm[1], bien: mm[2] }); });
     M.colocarJugador(mis.lugar);
     const marc = M.marcadores.find((m) => m.id === id);
     M.cb.marcador(marc);

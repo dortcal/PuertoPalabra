@@ -420,6 +420,8 @@ window.PP = window.PP || {};
 
   // ======================= CORRECTOR =======================
   S.corrector = function (d, ctx) {
+    // Cada vez se elige un texto distinto (el original y sus alternativas), sin repetir hasta agotarlos
+    if (d.alternativas && d.alternativas.length) d = U.muestra([d].concat(d.alternativas), 1, "corr:" + (PP.juego.curso || 0))[0];
     return promesa((res) => {
       const m = marco({ tema: "taller", mision: ctx.titulo, titulo: d.titulo || "Corrige antes de imprimir", consigna: d.consigna || "Toca las palabras que tengan errores y elige cómo se escriben bien.", icono: "doc", alSalir: () => { m.cerrar(); res({ abandonada: true }); } });
       // Formato: texto normal con marcas {mal|bien|explicación}
@@ -434,7 +436,8 @@ window.PP = window.PP || {};
       const pop = el("div", { class: "popover", hidden: true }); m.cuerpo.appendChild(pop);
       const fin = () => {
         errores.forEach((e, k) => { if (!e.hecho) { PP.Eval.registrar({ crit: ctx.crit, ok: 0, mecanica: "corrector", mision: ctx.id, item: "err-" + k + "-" + e.bien, respuesta: "(no detectado)", correcta: e.bien, detalle: "No detectó el error «" + e.mal + "» (→ «" + e.bien + "»)" }); e.span.classList.add("revelado"); e.span.textContent = e.bien; } });
-        if (falsos) PP.Eval.registrar({ crit: ctx.crit, ok: falsos > 3 ? 0 : 0.5, mecanica: "corrector", mision: ctx.id, item: "falsos-positivos", respuesta: falsos + " palabras correctas marcadas", correcta: "0", detalle: falsos > 2 ? "Marcó " + falsos + " palabras correctas como errores" : "" });
+        // Tocar una o dos palabras bien escritas es explorar el texto y no se penaliza; solo cuenta como evidencia si se marcan muchas.
+        if (falsos >= 3) PP.Eval.registrar({ crit: ctx.crit, ok: falsos > 4 ? 0 : 0.5, mecanica: "corrector", mision: ctx.id, item: "falsos-positivos", respuesta: falsos + " palabras correctas marcadas", correcta: "0", detalle: "Marcó " + falsos + " palabras correctas como errores" });
         m.pie.innerHTML = ""; m.pie.appendChild(m.boton("Imprimir periódico " + U.icon("print"), () => { m.cerrar(); res({ hecho: true }); }));
         m.fb(corregidos === errores.length ? "¡Página impecable! Ya se puede imprimir." : "Se imprimirá con las correcciones que faltaban (en verde). ¡Fíjate en ellas para la próxima!", corregidos === errores.length ? "bien" : "info");
       };

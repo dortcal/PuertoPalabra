@@ -3,6 +3,7 @@
      1. Gran Reto: 10 retos que mezclan los cuatro bloques de Lengua (sin conducir).
      1b. Evaluación por criterios: el mínimo de retos que cubre los 13 criterios del juego.
      2. Repaso por temáticas: se elige un bloque o un criterio y se practica solo eso.
+     2b. Solo minijuegos: se eligen uno, varios o los seis (J5 y J6 se juegan conduciendo por la ciudad).
      3. Aventura en la ciudad: el mundo abierto (ver main.js).
    Los retos reutilizan las pruebas de las misiones (mismas mecánicas, mismos contenidos y misma
    evaluación), pero sin los pasos que exigen conducir. No cambian el progreso de la ciudad. */
@@ -40,10 +41,47 @@ window.PP = window.PP || {};
     r.append(
       tarjeta("modo-reto", "trophy", "Gran Reto", "Diez retos que mezclan los cuatro bloques de Lengua, con un minijuego sorpresa entre ellos.", "Todos los bloques · sin conducir", () => Modos.empezarGranReto()),
       tarjeta("modo-eval", "doc", "Evaluación por criterios", "Un recorrido que cubre todos los criterios del juego, para obtener un informe completo. Se puede dejar a medias.", "Informe completo · sin conducir", () => Modos.empezarEvaluacion()),
+      tarjeta("modo-mini", "star", "Solo minijuegos", "Golf, penaltis, plataformas, canastas, carrera y búsqueda de sílabas. Juega el que quieras o los seis.", "Tú eliges cuáles", () => Modos.abrirMinijuegos()),
       tarjeta("modo-tema", "book", "Repaso por temáticas", "Elige un bloque o un criterio concreto y practica solo eso hasta dominarlo.", "Tú eliges el tema", () => Modos.abrirTematica()),
       tarjeta("modo-aventura", "map", "Aventura libre", "Conduce por la ciudad abierta, entra en las misiones y devuelve el color a los cuatro barrios.", "Mundo abierto", () => PP.juego.iniciarAventura())
     );
     PP.UI.mostrar("pantalla-modos");
+  };
+
+  // ---------------- Solo minijuegos ----------------
+  Modos.abrirMinijuegos = function () {
+    const C = PP.CURRICULO, lista = PP.MINIJUEGOS || [], sel = new Set();
+    const rej = $("#mini-rejilla"); rej.innerHTML = "";
+    const bJugar = $("#btn-mini-jugar"), bTodos = $("#btn-mini-todos");
+    const tarjetas = {};
+    const refrescar = () => {
+      const n = sel.size;
+      bJugar.disabled = !n;
+      bJugar.innerHTML = U.icon("play") + " " + (n === lista.length ? "Jugar los " + n : n ? "Jugar " + (n === 1 ? "el seleccionado" : "los " + n + " seleccionados") : "Elige un minijuego");
+      bTodos.textContent = n === lista.length ? "Quitar la selección" : "Seleccionar los " + lista.length;
+      lista.forEach((m) => { const t = tarjetas[m.id]; const on = sel.has(m.id); t.classList.toggle("sel", on); t.setAttribute("aria-pressed", on ? "true" : "false"); });
+    };
+    lista.forEach((m) => {
+      const b = PP.BARRIOS[m.barrio];
+      const t = el("button", { class: "mini-tarjeta", type: "button", "aria-pressed": "false", html:
+        '<span class="mini-marca" aria-hidden="true">✔</span><small>' + U.esc(b.nombre) + " · Bloque " + b.bloque + "</small><b>" + U.esc(m.titulo) + "</b><span class='mini-txt'>" + U.esc(m.resumen) + "</span>" +
+        '<span class="mini-etq">' + m.criterios.map((c) => c + " " + U.esc(C.etiquetas[c])).join(" · ") + "</span><span class='mini-modo'>" + (m.mundo ? "Se juega conduciendo por la ciudad" : "Sin conducir") + "</span>" });
+      t.style.setProperty("--c", COLOR[b.bloque]);
+      t.addEventListener("click", () => { PP.Audio.sfx("clic"); if (sel.has(m.id)) sel.delete(m.id); else sel.add(m.id); refrescar(); });
+      tarjetas[m.id] = t; rej.appendChild(t);
+    });
+    bTodos.onclick = () => { PP.Audio.sfx("clic"); if (sel.size === lista.length) sel.clear(); else lista.forEach((m) => sel.add(m.id)); refrescar(); };
+    bJugar.onclick = () => { if (!sel.size) return; PP.Audio.sfx("inicio"); Modos.empezarMinijuegos(lista.filter((m) => sel.has(m.id)).map((m) => m.id)); };
+    refrescar();
+    PP.Audio.musica("menu");
+    PP.UI.mostrar("pantalla-minijuegos");
+  };
+  /** Juega los minijuegos elegidos, en el orden en que aparecen en el menú */
+  Modos.empezarMinijuegos = function (ids) {
+    const retos = ids.map((id) => PP.buscarReto(id)).filter(Boolean);
+    const solo = retos.length === 1;
+    jugar({ tipo: "minijuegos", nombre: solo ? "Minijuego: " + retos[0].titulo : "Solo minijuegos", titulo: solo ? retos[0].titulo : "Solo minijuegos", subtitulo: solo ? "Minijuego suelto" : retos.length + " minijuegos", retos,
+      repetir: () => Modos.empezarMinijuegos(ids), volverMini: true });
   };
 
   // ---------------- Repaso por temáticas ----------------
@@ -161,7 +199,15 @@ window.PP = window.PP || {};
       const idx0 = E.sesion.eventos.length;
       const ctx = { id: mis.id, titulo: mis.titulo, tema: mis.barrio, crit: null, estado: {} };
       PP.Audio.sfx("inicio");
-      const completo = await J.correrPasos(mis, ctx, pasosSinMundo(mis), true);
+      let completo;
+      if (mis.mundo) {
+        // Minijuego que se juega conduciendo: se enseña la ciudad solo durante el minijuego
+        J.misionActiva = mis; // evita que se active una misión al pasar junto a su marcador
+        PP.UI.mostrar("pantalla-juego"); M.modoAtraccion = false; M.ajustar(); M.colocarJugador(mis.lugar); PP.UI.actualizarHUD();
+        try { completo = await J.correrPasos(mis, ctx, mis.pasos, false); } finally { J.misionActiva = null; M.limpiarObjetivos(); M.activo = false; M.modoAtraccion = true; PP.Audio.motor(0, false); J.gpsActual = null; }
+        document.querySelectorAll(".pantalla").forEach((p) => { p.hidden = true; p.setAttribute("aria-hidden", "true"); });
+        PP.Audio.musica("mision");
+      } else completo = await J.correrPasos(mis, ctx, pasosSinMundo(mis), true);
       const esc = $("#escena"); esc.hidden = true; esc.innerHTML = "";
       // Valoración del reto (solo lo ocurrido en esta ronda; primer intento de cada ítem)
       const nuevos = E.sesion.eventos.slice(idx0), vistos = new Set(), prim = nuevos.filter((e) => { if (vistos.has(e.clave)) return false; vistos.add(e.clave); return true; });
@@ -188,14 +234,15 @@ window.PP = window.PP || {};
     const total = hechos.reduce((a, r) => a + r.estrellas, 0);
     const kpi = (v, t) => el("div", { class: "kpi" }, [el("b", { text: v }), el("span", { text: t })]);
     const fin = await tarjeta({
-      cinta: def.tipo === "reto" ? "EDICIÓN CERRADA" : "REPASO TERMINADO", titulo: def.titulo, sub: def.subtitulo,
+      cinta: def.tipo === "reto" ? "EDICIÓN CERRADA" : def.tipo === "minijuegos" ? "MINIJUEGOS TERMINADOS" : "REPASO TERMINADO", titulo: def.titulo, sub: def.subtitulo,
       cuerpo: [tira(def.retos, resultados, -1),
-        el("div", { class: "inf-kpis reto-kpis" }, [kpi(hechos.length + " / " + def.retos.length, "retos cumplidos"), kpi("★ " + total, "estrellas"), kpi(J.sesionPuntos() - puntos0, "puntos ganados"), kpi(mejor, "mejor racha")]),
+        el("div", { class: "inf-kpis reto-kpis" }, [kpi(hechos.length + " / " + def.retos.length, def.tipo === "minijuegos" ? (def.retos.length === 1 ? "minijuego superado" : "minijuegos superados") : "retos cumplidos"), kpi("★ " + total, "estrellas"), kpi(J.sesionPuntos() - puntos0, "puntos ganados"), kpi(mejor, "mejor racha")]),
         el("p", { class: "nota", text: "El informe para el profesorado recoge qué criterios se han trabajado y con qué evidencias. Los niveles son orientativos." })],
-      botones: [{ t: "Ver informe docente", clase: "btn-primario", icono: "doc", valor: "informe" }, { t: "Repetir", clase: "btn-sec", icono: "redo", valor: "repetir" }, { t: "Elegir otro modo", clase: "btn-terc", icono: "back", valor: "modos" }]
+      botones: [{ t: "Ver informe docente", clase: "btn-primario", icono: "doc", valor: "informe" }, { t: "Repetir", clase: "btn-sec", icono: "redo", valor: "repetir" }, def.volverMini ? { t: "Elegir otros minijuegos", clase: "btn-sec", icono: "back", valor: "mini" } : null, { t: "Elegir otro modo", clase: "btn-terc", icono: "back", valor: "modos" }].filter(Boolean)
     });
     if (fin === "informe") { J.modo = "menu"; PP.UI.informe(); }
     else if (fin === "repetir") def.repetir();
+    else if (fin === "mini") Modos.abrirMinijuegos();
     else Modos.abrir();
   }
 

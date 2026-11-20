@@ -51,7 +51,7 @@ window.PP = window.PP || {};
       if (c.misiones.length) partes.push("<p><b>Trabajado en:</b> " + c.misiones.map((id) => { const m = PP.buscarReto(id); return m ? U.esc(m.titulo) + (m.mini ? " (minijuego)" : "") : id; }).join(", ") + (c.mecanicas.length ? " · <b>Mecánicas:</b> " + c.mecanicas.join(", ") : "") + "</p>");
       const st = Object.keys(c.subtipos || {});
       if (st.length > 1 || (st.length === 1 && c.subtipos[st[0]].n >= 2)) partes.push("<p><b>Por tipo de reto:</b></p><ul class='inf-sub'>" + st.map((k) => { const x = c.subtipos[k], pc = Math.round(x.ok / x.n * 100); return "<li><span>" + U.esc(k) + "</span><span class='barra-mini' aria-hidden='true'><i style='width:" + pc + "%'></i></span><b>" + pc + " %</b> <small>(" + x.n + (x.n === 1 ? " reto" : " retos") + ")</small></li>"; }).join("") + "</ul>");
-      if (c.errores.length) partes.push("<p><b>Errores detectados:</b></p><ul>" + c.errores.slice(0, 6).map((e) => "<li>" + U.esc(e) + "</li>").join("") + (c.errores.length > 6 ? "<li>… y " + (c.errores.length - 6) + " más (ver registro CSV)</li>" : "") + "</ul>");
+      if (c.errores.length) partes.push("<p><b>Errores detectados:</b></p><ul>" + c.errores.slice(0, 6).map((e) => "<li>" + U.esc(e) + "</li>").join("") + (c.errores.length > 6 ? "<li>… y " + (c.errores.length - 6) + " más</li>" : "") + "</ul>");
       if (c.reintentosOk) partes.push("<p><b>Aprendizaje durante el juego:</b> corrigió " + c.reintentosOk + " respuesta(s) tras la retroalimentación.</p>");
       if (c.n) partes.push("<p><b>Recomendación:</b> " + U.esc(c.rec) + "</p>");
       if (c.extension) partes.push("<p class='ext'><b>Limitación del juego:</b> " + U.esc(c.extension) + "</p>");
@@ -67,15 +67,17 @@ window.PP = window.PP || {};
     ]);
 
     const btns = el("div", { class: "inf-btns no-imprimir" }, [
-      el("button", { class: "btn btn-primario", type: "button", html: U.icon("print") + " Imprimir / PDF", onclick: () => window.print() }),
-      el("button", { class: "btn btn-sec", type: "button", html: U.icon("download") + " Resumen CSV", onclick: () => PP.Eval.descargar("puerto-palabra_" + inf.codigo + "_" + inf.sesion + "_resumen.csv", PP.Eval.csvResumen(), "text/csv;charset=utf-8") }),
-      el("button", { class: "btn btn-sec", type: "button", html: U.icon("download") + " Registro CSV", onclick: () => PP.Eval.descargar("puerto-palabra_" + inf.codigo + "_" + inf.sesion + "_registro.csv", PP.Eval.csvRegistro(), "text/csv;charset=utf-8") }),
-      el("button", { class: "btn btn-sec", type: "button", html: U.icon("doc") + " Copiar resumen", title: "Copia el resumen (CSV) para pegarlo en una hoja de cálculo", onclick: (e) => { const b = e.currentTarget; try { navigator.clipboard.writeText(PP.Eval.csvResumen().replace(/^\ufeff/, "")).then(() => { b.innerHTML = U.icon("check") + " Copiado"; }, () => { b.textContent = "No se pudo copiar"; }); } catch (err) { b.textContent = "No se pudo copiar"; } } }),
-      el("button", { class: "btn btn-sec", type: "button", html: U.icon("download") + " JSON", onclick: () => PP.Eval.descargar("puerto-palabra_" + inf.codigo + "_" + inf.sesion + ".json", PP.Eval.json(), "application/json") }),
+      el("button", { class: "btn btn-primario", type: "button", html: U.icon("print") + " Descargar informe en PDF", title: "Se abre el cuadro de impresión: elige «Guardar como PDF» (o imprímelo directamente)", onclick: () => window.print() }),
       el("button", { class: "btn btn-terc", type: "button", html: U.icon("back") + " Volver al juego", onclick: () => { if (PP.juego.curso && PP.juego.tipoModo === "aventura") PP.juego.volverAlMundo(); else if (PP.juego.curso) PP.Modos.abrir(); else PP.UI.mostrar("pantalla-inicio"); } })
     ]);
+    const ayudaPdf = el("p", { class: "nota no-imprimir inf-ayuda-pdf", text: "Al pulsar el botón se abre el cuadro de impresión del navegador: elige «Guardar como PDF» como destino. En el PDF queda un espacio arriba para escribir el nombre del alumno o la alumna y su curso." });
+    // Espacio en blanco para que el docente escriba a mano el nombre y el curso
+    const ident = el("section", { class: "inf-ident", "aria-label": "Datos del alumno o alumna (a rellenar por el docente)" }, [
+      el("div", { class: "inf-ident-campo inf-ident-nombre" }, [el("span", { text: "Nombre del alumno/a:" }), el("i", { "aria-hidden": "true" })]),
+      el("div", { class: "inf-ident-campo inf-ident-curso" }, [el("span", { text: "Curso y grupo:" }), el("i", { "aria-hidden": "true" })])
+    ]);
     const pie = el("p", { class: "inf-fuente", text: "Referente curricular: " + inf.fuente + " Los textos de los criterios se reproducen literalmente; las descripciones cortas son paráfrasis del juego." });
-    cont.append(btns, cab, kpis, aviso, resumen, tabla, pie);
+    cont.append(btns, ayudaPdf, ident, cab, kpis, aviso, resumen, tabla, pie);
     cont.scrollTop = 0;
   };
 

@@ -12,8 +12,9 @@ Tras elegir curso y reportero/a hay tres modos:
 
 1. **Gran Reto:** diez retos que mezclan los cuatro bloques de Lengua (nueve misiones, al menos dos por bloque, y un minijuego), con racha y estrellas. No hay que conducir.
    **Evaluación por criterios:** el mínimo de misiones que cubre los 13 criterios del juego, más un minijuego.
-2. **Repaso por temáticas:** se elige un bloque o un criterio de evaluación y se practican solo sus retos.
-3. **Aventura libre:** la ciudad abierta con misiones, barrios que recuperan el color, radio y palabras doradas.
+2. **Solo minijuegos:** se eligen uno, varios o los seis minijuegos y se juegan seguidos.
+3. **Repaso por temáticas:** se elige un bloque o un criterio de evaluación y se practican solo sus retos.
+4. **Aventura libre:** la ciudad abierta con misiones, barrios que recuperan el color, radio y palabras doradas.
 
 Los modos 1 y 2 reutilizan las pruebas de las misiones (mismas mecánicas y misma evaluación), sin los pasos que exigen conducir, y no cambian el progreso de la ciudad. Todos alimentan el mismo informe docente, que indica el modo usado.
 
@@ -67,8 +68,8 @@ css/estilos.css         Dirección de arte, adaptación de pantalla, impresión 
 js/core/                Utilidades, guardado local, audio (Web Audio), voz (Web Speech), controles
 js/world/               Ciudad (generación y dibujo por trozos), mundo abierto (vehículo, tráfico, GPS)
 js/juegos/              minijuegos.js (golf, penaltis, canastas, Saltarrimas) y minijuegos-arte.js (personajes y fondos) · Escenas de misión (ampliacion.js: tildes, cinta clasificadora, guion secreto) (diálogo, radio, cazabulos, taller, corrector…) y autopista
-js/eval/                Registro de evidencias, informe docente, exportación CSV/JSON, historial
-js/modos.js             Gran Reto y Repaso por temáticas
+js/eval/                Registro de evidencias, informe docente (PDF), historial
+js/modos.js             Gran Reto, Evaluación por criterios, Solo minijuegos y Repaso por temáticas
 js/ui/                  HUD, móvil del juego, ajustes y retratos SVG de los personajes
 js/data/curriculo.js    Criterios oficiales (texto literal por ciclo)
 js/data/misiones.js     Plantilla de 18 misiones (común a todos los cursos)
@@ -95,7 +96,7 @@ Todas las rutas son relativas y no hay dependencias externas, así que funciona 
   - por cada criterio: evidencias, porcentaje, nivel observado, estado de la evidencia, errores detectados, recomendación y texto oficial;
   - el desglose por tipo de reto y la limitación de cada criterio en el juego.
 - **Solo se incluyen actividades que el programa puede evaluar automáticamente.** El juego no contiene escritura libre (titulares, versos, recomendaciones) ni grabaciones de voz: esas producciones deben trabajarse y valorarse en el aula.
-- Exportaciones: impresión o PDF, CSV de resumen, CSV de registro detallado y JSON. La «Zona docente» guarda un historial local por código anónimo y compara cada sesión con la anterior.
+- Exportación: el informe se descarga en PDF (cuadro de impresión → «Guardar como PDF») con un recuadro arriba para que el docente escriba el nombre del alumno y su curso. La «Zona docente» guarda un historial local por código anónimo y compara cada sesión con la anterior.
 - Detalle completo en `docs/matriz-trazabilidad.md`.
 
 ## Privacidad

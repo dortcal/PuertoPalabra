@@ -78,6 +78,7 @@ window.PP = window.PP || {};
     $("#btn-cambiar-modo").addEventListener("click", () => { UI.cerrarMovil(false); salirAlMenu("modos"); });
     $("#btn-modos-volver").addEventListener("click", () => { PP.Audio.sfx("clic"); UI.mostrar("pantalla-inicio"); });
     $("#btn-tema-volver").addEventListener("click", () => { PP.Audio.sfx("clic"); PP.Modos.abrir(); });
+    $("#btn-mini-volver").addEventListener("click", () => { PP.Audio.sfx("clic"); PP.Modos.abrir(); });
     $("#btn-fin-sesion").addEventListener("click", () => { UI.cerrarMovil(false); UI.informe(); });
     M.cb.marcador = (m) => { if (J.modo !== "mundo" || J.misionActiva) return; if (m.bloqueada) { UI.toast("Esta misión se desbloquea al completar " + m.requiere + " misiones.", "info"); return; } empezarMision(PP.buscarReto(m.id)); };
     M.cb.aviso = (m) => UI.aviso(m);
