@@ -57,7 +57,9 @@ button { font: inherit; cursor: pointer; }
 .logo-sub { color: #fff; font-weight: 800; margin-top: .6em; text-shadow: 0 2px 0 var(--noche); font-size: clamp(.85rem, 2vw, 1.1rem); transform: rotate(4deg); }
 .menu-inicio { display: flex; flex-direction: column; gap: 14px; align-items: stretch; width: min(340px, 86vw); margin: 0 auto; }
 .menu-inicio .btn { justify-content: center; }
-.creditos { position: absolute; bottom: 10px; width: 100%; text-align: center; color: rgba(255, 255, 255, .8); font-size: .8em; margin: 0; text-shadow: 0 1px 2px #000; }
+.creditos { position: absolute; bottom: 0; left: 0; right: 0; text-align: center; color: rgba(255, 255, 255, .85); font-size: .78em; margin: 0; padding: 8px 12px calc(6px + env(safe-area-inset-bottom)); background: linear-gradient(180deg, transparent, rgba(12, 18, 40, .82) 40%); text-shadow: 0 1px 2px #000; }
+.creditos > p { margin: 4px 0 0; }
+#pantalla-inicio .inicio-caja { padding-bottom: 96px; }
 .logo-mini { font-family: var(--f-titulo); font-style: italic; font-size: 1.6rem; color: var(--noche); }
 .logo-mini b { color: var(--coral); }
 
@@ -863,3 +865,63 @@ body:not(.tactil) .mj-mandos { opacity: .8; }
 .contracubierta h3 { font-size: 1.45em; font-family: var(--f-titulo); }
 .lector-txt { font-size: 1.1em; }
 @media (max-width: 640px) { .lomo { width: 64px; font-size: .95rem; } .poeta.poeta-ficha { grid-template-columns: 72px 1fr; } .poeta-ficha .poeta-cara svg { width: 72px; } }
+
+
+/* ================= Créditos y licencia CC BY-NC-ND ================= */
+.creditos-bloque { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 4px 16px; color: #fff; }
+.creditos-bloque p { margin: 0; }
+.cred-autor { font-family: var(--f-titulo); font-size: 1.15rem; letter-spacing: .02em; }
+.cred-autor b { color: var(--oro); }
+.cred-pie { font-weight: 700; font-size: .95rem; }
+.cc-enlace { display: inline-flex; align-items: center; gap: 8px; color: inherit; text-decoration: none; border-radius: 10px; padding: 2px 6px; }
+.cc-enlace:hover, .cc-enlace:focus-visible { background: rgba(255, 255, 255, .18); outline: 2px solid var(--oro); }
+.cc-insignias { display: inline-flex; gap: 3px; }
+.cc-ico { width: 30px; height: 30px; display: block; }
+.cc-texto { display: flex; flex-direction: column; text-align: left; line-height: 1.15; }
+.cc-texto b { font-size: 1rem; letter-spacing: .04em; }
+.cc-texto small { font-size: .72rem; font-weight: 600; opacity: .9; }
+.creditos-bloque.claro { color: var(--noche); }
+.creditos-bloque.claro .cred-autor b { color: var(--coral); }
+.creditos-bloque.claro .cc-ico circle { stroke: var(--noche); }
+@media (max-width: 560px) { .cc-texto small { display: none; } .cred-autor { font-size: 1rem; } .cc-ico { width: 26px; height: 26px; } }
+@media (max-height: 560px) { #pantalla-inicio .inicio-caja { padding-bottom: 70px; } .creditos > p { display: none; } }
+.cred-informe { margin-top: 14px; padding-top: 10px; border-top: 2px dashed #bbb; }
+
+/* ================= Banda del Borrón: detenciones y final ================= */
+.banda-fila { list-style: none; margin: 8px 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 10px; }
+.banda-m { text-align: center; background: #fff; border: 3px solid var(--noche); border-top: 8px solid var(--c); border-radius: 14px; padding: 6px 4px 8px; }
+.banda-m b { display: block; font-family: var(--f-titulo); font-size: 1rem; }
+.banda-m small { display: block; font-weight: 700; font-size: .72rem; color: #444; }
+.banda-cara { position: relative; width: 74px; height: 74px; margin: 0 auto 2px; }
+.banda-cara svg { width: 100%; height: 100%; }
+.banda-m.caido .banda-cara svg { filter: grayscale(.8) brightness(.9); }
+.banda-m.caido { background: #eceaf2; }
+.reja { position: absolute; inset: -2px; border-radius: 12px; pointer-events: none; background: repeating-linear-gradient(90deg, transparent 0 9px, rgba(20, 20, 30, .9) 9px 13px); box-shadow: inset 0 0 0 3px rgba(20, 20, 30, .9); }
+.det-caja { max-width: 620px; border-top: 14px solid var(--c, var(--coral)); }
+.det-retrato { position: relative; width: 150px; height: 150px; margin: 10px auto 0; }
+.det-retrato svg { width: 100%; height: 100%; filter: grayscale(.5); }
+.banda-panel .banda-fila { grid-template-columns: repeat(auto-fit, minmax(96px, 1fr)); }
+.fin-panel { background: var(--crema); border: 4px solid var(--noche); border-radius: 18px; padding: 14px 18px 18px; text-align: left; }
+.fin-panel h3 { margin: .9em 0 .4em; }
+.fin-vineta { display: block; min-height: 0; padding: 16px 20px 20px; overflow: auto; max-height: calc(100vh - 150px); }
+.fin-chips { list-style: none; display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; }
+.fin-chips li { padding: 3px 12px; border-radius: 999px; border: 2px solid var(--noche); background: #e6e3ee; color: #666; font-weight: 700; font-size: .9rem; }
+.fin-chips li.on { background: var(--oro); color: var(--noche); }
+.fin-sello { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.fin-sello span { font-family: var(--f-titulo); font-size: 2.4rem; color: #fff; background: var(--coral); border: 4px solid var(--noche); border-radius: 12px; padding: 0 .5em; transform: rotate(-4deg); }
+.fin-sello b { font-family: var(--f-titulo); font-size: 1.5rem; color: var(--noche); }
+.fin-sub { margin: .5em 0; font-weight: 700; }
+.fin-acciones { margin-top: 14px; gap: 10px; flex-wrap: wrap; }
+.fin-arte { grid-area: arte; }
+.hist-cap + .fin-arte + .hist-texto { grid-area: texto; }
+.final .hist-vineta .fin-arte { position: relative; }
+.final .hist-vineta .hist-arte { width: 100%; }
+@media print { #pantalla-final { display: none !important; } }
+.det-caja { max-height: calc(100vh - 20px); overflow: auto; padding-top: 18px; }
+.det-retrato { width: 104px; height: 104px; margin: 6px auto 0; }
+.det-caja h2 { margin: .3em 0 .1em; font-size: 1.5rem; }
+.det-caja .banda-fila { grid-template-columns: repeat(5, 1fr); gap: 6px; }
+.det-caja .banda-cara { width: 52px; height: 52px; }
+.det-caja .banda-m { padding: 4px 2px 6px; } .det-caja .banda-m b { font-size: .85rem; } .det-caja .banda-m small { font-size: .62rem; }
+.fin-acciones { position: sticky; bottom: 0; background: linear-gradient(180deg, transparent, var(--crema) 30%); padding: 14px 0 6px; z-index: 2; }
+@media (max-width: 640px) { .det-caja .banda-fila { grid-template-columns: repeat(3, 1fr); } }

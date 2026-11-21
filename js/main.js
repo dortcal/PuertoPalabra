@@ -28,7 +28,9 @@ window.PP = window.PP || {};
       { id: "doradas", t: "Diccionario canario", d: "Encuentra todas las palabras doradas." },
       { id: "guardian", t: "Guardián de la tilde", d: "Consigue 3 estrellas en «Sílabas y tildes»." },
       { id: "cinta", t: "Clasificador experto", d: "Consigue una racha de 8 en la cinta clasificadora." },
-      { id: "guionista", t: "Caja fuerte abierta", d: "Abre la caja fuerte del cine sin ningún error." }
+      { id: "guionista", t: "Caja fuerte abierta", d: "Abre la caja fuerte del cine sin ningún error." },
+      { id: "banda", t: "Banda desmantelada", d: "Detén a los cuatro miembros de la Banda del Borrón." },
+      { id: "final", t: "Fin de la aventura", d: "Completa la Edición especial y captura al Borrón." }
     ]
   };
   PP.juego = J;
@@ -81,7 +83,7 @@ window.PP = window.PP || {};
     $("#btn-tema-volver").addEventListener("click", () => { PP.Audio.sfx("clic"); PP.Modos.abrir(); });
     $("#btn-mini-volver").addEventListener("click", () => { PP.Audio.sfx("clic"); PP.Modos.abrir(); });
     $("#btn-fin-sesion").addEventListener("click", () => { UI.cerrarMovil(false); UI.informe(); });
-    M.cb.marcador = (m) => { if (J.modo !== "mundo" || J.misionActiva) return; if (m.bloqueada) { UI.toast("Esta misión se desbloquea al completar " + m.requiere + " misiones.", "info"); return; } empezarMision(PP.buscarReto(m.id)); };
+    M.cb.marcador = (m) => { if (J.modo !== "mundo" || J.misionActiva) return; if (m.bloqueada) { UI.toast(m.id === "F" ? "La Edición especial es la última misión: completa antes todas las demás (" + m.requiere + ")." : "Esta misión se desbloquea al completar " + m.requiere + " misiones.", "info"); return; } empezarMision(PP.buscarReto(m.id)); };
     M.cb.aviso = (m) => UI.aviso(m);
     M.cb.dorada = (i) => palabraDorada(i);
     document.addEventListener("keydown", (e) => {
@@ -277,12 +279,12 @@ window.PP = window.PP || {};
   setInterval(() => { if (J.modo === "mundo" && !J.pausado) musicaBarrio(false); }, 1000);
 
   function refrescarMarcadores() {
-    const pr = PP.Store.progreso(), hechas = Object.keys(pr.misiones).length;
+    const pr = PP.Store.progreso(), hechas = PP.Final.hechas(pr);
     M.fijarMarcadores(PP.MISIONES.map((m, k) => {
       const l = PP.Ciudad.lugares[m.lugar], st = pr.misiones[m.id];
       // la misión final comparte lugar con O2: se desplaza un poco
       const off = m.final ? 1.4 * PP.Ciudad.T : 0;
-      return { id: m.id, x: l.x + off, y: l.y, color: m.final ? "#ffffff" : PP.BARRIOS[m.barrio].color, etiqueta: m.final ? "★" : m.id, titulo: m.titulo, hecha: !!st, estrellas: st ? st.estrellas : 0, bloqueada: m.requiere && hechas < m.requiere, requiere: m.requiere };
+      return { id: m.id, x: l.x + off, y: l.y, color: m.final ? "#ffffff" : PP.BARRIOS[m.barrio].color, etiqueta: m.final ? "★" : m.id, titulo: m.titulo, hecha: !!st, estrellas: st ? st.estrellas : 0, bloqueada: !st && m.requiere && hechas < m.requiere, requiere: m.requiere };
     }));
     // minijuegos (atracciones): se guardan aparte y no cuentan para el desbloqueo de la edición final
     const mj = pr.minijuegos || {};
@@ -296,7 +298,7 @@ window.PP = window.PP || {};
   }
 
   function objetivoLibre() {
-    const pr = PP.Store.progreso(), hechas = Object.keys(pr.misiones).length;
+    const pr = PP.Store.progreso(), hechas = PP.Final.hechas(pr);
     const sig = PP.MISIONES.find((m) => !pr.misiones[m.id] && !(m.requiere && hechas < m.requiere));
     UI.objetivo({ titulo: "Explora Puerto Palabra", icono: "map", texto: sig ? "Busca una misión (rombo de color). Te sugerimos: <b>" + U.esc(sig.titulo) + "</b> en " + U.esc(PP.Ciudad.lugares[sig.lugar].nombre) + "." : "¡Has completado todas las misiones! Puedes repetirlas para mejorar tus estrellas.", progreso: "Misiones: " + hechas + " / " + PP.MISIONES.length,
       botones: sig ? [{ t: "GPS", icono: "gps", f: () => J.gpsA(PP.Ciudad.lugares[sig.lugar]) }] : [] });
@@ -310,7 +312,7 @@ window.PP = window.PP || {};
   function gpsBoton() {
     if (J.gpsActual) { J.gpsActual(); return; }
     // por defecto: la misión pendiente más cercana
-    const pr = PP.Store.progreso(), j = M.jugador, hechas = Object.keys(pr.misiones).length;
+    const pr = PP.Store.progreso(), j = M.jugador, hechas = PP.Final.hechas(pr);
     let best = null, bd = 1e9;
     for (const m of PP.MISIONES) { if (pr.misiones[m.id] || (m.requiere && hechas < m.requiere)) continue; const l = PP.Ciudad.lugares[m.lugar], d = U.dist(l.x, l.y, j.x, j.y); if (d < bd) { bd = d; best = l; } }
     if (best) J.gpsA(best); else UI.toast("No quedan misiones pendientes. ¡Enhorabuena!", "info");
@@ -349,6 +351,10 @@ window.PP = window.PP || {};
     PP.Audio.musica("mision"); PP.Audio.sfx("inicio");
     const ctx = { id: mis.id, titulo: mis.titulo, tema: mis.barrio, crit: null, estado: {} };
     const B = PP.BARRIOS[mis.barrio];
+    if (mis.final && J.tipoModo === "aventura") {
+      const av = await Esc.aviso(PP.Final.aviso(), ctx);
+      if (av.abandonada) return terminarMision(mis, ctx, true);
+    }
     const r0 = await Esc.aviso({ titulo: mis.titulo, texto: mis.resumen, icono: "trophy", lista: ["<b>" + U.esc(B.nombre) + "</b> · Bloque " + B.bloque + ": " + U.esc(PP.CURRICULO.bloques[B.bloque].nombre), "Practicarás: " + mis.criterios.map((c) => U.esc(PP.CURRICULO.etiquetas[c].toLowerCase())).join("; ") + "."], boton: "Empezar misión" }, ctx);
     if (r0.abandonada) return terminarMision(mis, ctx, true);
     const completa = await correrPasos(mis, ctx, mis.pasos, false);
@@ -622,6 +628,7 @@ window.PP = window.PP || {};
     if (mis.mini) pr.minijuegos = pr.minijuegos || {};
     const almacen = mis.mini ? pr.minijuegos : pr.misiones;
     const antes = almacen[mis.id];
+    const miembro = !antes && !mis.mini ? PP.Final.miembroDe(mis.id) : null; // cae un miembro de la banda la primera vez
     const bonus = 50 + estrellas * 25;
     J.sumar(bonus);
     almacen[mis.id] = { estrellas: Math.max(estrellas, antes ? antes.estrellas : 0), ultima: Date.now(), veces: (antes ? antes.veces : 0) + 1 };
@@ -646,11 +653,23 @@ window.PP = window.PP || {};
       el("p", { class: "res-txt", text: v.n ? "Acertaste a la primera " + Math.round(v.pct * 100) + " % de los retos (" + v.n + " retos)." : "¡Misión completada!" }),
       el("p", { class: "res-txt", html: "+" + bonus + " puntos de prestigio" + (barrioCompleto ? "<br><b>¡El " + U.esc(PP.BARRIOS[mis.barrio].nombre) + " ha recuperado todos sus colores!</b>" : "") }),
       mis.final ? el("div", { class: "portada", html: '<div class="per-cab"><b>EL ECO</b><span>Edición especial</span></div><h3>' + "¡Capturada la Banda del Borrón!" + '</h3><div class="foto-borron">' + PP.retrato(PP.BORRON, "sorpresa") + '</div><p>Por ' + U.esc(J.alias) + ', reportero/a de Puerto Palabra</p>' }) : null,
-      el("div", { class: "fila-centro" }, [
-        el("button", { class: "btn btn-primario", type: "button", html: "Seguir explorando " + U.icon("play"), onclick: () => { r.hidden = true; volverAConducir(); objetivoLibre(); musicaBarrio(true); if (estrellas < 3) UI.toast("Puedes repetir la misión para conseguir más estrellas.", "info"); } }),
-        el("button", { class: "btn btn-sec", type: "button", html: U.icon("doc") + " Ver informe", onclick: () => { r.hidden = true; J.modo = "mundo"; UI.informe(); } })
+      el("div", { class: "fila-centro" }, mis.final ? [
+        el("button", { class: "btn btn-primario btn-grande", type: "button", html: "Continuar " + U.icon("play"), onclick: () => continuar("final") })
+      ] : [
+        el("button", { class: "btn btn-primario", type: "button", html: "Seguir explorando " + U.icon("play"), onclick: () => continuar("mundo") }),
+        el("button", { class: "btn btn-sec", type: "button", html: U.icon("doc") + " Ver informe", onclick: () => continuar("informe") })
       ])
     ]);
+    // tras el resultado: detención del miembro de la banda (si toca) y después seguir, ver el informe o ir al final
+    let yaContinuado = false;
+    async function continuar(destino) {
+      if (yaContinuado) return; yaContinuado = true;
+      r.hidden = true;
+      if (miembro) await PP.Final.detencion(miembro);
+      if (destino === "final") return PP.Final.mostrar();
+      if (destino === "informe") { J.modo = "mundo"; return UI.informe(); }
+      volverAConducir(); objetivoLibre(); musicaBarrio(true); if (estrellas < 3) UI.toast("Puedes repetir la misión para conseguir más estrellas.", "info");
+    }
     r.appendChild(caja);
     caja.querySelector(".btn-primario").focus();
     for (let k = 1; k <= estrellas; k++) setTimeout(() => PP.Audio.sfx("estrella"), 300 + k * 250);

@@ -104,6 +104,10 @@ PP.MISIONES = [
     pasos: [ { tipo: "guion", ref: "guion", crit: "4.1" } ] }
 ];
 
+/* La Edición especial es la última misión: se desbloquea al completar todas las demás (los minijuegos y
+   las palabras doradas son opcionales). Al terminarla, la aventura acaba (ver js/ui/final.js). */
+PP.MISIONES.forEach((m) => { if (m.final) m.requiere = PP.MISIONES.filter((x) => !x.final).length; });
+
 /* Palabras doradas: coleccionables escondidos por la ciudad (vocabulario del español de Canarias).
    Definiciones redactadas para el juego a partir del uso común en Canarias. */
 PP.PALABRAS_DORADAS = [

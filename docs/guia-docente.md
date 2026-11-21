@@ -10,7 +10,7 @@ Puerto Palabra es un videojuego de ciudad abierta en vista cenital. El alumnado 
 | Distrito Onda | II. Comunicación | Radio Onda Volcán · Cazabulos · Exclusiva en directo · El cartel misterioso |
 | Barrio Literario | III. Educación literaria | Páginas al viento · Poeta sin rima · Club de lectura |
 | Taller de la Lengua | IV. Reflexión sobre la lengua | Taller de tuneo · Imprenta sin borrones · Caza gramatical · Autopista del Borrón |
-| (final) | — | Edición especial: persecución, noticia y portada (se desbloquea con 10 misiones) |
+| (final) | — | Edición especial: persecución, noticia y portada (última misión: se desbloquea al completar todas las demás y, al terminarla, la aventura finaliza con un resumen y la pantalla de resultados con acceso al informe) |
 
 ### Modos de juego
 

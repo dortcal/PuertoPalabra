@@ -31,7 +31,10 @@
         <button id="btn-docente" class="btn btn-terc" type="button">Zona docente</button>
       </nav>
     </div>
-    <p class="creditos">Juego educativo original · Currículo: Decreto 211/2022 (Canarias) · Sin anuncios ni datos personales</p>
+    <footer class="creditos">
+      <div data-creditos></div>
+      <p>Juego educativo original · Currículo: Decreto 211/2022 (Canarias) · Sin anuncios ni datos personales</p>
+    </footer>
   </section>
 
   <!-- ================= CONTINUAR CON CÓDIGO ================= -->
@@ -185,6 +188,23 @@
     </div>
   </section>
 
+  <!-- ================= FINAL DE LA AVENTURA ================= -->
+  <section id="pantalla-final" class="pantalla panel-pantalla" hidden aria-labelledby="final-tit">
+    <div class="intro historia final">
+      <div class="hist-barra">
+        <span class="logo-mini">PUERTO<b>PALABRA</b></span>
+        <div id="final-puntos" class="hist-puntos" role="img"></div>
+        <button id="final-saltar" class="btn btn-terc btn-peq" type="button">Saltar al resumen</button>
+      </div>
+      <div id="final-cuerpo" aria-live="polite"></div>
+      <div class="fila-centro hist-botones">
+        <button id="final-ant" class="btn btn-sec" type="button">Anterior</button>
+        <button id="final-oir" class="btn btn-sec" type="button" aria-label="Volver a escuchar">🔊 Escuchar</button>
+        <button id="final-sig" class="btn btn-primario btn-grande" type="button">Siguiente</button>
+      </div>
+    </div>
+  </section>
+
   <!-- ================= INFORME ================= -->
   <section id="pantalla-informe" class="pantalla panel-pantalla informe" hidden aria-label="Informe de la sesión">
     <div id="informe-cuerpo" class="panel panel-ancho"></div>
@@ -245,7 +265,9 @@
   <script src="js/eval/evaluacion.js"></script>
   <script src="js/ui/ui.js"></script>
   <script src="js/eval/informe.js"></script>
+  <script src="js/ui/creditos.js"></script>
   <script src="js/ui/historia.js"></script>
+  <script src="js/ui/final.js"></script>
   <script src="js/juegos/escenas.js"></script>
   <script src="js/juegos/ampliacion.js"></script>
   <script src="js/juegos/minijuegos-arte.js"></script>

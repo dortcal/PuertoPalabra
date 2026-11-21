@@ -14,7 +14,7 @@ Fecha: 19/11/2026. Entorno: Google Chrome (sin interfaz gráfica) controlado con
 | Controles de teclado | Ejecutado ✔ | Conducción con flechas (modo sencillo y clásico), ESPACIO/ENTER, P/ESC (móvil y pausa), números en las opciones, flechas y ESPACIO en la autopista |
 | Controles táctiles | Ejecutado (emulado) ✔ | Joystick con eventos de puntero táctil; los mandos aparecen automáticamente en dispositivos táctiles. **No probado en una tableta física** |
 | Reglas y puntuación | Ejecutado ✔ | Estrellas según los aciertos al primer intento; puntos; desbloqueo de vehículos; logros; restauración del color por barrio |
-| Victoria, fin y reinicio | Ejecutado ✔ | Misión final bloqueada hasta 10 misiones; persecución y portada; repetición de misiones |
+| Victoria, fin y reinicio | Ejecutado ✔ | Misión final bloqueada hasta completar las demás (antes, 10) y seguida del final de la aventura; persecución y portada; repetición de misiones |
 | Casos límite | Ejecutado ✔ | Doble clic (un solo registro); salir de una misión desde una escena y desde un paso del mundo; abrir y cerrar el móvil; modo sin límite de tiempo en la autopista |
 | Guardado y recarga | Ejecutado ✔ | Tras recargar se conservan el perfil, las misiones y el historial (localStorage) |
 | Informe y exportaciones | Ejecutado ✔ | Informe con 15 criterios; CSV de resumen (16 filas), CSV de registro y JSON válidos; impresión a PDF revisada visualmente |
@@ -130,6 +130,15 @@ No verificado: jugabilidad y dificultad con alumnado real (tiempos, frustración
 - **Modo aventura, «llévame a la misión»:** nuevo piloto automático (seguimiento de ruta con curvas y velocidad según la curva). Medido en 12 destinos: 12/12 alcanzados y 0 choques fuertes (antes 11/12 y 47 choques).
 - **Pruebas:** completo.py en los cursos 1 a 6, limites.py (incluye pantalla de contexto de la autopista y arranque con Enter), «Solo minijuegos», Gran Reto y Repaso por bloque: 0 errores de consola.
 - No verificado: dificultad real de la autopista y de la conducción con alumnado, rendimiento en tabletas o pizarras, y revisión pedagógica de los textos nuevos.
+
+## Créditos, caída de la banda y final de la aventura (21/11/2026)
+
+- **Portada:** «Diseñado por David OZC», insignias CC BY-NC-ND (dibujos SVG propios, sin conexión) y «© David 2026 · Uso gratuito en centros educativos». Comprobado con capturas a 1280×760, 768×1024 y 390×800 (sin solapes con el menú). Se repite en la pantalla final y al pie del informe.
+- **Banda por zonas:** detención de Sordina (P2), Bulín (O2), Revoltijo (L1) y Tachón (T2) la primera vez que se completa cada misión; no se repite al rejugar. Estado visible en el móvil.
+- **Final:** la «Edición especial» queda bloqueada hasta completar las otras 17 (antes, 10); aviso previo con «Salir»; epílogo, resumen y resultados; botón «Ver informe docente» y vuelta a la pantalla final; salir al menú de modos o al inicio.
+- `pruebas/final.py` (cursos 2, 4 y 5): juega toda la aventura con el autoplay y comprueba bloqueo inicial, las 4 detenciones en orden, desbloqueo, aviso y botón «Salir», pantalla final, informe con créditos, logros y salida: 0 errores de consola. Regresión (`completo.py` cursos 1, 3 y 6, `limites.py`, «Solo minijuegos», Gran Reto y Repaso): 0 errores.
+- No verificado: la narración del final con voz real, y el aspecto en tabletas o pizarras. Limitación conocida: el código de partida no guarda los minijuegos, por lo que tras cargar un código el resumen final puede mostrar menos minijuegos de los jugados.
+- Las insignias CC son dibujos propios; si se quieren los archivos gráficos oficiales de Creative Commons, se pueden sustituir en `js/ui/creditos.js`.
 
 ## Pendiente de comprobar en el aula
 

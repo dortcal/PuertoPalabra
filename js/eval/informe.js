@@ -10,6 +10,7 @@ window.PP = window.PP || {};
     return '<span class="nivel n' + n + '"><span class="pips" aria-hidden="true">' + [1, 2, 3, 4].map((k) => "<i class='" + (k <= n ? "on" : "") + "'></i>").join("") + "</span>" + U.esc(c.nivel) + "</span>";
   }
 
+  PP.UI.nivelHTML = nivelHTML;
   PP.UI.informe = function () {
     const J = PP.juego; if (J) J.pausar(true);
     const tt = $("#toasts"); if (tt) tt.innerHTML = "";
@@ -68,7 +69,7 @@ window.PP = window.PP || {};
 
     const btns = el("div", { class: "inf-btns no-imprimir" }, [
       el("button", { class: "btn btn-primario", type: "button", html: U.icon("print") + " Descargar informe en PDF", title: "Se abre el cuadro de impresión: elige «Guardar como PDF» (o imprímelo directamente)", onclick: () => window.print() }),
-      el("button", { class: "btn btn-terc", type: "button", html: U.icon("back") + " Volver al juego", onclick: () => { if (PP.juego.curso && PP.juego.tipoModo === "aventura") PP.juego.volverAlMundo(); else if (PP.juego.curso) PP.Modos.abrir(); else PP.UI.mostrar("pantalla-inicio"); } })
+      el("button", { class: "btn btn-terc", type: "button", html: U.icon("back") + " Volver al juego", onclick: () => { if (PP.juego.alVolverInforme) PP.juego.alVolverInforme(); else if (PP.juego.curso && PP.juego.tipoModo === "aventura") PP.juego.volverAlMundo(); else if (PP.juego.curso) PP.Modos.abrir(); else PP.UI.mostrar("pantalla-inicio"); } })
     ]);
     const ayudaPdf = el("p", { class: "nota no-imprimir inf-ayuda-pdf", text: "Al pulsar el botón se abre el cuadro de impresión del navegador: elige «Guardar como PDF» como destino. En el PDF queda un espacio arriba para escribir el nombre del alumno o la alumna y su curso." });
     // Espacio en blanco para que el docente escriba a mano el nombre y el curso
@@ -77,7 +78,8 @@ window.PP = window.PP || {};
       el("div", { class: "inf-ident-campo inf-ident-curso" }, [el("span", { text: "Curso y grupo:" }), el("i", { "aria-hidden": "true" })])
     ]);
     const pie = el("p", { class: "inf-fuente", text: "Referente curricular: " + inf.fuente + " Los textos de los criterios se reproducen literalmente; las descripciones cortas son paráfrasis del juego." });
-    cont.append(btns, ayudaPdf, ident, cab, kpis, aviso, resumen, tabla, pie);
+    const cred = el("div", { class: "cred-informe", "data-creditos": "claro" });
+    cont.append(btns, ayudaPdf, ident, cab, kpis, aviso, resumen, tabla, pie, cred); PP.Creditos.pintar();
     cont.scrollTop = 0;
   };
 

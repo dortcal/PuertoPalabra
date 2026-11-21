@@ -116,6 +116,13 @@ No se piden nombres. El alumnado puede escribir un **código anónimo** (por eje
 - Controles de teclado, ratón y táctil, con objetivos de pulsación de 44 px o más.
 - La información nunca depende solo del color: los aciertos y errores llevan icono y texto.
 
+## Final de la Aventura libre y Banda del Borrón
+
+- **La Banda cae por zonas.** Al completar por primera vez una misión clave de cada barrio, un miembro queda detenido (escena con rejas): Sordina tras «Lío en la guagua», Bulín tras «Cazabulos», Revoltijo tras «Páginas al viento» y Tachón tras «Imprenta sin borrones». El estado se ve en el móvil (pestaña Misiones) y se deduce de las misiones superadas, así que no cambia el código de partida.
+- **Última misión: «Edición especial»** (las fotos al Borrón). Se desbloquea al completar **todas** las demás misiones; los minijuegos y las palabras doradas son opcionales.
+- **Aviso previo:** antes de empezarla se advierte de que la aventura acabará e indica cuántas palabras doradas y minijuegos faltan. «Salir» devuelve a la ciudad.
+- **Final:** epílogo en 4 viñetas (el Borrón cae y se descubre su motivo: miedo a equivocarse) → resumen de lo logrado (misiones, estrellas, palabras doradas, minijuegos, logros, banda) → pantalla de resultados con criterios observados y botón **Ver informe docente**. Dos logros nuevos: «Banda desmantelada» y «Fin de la aventura».
+
 ## Tecnologías y licencias
 
 - HTML5, CSS3 y JavaScript sin bibliotecas ni frameworks.
@@ -125,7 +132,7 @@ No se piden nombres. El alumnado puede escribir un **código anónimo** (por eje
 - Todos los gráficos (ciudad, vehículos, personajes en SVG), la música, los textos, los personajes y las historias son **originales** de este proyecto.
 - Las leyendas canarias son versiones adaptadas de la tradición oral.
 - Los títulos de libros reales que aparecen en el club de lectura se citan solo como referencia bibliográfica.
-- Licencia recomendada para compartir: CC BY-NC-SA 4.0 para contenidos y MIT para el código (ajústala a las normas de tu centro).
+- **Autoría y licencia:** diseñado por **David OZC** · © David 2026 · licencia **CC BY-NC-ND** (Reconocimiento – NoComercial – SinObraDerivada). Uso gratuito en centros educativos. Aparece en la portada, en la pantalla final y en el informe. Las insignias de Creative Commons son dibujos SVG propios del juego (`js/ui/creditos.js`); el texto legal está en https://creativecommons.org/licenses/by-nc-nd/4.0/deed.es
 
 ## Limitaciones conocidas
 

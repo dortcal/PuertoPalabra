@@ -220,12 +220,13 @@ window.PP = window.PP || {};
 
   function pintarMisiones(c) {
     const pr = PP.Store.progreso(), J = PP.juego;
-    const hechas = Object.keys(pr.misiones).length;
+    const hechas = PP.Final.hechas(pr);
+    c.appendChild(el("section", { class: "grupo-mis banda-panel" }, [el("h3", { html: "La Banda del Borrón <small>" + PP.Final.detenidos(pr).length + " de " + PP.BANDA.length + " detenidos · el Borrón cae en la última misión</small>" }), el("div", { html: PP.Final.filaBanda(pr, !!pr.misiones.F) })]));
     Object.keys(PP.BARRIOS).forEach((b) => {
       const B = PP.BARRIOS[b];
       const grupo = el("section", { class: "grupo-mis" }, [el("h3", { html: '<span class="punto" style="background:' + B.color + '"></span>' + U.esc(B.nombre) + " <small>Bloque " + B.bloque + ": " + U.esc(PP.CURRICULO.bloques[B.bloque].nombre) + "</small>" })]);
       PP.MISIONES.filter((m) => m.barrio === b).sort((x, y) => (x.final ? 1 : 0) - (y.final ? 1 : 0)).forEach((m) => {
-        const st = pr.misiones[m.id], bloq = m.requiere && hechas < m.requiere;
+        const st = pr.misiones[m.id], bloq = !st && m.requiere && hechas < m.requiere;
         const lugar = PP.Ciudad.lugares[m.lugar];
         grupo.appendChild(el("div", { class: "fila-mis" + (st ? " hecha" : "") }, [
           el("div", { class: "fm-info", html: "<b>" + U.esc(m.titulo) + "</b><small>" + U.esc(lugar ? lugar.nombre : "") + " · Criterios " + m.criterios.join(", ") + "</small>" }),

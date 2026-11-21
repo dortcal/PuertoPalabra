@@ -216,7 +216,7 @@
     const t0 = Date.now();
     while (Date.now() - t0 < 90000) {
       await sleep(70);
-      if (!$("#resultado").hidden) { const r = $("#resultado .res-txt").textContent; $("#resultado .btn-primario").click(); log.push(id + " OK · " + r); return "OK " + r; }
+      if (!$("#resultado").hidden) { const r = $("#resultado .res-txt").textContent; $("#resultado .btn-primario").click(); await sleep(150); const det = $(".det-caja .btn"); if (det) { (window.__dets = window.__dets || []).push(id + ": " + $(".det-caja h2").textContent); det.click(); } log.push(id + " OK · " + r); return "OK " + r; }
       if (await autopista()) continue;
       if (await escena()) continue;
       await mundo();
