@@ -35,6 +35,7 @@ Seis atracciones de la ciudad que unen las misiones con un componente arcade: go
 ### Nuevas misiones (ampliación)
 
 - **Sílabas y tildes** (9.1): útil antes y después de trabajar la acentuación. El informe separa los fallos en sílaba tónica, clasificación y regla, así que permite ver si el problema es *oír* la sílaba fuerte o *aplicar* la regla.
+- **Autopista del Borrón** (9.1): antes de arrancar se explica el contexto (alcanzar la furgoneta del Borrón). Hay un tiempo de lectura en cámara lenta para decidir el carril, que aparece rotulado. Con «sin límite de tiempo» el coche espera.
 - **La cinta clasificadora** (9.1): las palabras de «doble cara» muestran si el alumnado clasifica por la función en la frase o por memoria. Con «sin límite de tiempo» la caja espera.
 - **El guion secreto** (4.1 y 4.2): el informe da el porcentaje de preguntas literales, inferenciales y críticas. Usar la pista (resaltar el párrafo) cuenta como ayuda.
 

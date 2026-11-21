@@ -1,6 +1,8 @@
 /* Puerto Palabra · «Autopista del Borrón»: carrera arcade de carriles.
    Cada pórtico plantea una frase; el carril correcto da turbo para alcanzar la furgoneta.
-   Modo tranquilo (ajuste «sin límite de tiempo»): la moto se detiene ante cada pórtico hasta elegir. */
+   Modo tranquilo (ajuste «sin límite de tiempo»): la moto se detiene ante cada pórtico hasta elegir.
+   Antes de arrancar se explica el contexto (alcanzar la furgoneta) y, con cada pórtico nuevo, hay un tiempo de
+   lectura a cámara lenta; los carriles de cada respuesta se muestran también bajo la frase. */
 window.PP = window.PP || {};
 (function () {
   "use strict";
@@ -24,7 +26,9 @@ window.PP = window.PP || {};
       const bDer = el("button", { class: "ap-btn der", type: "button", "aria-label": "Carril derecho", html: '<span style="display:inline-block;transform:scaleX(-1)">' + U.icon("back") + "</span>" });
       const bSalir = el("button", { class: "btn-icono ap-salir", type: "button", "aria-label": "Salir", html: U.icon("exit") });
       const bOk = el("button", { class: "btn btn-primario ap-ok", type: "button", hidden: true, html: "Este carril " + U.icon("play") });
-      hud.append(el("div", { class: "ap-arriba" }, [medidor, marcador, bSalir]), enunciado, explic);
+      const carrilesTxt = el("div", { class: "ap-carriles", "aria-live": "polite" });
+      const lectura = el("div", { class: "ap-lectura" }, [el("i")]);
+      hud.append(el("div", { class: "ap-arriba" }, [medidor, marcador, bSalir]), enunciado, carrilesTxt, lectura, explic);
       raiz.append(cv, hud, bIzq, bDer, bOk);
       document.body.appendChild(raiz);
       PP.Audio.musica("persecucion");
@@ -34,7 +38,9 @@ window.PP = window.PP || {};
       ajustar(); window.addEventListener("resize", ajustar);
 
       const N = 3;
-      const st = { carril: 1, xVis: 1, scroll: 0, vel: ciclo === 1 ? 150 : ciclo === 2 ? 190 : 225, distancia: 55, idx: -1, portico: null, aciertos: 0, fin: false, t: 0, flash: 0, esperando: false, turbo: 0, lento: 0, decor: [], parts: [], pausaHasta: 0 };
+      // Tiempo de lectura (segundos a cámara lenta) al aparecer cada pórtico
+      const LECTURA = ciclo === 1 ? 7 : ciclo === 2 ? 6 : 5;
+      const st = { listo: false, lectura: 0, carril: 1, xVis: 1, scroll: 0, vel: ciclo === 1 ? 135 : ciclo === 2 ? 165 : 195, distancia: 55, idx: -1, portico: null, aciertos: 0, fin: false, t: 0, flash: 0, esperando: false, turbo: 0, lento: 0, decor: [], parts: [], pausaHasta: 0 };
       for (let k = 0; k < 14; k++) st.decor.push({ y: k * 140, lado: k % 2, tipo: U.pick(["palmera", "roca", "cartel", "palmera"]) });
 
       const anchoCarretera = () => Math.min(600, W * 0.78);
@@ -50,10 +56,20 @@ window.PP = window.PP || {};
         const orden = U.shuffle(it.o.map((o, k) => k));
         const paneles = carriles.map((c, k) => ({ c, op: orden[k], txt: it.o[orden[k]] }));
         st.portico = { y: -160, it, paneles, resuelto: false };
+        st.lectura = LECTURA; st.lecturaTot = LECTURA;
+        pintarCarriles();
         enunciado.innerHTML = '<small>Pórtico ' + (st.idx + 1) + " de " + items.length + "</small>" + U.esc(it.p).replace("___", '<span class="hueco">___</span>');
         PP.Voz.decir(it.p + (ciclo <= 2 ? ". Opciones: " + it.o.join(", o ") : ""));
       }
 
+      const NOMBRE_CARRIL = ["⬅ Izquierda", "⬆ Centro", "Derecha ➡"];
+      /** Muestra, bajo la frase, qué respuesta hay en cada carril y cuál es el carril actual */
+      function pintarCarriles() {
+        const p = st.portico;
+        if (!p || p.resuelto) { carrilesTxt.innerHTML = ""; return; }
+        carrilesTxt.innerHTML = [0, 1, 2].map((c) => { const panel = p.paneles.find((x) => x.c === c);
+          return '<span class="' + (c === st.carril ? "actual" : "") + (panel ? "" : " vacio") + '"><small>' + NOMBRE_CARRIL[c] + "</small><b>" + (panel ? U.esc(panel.txt) : "cerrado") + "</b></span>"; }).join("");
+      }
       function resolverPortico(p) {
         p.resuelto = true;
         const panel = p.paneles.find((x) => x.c === st.carril);
@@ -69,6 +85,7 @@ window.PP = window.PP || {};
           st.pausaHasta = st.t + (ciclo === 1 ? 3.2 : 2.6);
         }
         PP.Voz.decir(explic.textContent);
+        carrilesTxt.innerHTML = ""; lectura.classList.remove("visible");
         marcador.textContent = st.aciertos + " / " + items.length;
         medidor.querySelector("i").style.width = (100 - st.distancia) + "%";
       }
@@ -90,8 +107,9 @@ window.PP = window.PP || {};
 
       let vivo = true, ultimo = 0;
       function cerrar(r) { vivo = false; window.removeEventListener("keydown", teclas); window.removeEventListener("resize", ajustar); PP.Voz.callar(); raiz.remove(); resolver(r); }
-      function mover(d) { if (st.fin) return; const n = U.clamp(st.carril + d, 0, N - 1); if (n !== st.carril) { st.carril = n; PP.Audio.sfx("whoosh"); } }
-      function confirmar() { if (st.esperando && st.portico) { st.esperando = false; bOk.hidden = true; st.portico.confirmado = true; } }
+      function mover(d) { if (st.fin || !st.listo) return; const n = U.clamp(st.carril + d, 0, N - 1); if (n !== st.carril) { st.carril = n; PP.Audio.sfx("whoosh"); pintarCarriles(); } }
+      function confirmar() {
+        if (!st.listo) return arrancar(); if (st.esperando && st.portico) { st.esperando = false; bOk.hidden = true; st.portico.confirmado = true; } }
       function teclas(e) {
         if (e.code === "ArrowLeft" || e.code === "KeyA") { mover(-1); e.preventDefault(); }
         else if (e.code === "ArrowRight" || e.code === "KeyD") { mover(1); e.preventDefault(); }
@@ -107,11 +125,34 @@ window.PP = window.PP || {};
         // tocar directamente un carril
         const r = cv.getBoundingClientRect(), x = e.clientX - r.left; const ac = anchoCarretera(), x0 = (W - ac) / 2;
         const c = Math.floor((x - x0) / (ac / N));
-        if (c >= 0 && c < N) { if (c === st.carril && st.esperando) confirmar(); else { st.carril = c; PP.Audio.sfx("whoosh"); } }
+        if (!st.listo) return;
+        if (c >= 0 && c < N) { if (c === st.carril && st.esperando) confirmar(); else { st.carril = c; PP.Audio.sfx("whoosh"); pintarCarriles(); } }
       });
 
-      PP.Autopista._debug = { st, items, xCarril };
-      siguiente();
+      // ----- Pantalla de contexto antes de arrancar -----
+      const intro = el("div", { class: "ap-intro", role: "dialog", "aria-modal": "true", "aria-labelledby": "ap-intro-tit" }, [
+        el("div", { class: "ap-intro-caja" }, [
+          el("div", { class: "ap-intro-cara", html: PP.retrato(PP.BORRON, "feliz") }),
+          el("h2", { id: "ap-intro-tit", text: "¡La furgoneta del Borrón se escapa!" }),
+          el("p", { text: "El Borrón huye por la autopista con un saco lleno de palabras robadas. Tienes que alcanzar su furgoneta morada y hacerle una foto para El Eco." }),
+          el("ol", { class: "ap-intro-pasos" }, [
+            el("li", { html: "<b>Lee la frase</b> de arriba: le falta una palabra." }),
+            el("li", { html: "Cada <b>carril</b> lleva a una respuesta: la verás en el cartel del pórtico y también debajo de la frase." }),
+            el("li", { html: "<b>Cámbiate al carril</b> de la respuesta correcta " + (PP.Input.tactil ? "con las flechas de los lados o tocando el carril" : "con <kbd>←</kbd> <kbd>→</kbd> o tocando el carril") + " antes de pasar por debajo del pórtico." }),
+            el("li", { html: "Si aciertas, ¡<b>turbo</b>! Te acercas a la furgoneta. Si fallas, frenas un poco y verás la explicación." })
+          ]),
+          el("p", { class: "ap-intro-nota", text: tranquilo ? "Modo tranquilo: la moto se para delante de cada pórtico hasta que confirmes el carril." : "Cuando aparece un pórtico, todo va a cámara lenta unos segundos para que puedas leer y pensar." })
+        ])
+      ]);
+      const bArrancar = el("button", { class: "btn btn-primario btn-grande", type: "button", html: "¡Arrancar la moto! " + U.icon("play") });
+      intro.firstChild.appendChild(bArrancar);
+      raiz.appendChild(intro);
+      function arrancar() { if (st.listo) return; st.listo = true; intro.remove(); PP.Audio.sfx("inicio"); siguiente(); }
+      bArrancar.addEventListener("click", arrancar);
+      setTimeout(() => bArrancar.focus(), 50);
+      PP.Voz.decir("¡La furgoneta del Borrón se escapa! Lee la frase y cámbiate al carril de la respuesta correcta para conseguir turbo y alcanzarla.");
+
+      PP.Autopista._debug = { st, items, xCarril, arrancar };
       requestAnimationFrame(bucle);
 
       function bucle(ts) {
@@ -121,7 +162,13 @@ window.PP = window.PP || {};
         // velocidad
         let v = st.vel * (st.turbo > 0 ? 1.6 : 1) * (st.lento > 0 ? 0.55 : 1);
         st.turbo -= dt; st.lento -= dt;
+        if (!st.listo) v = 40; // pantalla de contexto: la moto rueda despacio de fondo
         const p = st.portico;
+        // tiempo de lectura: cámara lenta mientras el pórtico se acerca
+        if (p && !p.resuelto && st.lectura > 0 && !tranquilo) {
+          st.lectura -= dt; v *= 0.22;
+          lectura.classList.add("visible"); lectura.firstChild.style.width = Math.max(0, st.lectura / st.lecturaTot * 100) + "%";
+        } else lectura.classList.remove("visible");
         if (p && !p.resuelto && tranquilo && !p.confirmado && p.y > yJugador() - 260) {
           if (!st.esperando) { st.esperando = true; bOk.hidden = false; }
           v = 0;
@@ -172,7 +219,7 @@ window.PP = window.PP || {};
         if (p) {
           g.fillStyle = "#555"; g.fillRect(x0 - 20, p.y - 6, 10, 70); g.fillRect(x0 + ac + 10, p.y - 6, 10, 70);
           g.fillStyle = "#6b6f7a"; g.fillRect(x0 - 20, p.y - 10, ac + 40, 10);
-          g.font = "800 " + Math.round(Math.min(22, ac / N / 6)) + "px 'Trebuchet MS', sans-serif"; g.textAlign = "center"; g.textBaseline = "middle";
+          g.font = "800 " + Math.round(Math.min(26, ac / N / 5.2)) + "px 'Trebuchet MS', sans-serif"; g.textAlign = "center"; g.textBaseline = "middle";
           for (let c = 0; c < N; c++) {
             const panel = p.paneles.find((x) => x.c === c), px = x0 + ac * c / N + 6, pw = ac / N - 12;
             if (!panel) { g.fillStyle = "#ff7a00"; for (let k = 0; k < 3; k++) { g.beginPath(); g.moveTo(px + pw * (k + 0.5) / 3, p.y + 6); g.lineTo(px + pw * (k + 0.5) / 3 - 10, p.y + 34); g.lineTo(px + pw * (k + 0.5) / 3 + 10, p.y + 34); g.fill(); } continue; }
@@ -181,7 +228,7 @@ window.PP = window.PP || {};
             g.fillStyle = "#0d5c3a"; PP.Dibujo.redondeado(g, px, p.y, pw, 48, 8); g.fill();
             g.fillStyle = col; PP.Dibujo.redondeado(g, px + 4, p.y + 4, pw - 8, 40, 6); g.fill();
             g.fillStyle = "#14213d"; g.fillText(panel.txt, px + pw / 2, p.y + 25, pw - 14);
-            if (st.esperando && c === st.carril) { g.strokeStyle = "#ffe066"; g.lineWidth = 4; PP.Dibujo.redondeado(g, px - 2, p.y - 2, pw + 4, 52, 9); g.stroke(); }
+            if (!p.resuelto && c === st.carril) { g.strokeStyle = "#ffe066"; g.lineWidth = 4; PP.Dibujo.redondeado(g, px - 2, p.y - 2, pw + 4, 52, 9); g.stroke(); }
           }
         }
         // jugador

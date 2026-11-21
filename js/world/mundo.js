@@ -192,12 +192,14 @@ window.PP = window.PP || {};
   function bucle(t) {
     requestAnimationFrame(bucle);
     const dt = Math.min(0.05, (t - (ultimo || t)) / 1000); ultimo = t;
-    if (!M.activo && !M.modoAtraccion) return;
+    if ((!M.activo && !M.modoAtraccion) || M._congelado) return;
     M.tiempo += dt;
     actualizar(dt);
     dibujar();
   }
 
+  /** Gancho para las pruebas automáticas: simula n pasos del mundo sin dibujar */
+  M._sim = function (n, dt) { for (let k = 0; k < n; k++) { M.tiempo += dt; actualizar(dt); } };
   function solido(x, y) { const t = C.at(Math.floor(x / T), Math.floor(y / T)); return !C.conducible(t); }
   function colisiona(x, y, r) {
     for (let k = 0; k < 8; k++) { const a = k / 8 * Math.PI * 2; if (solido(x + Math.cos(a) * r, y + Math.sin(a) * r)) return true; }
@@ -217,9 +219,22 @@ window.PP = window.PP || {};
     let acel = 0, giro = 0;
     const controla = !PP.juego || PP.juego.modo === "mundo";
     let dir = controla ? I.direccion() : { x: 0, y: 0 };
+    let velAuto = 0;
     if (M.autopiloto && M.ruta && M.ruta.length) {
-      const wp = M.ruta[0]; const dx = wp.x - j.x, dy = wp.y - j.y; const d = Math.hypot(dx, dy) || 1;
+      // Piloto automático «persecución pura»: apunta a un punto algo más adelante en la ruta (curvas suaves)
+      // y ajusta la velocidad a la curva que viene y al tráfico que tiene delante.
+      const pts = [{ x: j.x, y: j.y }].concat(M.ruta);
+      const puntoA = (L) => { let acc = 0; for (let k = 1; k < pts.length; k++) { const a = pts[k - 1], b = pts[k], s = Math.hypot(b.x - a.x, b.y - a.y); if (acc + s >= L) { const t = (L - acc) / (s || 1); return { x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t }; } acc += s; } return pts[pts.length - 1]; };
+      const look = U.clamp(34 + Math.abs(j.v) * 0.16, 34, 80);
+      const tp = puntoA(look); const dx = tp.x - j.x, dy = tp.y - j.y; const d = Math.hypot(dx, dy) || 1;
       dir = { x: dx / d, y: dy / d };
+      let curva = 0;
+      for (const L of [70, 120, 180, 240]) { const q = puntoA(L); curva = Math.max(curva, Math.abs(U.angDiff(j.ang, Math.atan2(q.y - j.y, q.x - j.x))) * (L <= 120 ? 1 : 0.8)); }
+      velAuto = curva > 1.1 ? 85 : curva > 0.7 ? 115 : curva > 0.35 ? 160 : curva > 0.15 ? 210 : j.vmax * 0.8;
+      // si lleva un rato esperando a un coche, lo adelanta despacio (evita bloqueos mutuos)
+      if ((M._apEspera || 0) < 1.8) for (const c of M.coches) { const ox = c.x - j.x, oy = c.y - j.y, delante = ox * Math.cos(j.ang) + oy * Math.sin(j.ang), lado = Math.abs(-ox * Math.sin(j.ang) + oy * Math.cos(j.ang)); if (delante > 0 && delante < 110 && lado < 26) velAuto = Math.min(velAuto, delante < 60 ? 0 : 60); }
+      else velAuto = Math.min(velAuto, 90);
+      M._apEspera = velAuto === 0 && Math.abs(j.v) < 20 ? (M._apEspera || 0) + dt : (M._apEspera || 0) > 1.8 && (M._apEspera += dt) < 4 ? M._apEspera : 0;
       if (Math.hypot(dir.x, dir.y) > 0 && (I.teclas.arriba || I.teclas.abajo || I.teclas.izq || I.teclas.der || I.joy.activo)) { M.autopiloto = false; }
     }
     const usaDireccional = aj.control === "sencillo" || M.autopiloto;
@@ -227,9 +242,10 @@ window.PP = window.PP || {};
       const mag = Math.min(1, Math.hypot(dir.x, dir.y));
       if (mag > 0.15) {
         const objetivo = Math.atan2(dir.y, dir.x), dif = U.angDiff(j.ang, objetivo);
-        giro = U.clamp(dif * 4, -1, 1);
+        giro = U.clamp(dif * (M.autopiloto ? 5 : 4), -1, 1);
         // primero gira (también parado) y después acelera: más fácil para el alumnado pequeño
-        acel = Math.abs(dif) > 0.9 ? (j.v > 120 ? -0.5 : 0.2 * mag) : mag * (M.autopiloto ? 0.75 : 1);
+        if (M.autopiloto) acel = Math.abs(dif) > 0.9 ? (j.v > 60 ? -1 : 0.25) : j.v > velAuto + 12 ? -1 : j.v < velAuto - 12 ? 0.8 : 0;
+        else acel = Math.abs(dif) > 0.9 ? (j.v > 120 ? -0.5 : 0.2 * mag) : mag;
       }
     } else if (controla) {
       // Control clásico: arriba acelera, abajo frena y luego marcha atrás, izquierda/derecha giran
@@ -252,7 +268,7 @@ window.PP = window.PP || {};
     if (!colisiona(j.x + ix, j.y, R)) { j.x += ix; mx = ix; }
     if (!colisiona(j.x, j.y + iy, R)) { j.y += iy; my = iy; }
     const intento = Math.hypot(ix, iy), movido = Math.hypot(mx, my);
-    if (intento > 0.5 && movido < intento * 0.5) { if (Math.abs(j.v) > 150 && j.choqueT <= 0) { PP.Audio.sfx("choque"); M.cam.sacudida = 6; j.choqueT = 0.5; humo(j.x, j.y, 6, "#bbb"); } j.v *= 0.55; }
+    if (intento > 0.5 && movido < intento * 0.5) { M._golpes = (M._golpes || 0) + 1; if (Math.abs(j.v) > 150 && j.choqueT <= 0) { PP.Audio.sfx("choque"); M.cam.sacudida = 6; j.choqueT = 0.5; humo(j.x, j.y, 6, "#bbb"); } j.v *= 0.55; }
     j.choqueT -= dt;
     if (I.tomar("pito")) PP.Audio.sfx("pito");
     if (I.tomar("turbo") && j.turbo <= 0) { j.turbo = 1.2; PP.Audio.sfx("turbo"); }
@@ -316,11 +332,20 @@ window.PP = window.PP || {};
   function actualizarTrafico(dt) {
     const j = M.jugador;
     for (const c of M.coches) {
-      let frenar = false;
+      let frenar = false, porCoche = false;
       const ax = c.x + c.dx * 46, ay = c.y + c.dy * 46;
-      if (!M.modoAtraccion && U.dist(ax, ay, j.x, j.y) < 40) frenar = true;
-      for (const o of M.coches) { if (o !== c && U.dist(ax, ay, o.x, o.y) < 34) { frenar = true; break; } }
+      let porJugador = false;
+      if (!M.modoAtraccion && !(c.paso > 0) && U.dist(ax, ay, j.x, j.y) < 40) { frenar = true; porJugador = true; }
+      // Si la moto se queda parada delante, el coche pita y la rodea despacio (no se forma una cola infinita)
+      c.esperaJ = porJugador && (c.vAct || 0) < 5 ? (c.esperaJ || 0) + dt : 0;
+      if (c.esperaJ > 3) { c.esperaJ = 0; c.paso = 2.5; if (U.dist(c.x, c.y, j.x, j.y) < 300) PP.Audio.sfx("pito"); }
+      // Anti-atascos: un coche que lleva varios segundos parado por otro coche pasa «con cuidado» un momento
+      // ignorando a los demás coches (rompe los bloqueos mutuos en los cruces).
+      if (!(c.paso > 0)) for (const o of M.coches) { if (o !== c && U.dist(ax, ay, o.x, o.y) < 34 && ((o.x - c.x) * c.dx + (o.y - c.y) * c.dy) > 0) { frenar = true; porCoche = true; break; } }
       for (const p of M.peatones) { if (U.dist(ax, ay, p.x, p.y) < 18) { frenar = true; break; } }
+      c.paso = (c.paso || 0) - dt;
+      c.bloqueo = porCoche && (c.vAct || 0) < 5 ? (c.bloqueo || 0) + dt : 0;
+      if (c.bloqueo > 2.5) { c.paso = 2; c.bloqueo = 0; }
       const vObj = frenar ? 0 : (c.tipo === "guagua" ? 95 : 125);
       c.vAct = U.lerp(c.vAct || 0, vObj, Math.min(1, dt * (frenar ? 8 : 1.5)));
       const vReal = c.v; c.v = c.vAct; if (c.v > 1) moverPorCarriles(c, dt); c.v = vReal;

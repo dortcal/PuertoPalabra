@@ -23,6 +23,8 @@ Los modos 1 y 2 reutilizan las pruebas de las misiones (mismas mecánicas y mism
 18 misiones por curso en cuatro barrios. Las tres últimas incorporadas:
 
 - **Sílabas y tildes** (Academia de las Tildes): sílabas en 1.er ciclo; sílaba tónica, agudas, llanas y esdrújulas y tilde en 2.º y 3.er ciclo; hiatos, sobresdrújulas y tilde diacrítica en 3.er ciclo.
+- **Autopista del Borrón**: pantalla de contexto previa, carriles rotulados y fase de lectura en cámara lenta.
+- **Rimas perdidas**: varios poetas distintos además de Olga.
 - **La cinta clasificadora** (Almacén de Palabras): clases de palabras en su frase, con palabras de «doble cara» y racha.
 - **El guion secreto** (Cine Atlántico): lectura de un texto original; cada respuesta abre una cifra de la caja fuerte. Preguntas literales, inferenciales y críticas.
 

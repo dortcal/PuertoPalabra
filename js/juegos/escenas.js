@@ -524,7 +524,14 @@ window.PP = window.PP || {};
       const items = U.muestra(d.items, ciclo() === 1 ? 3 : 4, "rimas:" + ctx.id + ":" + (PP.juego.curso || 0));
       let i = 0;
       const pergamino = el("div", { class: "pergamino" });
-      m.cuerpo.append(el("div", { class: "poeta", html: PP.retrato(d.poeta || { nombre: "Poeta", piel: "clara", pelo: "#7a7a7a", peinado: "mono", ropa: "#5b3a7a", fondo: "#efe0ff", gafas: true, edad: "mayor" }, "feliz") + "<span>" + U.esc((d.poeta && d.poeta.nombre) || "La poeta") + "</span>" }), pergamino);
+      // Presenta la actividad un personaje distinto cada vez (la poeta del curso o uno de PP.POETAS)
+      const propia = d.poeta ? { nombre: d.poeta.nombre || "Poeta", r: d.poeta, saludo: "¡Hola! Soy " + (d.poeta.nombre || "la poeta") + ". Al Borrón le gusta dejar mis poemas a medias. ¿Me ayudas a completarlos?", bien: ["¡Qué bien suena!", "¡Precioso!"], mal: "" } : null;
+      const poeta = U.muestra([propia].concat(PP.POETAS || []).filter(Boolean), 1, "poeta:" + (PP.juego.curso || 0))[0];
+      const caraPoeta = el("div", { class: "poeta-cara", html: PP.retrato(poeta.r, "feliz") });
+      const bocadillo = el("p", { class: "poeta-dice", text: poeta.saludo });
+      m.cuerpo.append(el("div", { class: "poeta poeta-ficha" }, [caraPoeta, el("b", { text: poeta.nombre }), bocadillo]), pergamino);
+      hablar(poeta.saludo);
+      const cara = (animo) => { caraPoeta.innerHTML = PP.retrato(poeta.r, animo); };
       const mostrar = () => {
         m.limpiarFb(); m.pie.innerHTML = ""; pergamino.innerHTML = "";
         const it = items[i]; if (!it) { m.cerrar(); return res({ hecho: true }); }
@@ -538,8 +545,8 @@ window.PP = window.PP || {};
           b.addEventListener("click", () => {
             const ok = k === it.c;
             if (!reg) { reg = true; PP.Eval.registrar({ crit: ctx.crit, ok, mecanica: "rimas", mision: ctx.id, item: "rima-" + i, respuesta: it.o[k], correcta: it.o[it.c], detalle: ok ? "" : "Rima: eligió «" + it.o[k] + "» en lugar de «" + it.o[it.c] + "»" }); }
-            if (ok) { v2.querySelector(".hueco").textContent = it.o[k]; v2.classList.add("brilla"); ops.querySelectorAll("button").forEach((x) => x.disabled = true); m.fb(it.fb || "¡Suena genial!", "bien"); PP.juego.sumar(15); PP.Voz.decir(it.v1 + ". " + it.v2.replace("___", it.o[k])); m.pie.appendChild(m.boton("Siguiente verso " + U.icon("play"), () => { i++; mostrar(); })); }
-            else { b.disabled = true; b.classList.add("incorrecta"); m.fb(it.fbMal || "No rima o no tiene sentido. Lee el verso en voz alta y escucha cómo termina.", "mal"); }
+            if (ok) { v2.querySelector(".hueco").textContent = it.o[k]; v2.classList.add("brilla"); ops.querySelectorAll("button").forEach((x) => x.disabled = true); cara("feliz"); const frase = U.pick(poeta.bien); bocadillo.textContent = frase; m.fb("<b>" + U.esc(frase) + "</b> " + U.esc(it.fb || ""), "bien"); PP.juego.sumar(15); PP.Voz.decir(it.v1 + ". " + it.v2.replace("___", it.o[k])); m.pie.appendChild(m.boton("Siguiente verso " + U.icon("play"), () => { i++; mostrar(); })); }
+            else { b.disabled = true; b.classList.add("incorrecta"); cara("sorpresa"); if (poeta.mal) bocadillo.textContent = poeta.mal; m.fb(it.fbMal || "No rima o no tiene sentido. Lee el verso en voz alta y escucha cómo termina.", "mal"); }
           });
           ops.appendChild(b);
         });
@@ -555,9 +562,14 @@ window.PP = window.PP || {};
       const estante = el("div", { class: "estante" }), ficha = el("div", { class: "contracubierta", hidden: true }), lector = el("div", { class: "lector" });
       m.cuerpo.append(lector, estante, ficha);
       const perfiles = U.muestra(d.perfiles, 3, "perf:" + ctx.id + ":" + (PP.juego.curso || 0));
+      // En la estantería: los libros que buscan los lectores de esta partida y otros al azar (máx. 8),
+      // para que los títulos se puedan leer con letra grande.
+      const necesarios = Array.from(new Set([].concat(...perfiles.map((p) => p.ok))));
+      const otros = U.shuffle(d.libros.map((_, k) => k).filter((k) => !necesarios.includes(k))).slice(0, Math.max(0, 8 - necesarios.length));
+      const visibles = U.shuffle(necesarios.concat(otros));
       let i = 0, libroSel = null;
-      d.libros.forEach((l, k) => {
-        const b = el("button", { class: "lomo", type: "button", style: { background: l.color || U.pick(["#e76f51", "#2a9d8f", "#e9c46a", "#264653", "#8338ec", "#ef476f"]), height: (120 + (k * 37) % 50) + "px" }, "aria-label": "Libro: " + l.titulo, html: "<span>" + U.esc(l.titulo) + "</span>" });
+      visibles.forEach((k) => { const l = d.libros[k];
+        const b = el("button", { class: "lomo", type: "button", style: { background: l.color || U.pick(["#e76f51", "#2a9d8f", "#e9c46a", "#264653", "#8338ec", "#ef476f"]), height: (190 + (k * 37) % 40) + "px" }, "aria-label": "Libro: " + l.titulo, html: "<span>" + U.esc(l.titulo) + "</span>" });
         b.addEventListener("click", () => {
           PP.Audio.sfx("pagina"); libroSel = k; estante.querySelectorAll(".lomo").forEach((x) => x.classList.remove("sel")); b.classList.add("sel");
           ficha.hidden = false; ficha.innerHTML = "<h3>" + U.esc(l.titulo) + "</h3><p class='autor'>" + U.esc(l.autor) + " · <em>" + U.esc(l.genero) + "</em></p><p>" + U.esc(l.sinopsis) + "</p>";

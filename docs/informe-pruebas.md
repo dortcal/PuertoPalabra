@@ -120,6 +120,17 @@ No verificado: jugabilidad y dificultad con alumnado real (tiempos, frustración
 - Pruebas automáticas adaptadas al paso nuevo de la historia; regresión en cursos 3 y 6, límites y «Solo minijuegos»: 0 errores.
 - No verificado: la narración de la historia con voz (depende de que el dispositivo tenga voz en español) y la revisión pedagógica de los textos nuevos por un docente.
 
+## Rimas con poetas, Autopista con contexto, más bancos, piloto y tráfico (20/11/2026)
+
+- **Rimas perdidas:** además de Olga sale uno de 5 poetas con personalidad propia, frases de ánimo y de pista distintas (`PP.POETAS`, `js/data/banco4.js`). Se elige con rotación por curso para que no se repita. Banco de 12 a 16 versos por curso.
+- **Club de lectura:** estantería de 8 libros (los de los 3 perfiles de la partida más otros al azar), lomos, contracubiertas y texto del lector más grandes, y más perfiles y libros por curso.
+- **Autopista del Borrón:** pantalla de contexto antes de arrancar (persigues la furgoneta del Borrón; cómo se elige el carril), nombre del carril visible y resaltado, velocidad menor y fase de lectura con cámara lenta (sin ella en modo tranquilo). Banco de 32 a 37 retos por curso.
+- **La cinta clasificadora:** banco de 35 a 38 palabras por curso.
+- **Modo aventura, tráfico:** temporizadores antibloqueo (un coche que espera a otro, o al jugador, más de 2,5-3 s se aparta o avanza con pitido). Medido con simulación: 0 atascos en 6 y 20 minutos de simulación y con la moto aparcada 2 minutos.
+- **Modo aventura, «llévame a la misión»:** nuevo piloto automático (seguimiento de ruta con curvas y velocidad según la curva). Medido en 12 destinos: 12/12 alcanzados y 0 choques fuertes (antes 11/12 y 47 choques).
+- **Pruebas:** completo.py en los cursos 1 a 6, limites.py (incluye pantalla de contexto de la autopista y arranque con Enter), «Solo minijuegos», Gran Reto y Repaso por bloque: 0 errores de consola.
+- No verificado: dificultad real de la autopista y de la conducción con alumnado, rendimiento en tabletas o pizarras, y revisión pedagógica de los textos nuevos.
+
 ## Pendiente de comprobar en el aula
 
 - Sonido, música y narración en los equipos del centro (Windows, iPad, Android, pizarra).

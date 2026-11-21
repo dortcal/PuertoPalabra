@@ -827,3 +827,39 @@ body:not(.tactil) .mj-mandos { opacity: .8; }
 @media (prefers-reduced-motion: reduce) {
   .hist-vineta, .hist-texto .vin-texto, .hist-miembro, .hist-letras span, .hist-borron > svg, .hist-mancha, .hist-rep svg { animation: none !important; }
 }
+
+/* ---- Autopista: contexto, carriles y tiempo de lectura ---- */
+.ap-carriles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: min(760px, 100%); margin-top: 8px; }
+.ap-carriles:empty { display: none; }
+.ap-carriles span { background: rgba(20, 33, 61, .88); color: #fff; border: 3px solid transparent; border-radius: 12px; padding: 4px 8px; text-align: center; display: flex; flex-direction: column; }
+.ap-carriles small { font-size: .75rem; font-weight: 800; opacity: .85; }
+.ap-carriles b { font-size: clamp(1rem, 2.2vw, 1.3rem); }
+.ap-carriles span.actual { border-color: var(--oro); background: #fff8dc; color: var(--noche); box-shadow: 0 0 0 3px rgba(255, 210, 63, .45); }
+.ap-carriles span.vacio { opacity: .5; }
+.ap-lectura { display: none; width: min(760px, 100%); height: 10px; margin-top: 6px; border-radius: 999px; background: rgba(255, 255, 255, .35); overflow: hidden; }
+.ap-lectura.visible { display: block; }
+.ap-lectura i { display: block; height: 100%; width: 100%; background: linear-gradient(90deg, #3bceac, #ffd23f); border-radius: inherit; transition: width .1s linear; }
+.ap-intro { position: absolute; inset: 0; display: grid; place-items: center; background: rgba(10, 8, 25, .72); padding: 14px; z-index: 3; overflow-y: auto; }
+.ap-intro-caja { width: min(620px, 100%); background: #fff8ec; border: 5px solid var(--noche); border-radius: 22px; padding: 18px 22px; box-shadow: 0 10px 0 var(--noche); text-align: center; animation: histTexto .4s ease-out both; }
+.ap-intro-caja h2 { margin: 4px 0 6px; font-family: var(--f-titulo); font-size: clamp(1.4rem, 3.5vw, 2rem); }
+.ap-intro-caja p { font-weight: 600; line-height: 1.4; }
+.ap-intro-cara svg { width: 96px; height: 96px; }
+.ap-intro-pasos { text-align: left; font-weight: 600; line-height: 1.45; padding-left: 1.3em; }
+.ap-intro-pasos li { margin: 4px 0; }
+.ap-intro-pasos kbd { display: inline-block; border: 2px solid var(--noche); border-radius: 6px; padding: 0 6px; background: #fff; font-weight: 800; }
+.ap-intro-nota { background: #e8f6ff; border-radius: 12px; padding: 6px 10px; font-size: .95em; }
+
+/* ---- Rimas: poeta con bocadillo · Club de lectura: letra grande ---- */
+.poeta.poeta-ficha { float: none; width: auto; display: grid; grid-template-columns: 104px 1fr; grid-template-rows: auto 1fr; column-gap: 12px; align-items: center; text-align: left; margin: 0 0 12px; }
+.poeta-ficha .poeta-cara { grid-row: span 2; }
+.poeta-ficha .poeta-cara svg { width: 104px; height: auto; }
+.poeta-ficha b { font-family: var(--f-titulo); font-size: 1.15rem; }
+.poeta-dice { margin: 4px 0 0; background: #fff; border: 3px solid var(--noche); border-radius: 14px; padding: 8px 12px; font-weight: 700; line-height: 1.35; position: relative; }
+.poeta-dice::before { content: ""; position: absolute; left: -14px; top: 14px; border: 7px solid transparent; border-right: 10px solid var(--noche); }
+.estante { min-height: 250px; gap: 8px; }
+.lomo { width: 84px; font-size: 1.08rem; line-height: 1.15; letter-spacing: .01em; padding: 10px 4px; }
+.lomo span { display: block; max-height: 100%; overflow: hidden; }
+.contracubierta { font-size: 1.15em; line-height: 1.45; }
+.contracubierta h3 { font-size: 1.45em; font-family: var(--f-titulo); }
+.lector-txt { font-size: 1.1em; }
+@media (max-width: 640px) { .lomo { width: 64px; font-size: .95rem; } .poeta.poeta-ficha { grid-template-columns: 72px 1fr; } .poeta-ficha .poeta-cara svg { width: 72px; } }

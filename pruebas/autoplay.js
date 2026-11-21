@@ -142,9 +142,11 @@
     if ($(".estante")) {
       const perfiles = window.__biblioRef.perfiles;
       const nombre = ($(".lector-txt strong") || {}).textContent;
-      const p = perfiles.find((x) => x.nombre === nombre);
+      const pide = (($(".lector-txt p") || {}).textContent || "").replace(/[«»]/g, "");
+      const p = perfiles.find((x) => x.nombre === nombre && x.pide === pide) || perfiles.find((x) => x.nombre === nombre);
       const lomos = $$(".lomo");
-      if (p) { lomos[p.ok[0]].click(); await sleep(20); const r = $$(".contracubierta .btn")[0]; if (r) r.click(); await sleep(30); const sig = $$(".esc-pie .btn").find((b) => /Siguiente|Terminar/.test(b.textContent)); if (sig) sig.click(); }
+      const lomo = p && lomos.find((l) => p.ok.some((k) => l.getAttribute("aria-label") === "Libro: " + window.__biblioRef.libros[k].titulo));
+      if (lomo) { lomo.click(); await sleep(20); const r = $$(".contracubierta .btn")[0]; if (r) r.click(); await sleep(30); const sig = $$(".esc-pie .btn").find((b) => /Siguiente|Terminar/.test(b.textContent)); if (sig) sig.click(); }
       return true;
     }
     // aviso genérico
@@ -183,6 +185,8 @@
   async function autopista() {
     const ap = $(".autopista"); if (!ap) return false;
     const dbg = PP.Autopista._debug; const st = dbg.st;
+    if (!st.listo) dbg.arrancar();
+    st.lectura = 0;
     if (st.portico && !st.portico.resuelto) {
       const pan = st.portico.paneles.find((x) => x.op === st.portico.it.c); st.carril = pan.c;
     }

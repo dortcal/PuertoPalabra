@@ -66,6 +66,9 @@ async def main():
         # autopista con teclado en modo tranquilo
         await pg.evaluate("PP.ajustes.sinTiempo=true; PP.Mundo.colocarJugador('circuito')"); await pg.wait_for_timeout(300)
         await pg.keyboard.press("Enter"); await pg.wait_for_timeout(300); await pg.click("#escena .esc-pie .btn"); await pg.wait_for_timeout(500)
+        intro_ap = await pg.locator(".ap-intro").count()
+        await pg.keyboard.press("Enter"); await pg.wait_for_timeout(300)  # arranca desde la pantalla de contexto con el teclado
+        R.append(("Autopista: pantalla de contexto y arranque con Enter", f"intro={intro_ap} · cerrada={await pg.locator('.ap-intro').count()==0}"))
         for k in range(900):
             st = await pg.evaluate("(()=>{const d=PP.Autopista._debug; if(!document.querySelector('.autopista')) return null; const s=d.st; const p=s.portico; return {esp:s.esperando, fin:s.fin, car:s.carril, obj: p&&!p.resuelto? p.paneles.find(x=>x.op===p.it.c).c : null}})()")
             if st is None: break
